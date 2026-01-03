@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Pivots\InventoryPart;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Part extends Model
 {
@@ -27,5 +29,15 @@ class Part extends Model
     public function partCategory(): BelongsTo
     {
         return $this->belongsTo(PartCategory::class);
+    }
+
+    /**
+     * @return BelongsToMany<Inventory, $this, InventoryPart>
+     */
+    public function inventories(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(Inventory::class)
+            ->using(InventoryPart::class);
     }
 }
