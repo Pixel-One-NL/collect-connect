@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Pivots\InventoryPart;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Inventory extends Model
 {
@@ -17,4 +19,14 @@ class Inventory extends Model
     protected $fillable = [
         'rebrickable_id',
     ];
+
+    /**
+     * @return BelongsToMany<Part, $this, InventoryPart>
+     */
+    public function parts(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(Part::class)
+            ->using(InventoryPart::class);
+    }
 }
