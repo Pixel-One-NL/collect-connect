@@ -7,14 +7,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Inventory extends Model
+class Color extends Model
 {
-    /** @use HasFactory<\Database\Factories\InventoryFactory> */
+    /** @use HasFactory<\Database\Factories\ColorFactory> */
     use HasFactory;
-
-    public $timestamps = false;
 
     protected $fillable = [
         'rebrickable_id',
+        'name',
+        'hex',
+        'is_transparent',
     ];
 }
