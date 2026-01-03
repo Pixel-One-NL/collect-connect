@@ -6,6 +6,7 @@ namespace App\Domain\Rebrickable\Commands;
 
 use App\Domain\Rebrickable\Contracts\ImportsRebrickableEntity;
 use App\Domain\Rebrickable\Jobs\ImportRebrickableEntityJob;
+use App\Domain\Rebrickable\Services\Imports\ColorImportService;
 use App\Domain\Rebrickable\Services\Imports\PartCategoryImportService;
 use App\Domain\Rebrickable\Services\Imports\PartImportService;
 use Illuminate\Console\Command;
@@ -20,6 +21,7 @@ class ImportRebrickableEntityCommand extends Command
     protected array $importServices = [
         PartCategoryImportService::class => 'part_categories',
         PartImportService::class => 'parts',
+        ColorImportService::class => 'colors',
     ];
 
     public function handle(): void

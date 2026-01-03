@@ -33,7 +33,7 @@ abstract class BaseImportMapper implements RebrickableMapper
         foreach ($this->mapping as $sourceField => $targetField) {
             $value = data_get($row, $sourceField);
 
-            if (empty($value) && array_key_exists($sourceField, $row)) {
+            if (empty($value) && array_key_exists($sourceField, $row) && array_key_exists($sourceField, $this->defaults)) {
                 $value = $this->defaults[$sourceField];
             }
 
