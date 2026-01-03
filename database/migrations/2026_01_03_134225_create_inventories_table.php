@@ -13,13 +13,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('parts', function (Blueprint $table) {
+        Schema::create('inventories', function (Blueprint $table) {
             $table->id();
-
-            $table->foreignId('part_category_id')->references('id')->on('part_categories');
-
             $table->string('rebrickable_id', 20)->unique();
-            $table->string('name');
         });
     }
 
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('parts');
+        Schema::dropIfExists('inventories');
     }
 };

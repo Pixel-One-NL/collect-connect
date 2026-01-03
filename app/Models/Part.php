@@ -13,6 +13,8 @@ class Part extends Model
     /** @use HasFactory<\Database\Factories\PartFactory> */
     use HasFactory;
 
+    public $timestamps = false;
+
     protected $fillable = [
         'part_category_id',
         'rebrickable_id',
