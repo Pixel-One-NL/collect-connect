@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('part_categories', function (Blueprint $table) {
             $table->id();
 
-            $table->string('rebrickable_id')->unique();
+            $table->string('rebrickable_id', 20)->unique();
             $table->string('name');
         });
     }
