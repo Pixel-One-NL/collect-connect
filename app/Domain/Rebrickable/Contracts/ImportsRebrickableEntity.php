@@ -18,7 +18,7 @@ interface ImportsRebrickableEntity
     public function import(): void;
 
     /**
-     * @return class-string<MapsRebrickableEntity>
+     * @return class-string<RebrickableMapper>
      */
     public function getMapper(): string;
 }
