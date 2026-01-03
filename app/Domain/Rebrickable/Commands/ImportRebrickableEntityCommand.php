@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Rebrickable\Commands;
+
+use App\Domain\Rebrickable\Contracts\ImportsRebrickableEntity;
+use App\Domain\Rebrickable\Jobs\ImportRebrickableEntityJob;
+use App\Domain\Rebrickable\Services\Imports\PartImportService;
+use Illuminate\Console\Command;
+
+class ImportRebrickableEntityCommand extends Command
+{
+    protected $signature = 'rebrickable:import-entity {--entity=}';
+
+    /**
+     * @var array<class-string<ImportsRebrickableEntity>, string>
+     */
+    protected array $importServices = [
+        PartImportService::class => 'parts',
+    ];
+
+    public function handle(): void
+    {
+        foreach ($this->getImportServices() as $importService) {
+            ImportRebrickableEntityJob::dispatch($importService);
+        }
+    }
+
+    /**
+     * @return list<class-string<ImportsRebrickableEntity>>
+     */
+    protected function getImportServices(): array
+    {
+        if (empty($this->option('entity'))) {
+            return array_keys($this->importServices);
+        }
+
+        return array_keys(array_filter(
+            $this->importServices,
+            fn (string $serviceName): bool => str($this->option('entity'))->lower()->is($serviceName)
+        ));
+    }
+}

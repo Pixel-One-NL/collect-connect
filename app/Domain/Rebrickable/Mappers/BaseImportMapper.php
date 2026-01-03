@@ -1,0 +1,47 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Domain\Rebrickable\Mappers;
+
+use App\Domain\Rebrickable\Contracts\MapsRebrickableEntity;
+use App\Domain\Rebrickable\Contracts\TransformsRebrickableField;
+
+abstract class BaseImportMapper implements MapsRebrickableEntity
+{
+    /**
+     * @var array<string, string>
+     */
+    protected array $mapping = [];
+
+    /**
+     * @var array<string, class-string<TransformsRebrickableField>>
+     */
+    protected array $transformers = [];
+
+    /**
+     * @var array<string, mixed>
+     */
+    protected array $defaults = [];
+
+    public function map(array $row): array
+    {
+        $mapped = [];
+
+        foreach ($this->mapping as $sourceField => $targetField) {
+            $value = data_get($row, $sourceField);
+
+            if (empty($value) && array_key_exists($sourceField, $row)) {
+                $value = $this->defaults[$sourceField];
+            }
+
+            if (isset($this->transformers[$sourceField])) {
+                $value = app($this->transformers[$sourceField])->transform($value);
+            }
+
+            $mapped[$targetField] = $value;
+        }
+
+        return $mapped;
+    }
+}
