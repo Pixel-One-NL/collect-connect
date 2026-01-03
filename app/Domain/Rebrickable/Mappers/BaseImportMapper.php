@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Domain\Rebrickable\Mappers;
 
-use App\Domain\Rebrickable\Contracts\MapsRebrickableEntity;
-use App\Domain\Rebrickable\Contracts\TransformsRebrickableField;
+use App\Domain\Rebrickable\Contracts\RebrickableFieldTransformer;
+use App\Domain\Rebrickable\Contracts\RebrickableMapper;
 
-abstract class BaseImportMapper implements MapsRebrickableEntity
+abstract class BaseImportMapper implements RebrickableMapper
 {
     /**
      * @var array<string, string>
@@ -15,7 +15,7 @@ abstract class BaseImportMapper implements MapsRebrickableEntity
     protected array $mapping = [];
 
     /**
-     * @var array<string, class-string<TransformsRebrickableField>>
+     * @var array<string, class-string<RebrickableFieldTransformer>>
      */
     protected array $transformers = [];
 
@@ -23,6 +23,8 @@ abstract class BaseImportMapper implements MapsRebrickableEntity
      * @var array<string, mixed>
      */
     protected array $defaults = [];
+
+    protected string $uniqueKey = 'rebrickable_id';
 
     public function map(array $row): array
     {
@@ -43,5 +45,10 @@ abstract class BaseImportMapper implements MapsRebrickableEntity
         }
 
         return $mapped;
+    }
+
+    public function getUniqueKey(): string
+    {
+        return $this->uniqueKey;
     }
 }
