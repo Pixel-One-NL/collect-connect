@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Pivots\InventoryMinifig;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Minifig extends Model
 {
@@ -14,6 +16,17 @@ class Minifig extends Model
 
     protected $fillable = [
         'rebrickable_id',
+        'bricklink_id',
         'name',
     ];
+
+    /**
+     * @return BelongsToMany<Inventory, $this, InventoryMinifig>
+     */
+    public function inventories(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(Inventory::class)
+            ->using(InventoryMinifig::class);
+    }
 }

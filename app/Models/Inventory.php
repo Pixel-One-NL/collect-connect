@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Pivots\InventoryMinifig;
 use App\Models\Pivots\InventoryPart;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -28,5 +29,15 @@ class Inventory extends Model
         return $this
             ->belongsToMany(Part::class)
             ->using(InventoryPart::class);
+    }
+
+    /**
+     * @return BelongsToMany<Minifig, $this, InventoryMinifig>
+     */
+    public function minifigs(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(Minifig::class)
+            ->using(InventoryMinifig::class);
     }
 }
