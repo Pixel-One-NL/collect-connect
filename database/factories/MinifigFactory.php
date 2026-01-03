@@ -21,6 +21,7 @@ class MinifigFactory extends Factory
     {
         return [
             'rebrickable_id' => fake()->unique()->numerify(),
+            'bricklink_id' => fake()->unique()->numerify(),
             'name' => fake()->words(asText: true),
         ];
     }

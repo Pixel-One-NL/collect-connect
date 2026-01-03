@@ -13,12 +13,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('minifigs', function (Blueprint $table) {
-            $table->id();
-
+        Schema::create('inventory_minifigs', function (Blueprint $table) {
             $table->string('rebrickable_id', 20)->unique();
-            $table->string('bricklink_id', 20)->unique();
-            $table->string('name');
+
+            $table->foreignId('inventory_id')->references('id')->on('inventories');
+            $table->foreignId('part_id')->references('id')->on('parts');
         });
     }
 
@@ -27,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('minifigs');
+        Schema::dropIfExists('inventory_minifigs');
     }
 };
