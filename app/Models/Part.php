@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\MorphOne;
 
 class Part extends Model
 {
@@ -39,5 +40,13 @@ class Part extends Model
         return $this
             ->belongsToMany(Inventory::class)
             ->using(InventoryPart::class);
+    }
+
+    /**
+     * @return MorphOne<Product, $this>
+     */
+    public function product(): MorphOne
+    {
+        return $this->morphOne(Product::class, 'productable');
     }
 }
