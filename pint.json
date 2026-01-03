@@ -1,0 +1,11 @@
+{
+    "preset": "laravel",
+    "rules": {
+        "declare_strict_types": true,
+        "fully_qualified_strict_types": true,
+        "global_namespace_import": true,
+        "blank_line_after_namespace": true,
+        "blank_lines_before_namespace": true,
+        "array_indentation": true
+    }
+}

@@ -1,0 +1,49 @@
+services:
+    laravel:
+      build:
+        context: docker/
+        target: development
+        args:
+          USER_ID: ${USER_ID:-1000}
+          GROUP_ID: ${GROUP_ID:-1000}
+      ports:
+        - 80:8080
+      volumes:
+        - ./:/var/www/html
+      environment:
+        PHP_UPLOAD_MAX_FILE_SIZE: 500M
+        PHP_OPCACHE_ENABLE: 1
+      networks:
+        - laravel
+
+    redis:
+      image: redis
+      ports:
+        - ${FORWARD_REDIS_PORT:-6379}:6379
+      networks:
+        - laravel
+
+    mysql:
+      image: mysql:9.0
+      ports:
+        - ${FORWARD_DB_PORT:-3306}:3306
+      volumes:
+        - ./docker/database/create-testing-database.sh:/docker-entrypoint-initdb.d/create-testing-database.sh:ro
+      environment:
+        MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+        MYSQL_DATABASE: ${DB_DATABASE}
+        MYSQL_USER: ${DB_USERNAME}
+        MYSQL_PASSWORD: ${DB_PASSWORD}
+      networks:
+        - laravel
+
+    mailpit:
+      image: axllent/mailpit
+      ports:
+        - 8025:8025
+      networks:
+        - laravel
+
+networks:
+  laravel:
+    driver: bridge

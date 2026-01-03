@@ -1,0 +1,27 @@
+# General
+/.idea
+.DS_Store
+*.log
+
+# Environment files/secrets
+.env
+.env.backup
+.env.production
+
+# PHP
+/vendor
+
+# PHPUnit
+.phpunit.result.cache
+/.phpunit.cache
+
+# Laravel
+/storage/*.key
+/storage/pail
+
+# Node.js/assets
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/public/*/filament/*
