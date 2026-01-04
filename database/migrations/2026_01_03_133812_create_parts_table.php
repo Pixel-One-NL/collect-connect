@@ -18,7 +18,7 @@ return new class extends Migration
 
             $table->foreignId('part_category_id')->references('id')->on('part_categories');
 
-            $table->string('rebrickable_id', 20)->unique();
+            $table->string('rebrickable_id', 20)->unique()->index();
             $table->string('name');
         });
     }

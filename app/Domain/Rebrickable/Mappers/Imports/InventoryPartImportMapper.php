@@ -23,9 +23,9 @@ class InventoryPartImportMapper extends BaseImportMapper
     ];
 
     protected array $transformers = [
-        'inventory_id' => InventoryIdExpressionTransformer::class,
-        'part_num' => PartIdExpressionTransformer::class,
-        'color_id' => ColorIdExpressionTransformer::class,
+        // 'inventory_id' => InventoryIdExpressionTransformer::class,
+        // 'part_num' => PartIdExpressionTransformer::class,
+        // 'color_id' => ColorIdExpressionTransformer::class,
         'is_spare' => BooleanTransformer::class,
     ];
 }

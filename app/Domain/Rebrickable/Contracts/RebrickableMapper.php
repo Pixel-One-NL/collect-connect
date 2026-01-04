@@ -16,4 +16,9 @@ interface RebrickableMapper
      * @return string|list<string>
      */
     public function getUniqueKey(): string|array;
+
+    /**
+     * @return array<string, string>
+     */
+    public function getMapping(): array;
 }
