@@ -6,9 +6,6 @@ namespace App\Domain\Rebrickable\Mappers\Imports;
 
 use App\Domain\Rebrickable\Mappers\BaseImportMapper;
 use App\Domain\Rebrickable\Mappers\Transformers\BooleanTransformer;
-use App\Domain\Rebrickable\Mappers\Transformers\ColorIdExpressionTransformer;
-use App\Domain\Rebrickable\Mappers\Transformers\InventoryIdExpressionTransformer;
-use App\Domain\Rebrickable\Mappers\Transformers\PartIdExpressionTransformer;
 
 class InventoryPartImportMapper extends BaseImportMapper
 {
@@ -23,9 +20,6 @@ class InventoryPartImportMapper extends BaseImportMapper
     ];
 
     protected array $transformers = [
-        // 'inventory_id' => InventoryIdExpressionTransformer::class,
-        // 'part_num' => PartIdExpressionTransformer::class,
-        // 'color_id' => ColorIdExpressionTransformer::class,
         'is_spare' => BooleanTransformer::class,
     ];
 }

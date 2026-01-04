@@ -14,10 +14,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('inventory_minifigs', function (Blueprint $table) {
-            $table->string('rebrickable_id', 20)->unique();
-
             $table->foreignId('inventory_id')->references('id')->on('inventories');
-            $table->foreignId('part_id')->references('id')->on('parts');
+            $table->foreignId('minifig_id')->references('id')->on('minifigs');
+
+            $table->integer('quantity');
         });
     }
 

@@ -8,6 +8,7 @@ use App\Domain\Rebrickable\Contracts\ImportsRebrickableEntity;
 use App\Domain\Rebrickable\Jobs\ImportRebrickableEntityJob;
 use App\Domain\Rebrickable\Services\Imports\ColorImportService;
 use App\Domain\Rebrickable\Services\Imports\InventoryImportService;
+use App\Domain\Rebrickable\Services\Imports\InventoryMinifigImportService;
 use App\Domain\Rebrickable\Services\Imports\InventoryPartImportService;
 use App\Domain\Rebrickable\Services\Imports\MinifigImportService;
 use App\Domain\Rebrickable\Services\Imports\PartCategoryImportService;
@@ -28,6 +29,7 @@ class ImportRebrickableEntityCommand extends Command
         InventoryImportService::class => 'inventories',
         InventoryPartImportService::class => 'inventory_parts',
         MinifigImportService::class => 'minifigs',
+        InventoryMinifigImportService::class => 'inventory_minifigs',
     ];
 
     public function handle(): void

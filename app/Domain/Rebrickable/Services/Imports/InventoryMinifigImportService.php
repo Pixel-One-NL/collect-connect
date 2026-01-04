@@ -4,18 +4,16 @@ declare(strict_types=1);
 
 namespace App\Domain\Rebrickable\Services\Imports;
 
-use App\Domain\Rebrickable\Mappers\Imports\InventoryPartImportMapper;
+use App\Domain\Rebrickable\Mappers\Imports\InventoryMinifigImportMapper;
 use App\Domain\Rebrickable\Services\BaseImportService;
-use App\Models\Pivots\InventoryPart;
+use App\Models\Pivots\InventoryMinifig;
 use Illuminate\Support\Facades\DB;
 
-class InventoryPartImportService extends BaseImportService
+class InventoryMinifigImportService extends BaseImportService
 {
-    protected int $batchSize = 1000;
-
     public function getUrl(): string
     {
-        return 'https://cdn.rebrickable.com/media/downloads/inventory_parts.csv.zip';
+        return 'https://cdn.rebrickable.com/media/downloads/inventory_minifigs.csv.zip';
     }
 
     /**
@@ -23,7 +21,7 @@ class InventoryPartImportService extends BaseImportService
      */
     public function getModel(): string
     {
-        return InventoryPart::class;
+        return InventoryMinifig::class;
     }
 
     /**
@@ -31,7 +29,7 @@ class InventoryPartImportService extends BaseImportService
      */
     public function getMapper(): string
     {
-        return InventoryPartImportMapper::class;
+        return InventoryMinifigImportMapper::class;
     }
 
     protected function upsertRows(array $rows, array|string $uniqueKey): void
@@ -45,7 +43,7 @@ class InventoryPartImportService extends BaseImportService
         $bindings = [];
 
         foreach ($rows as $row) {
-            $selects[] = 'SELECT ? AS inventory_id, ? AS part_id, ? AS color_id, ? AS quantity, ? AS is_spare';
+            $selects[] = 'SELECT ? AS inventory_id, ? AS minifig_id, ? AS quantity';
             foreach ($mappings as $mapping) {
                 $bindings[] = data_get($row, $mapping);
             }
@@ -54,15 +52,12 @@ class InventoryPartImportService extends BaseImportService
         $selectsString = implode(' UNION ALL ', $selects);
 
         DB::statement("
-            INSERT INTO inventory_parts (inventory_id, part_id, color_id, quantity, is_spare)
-            SELECT inventories.id, parts.id, colors.id, source.quantity, source.is_spare
+            INSERT INTO inventory_minifigs (inventory_id, minifig_id, quantity)
+            SELECT inventories.id, minifigs.id, source.quantity
             FROM ({$selectsString}) AS source
             INNER JOIN inventories ON inventories.id = source.inventory_id
-            INNER JOIN parts ON parts.id = source.part_id
-            INNER JOIN colors ON colors.id = source.color_id
-            ON DUPLICATE KEY UPDATE
-                quantity = VALUES(quantity),
-                is_spare = VALUES(is_spare)
+            INNER JOIN minifigs ON minifigs.id = source.minifig_id
+            ON DUPLICATE KEY UPDATE quantity = VALUES(quantity)
         ", $bindings);
     }
 }
