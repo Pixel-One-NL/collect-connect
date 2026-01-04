@@ -38,7 +38,7 @@ class Part extends Model
     public function inventories(): BelongsToMany
     {
         return $this
-            ->belongsToMany(Inventory::class)
+            ->belongsToMany(Inventory::class, 'inventory_parts')
             ->using(InventoryPart::class);
     }
 
