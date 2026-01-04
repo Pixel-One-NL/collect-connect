@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('colors', function (Blueprint $table) {
             $table->id();
 
-            $table->string('rebrickable_id', 20)->unique();
+            $table->string('rebrickable_id', 20)->unique()->index();
 
             $table->string('name');
             $table->string('hex', 6);

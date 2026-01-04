@@ -21,6 +21,8 @@ return new class extends Migration
 
             $table->integer('quantity');
             $table->boolean('is_spare')->default(false);
+
+            $table->index(['inventory_id', 'part_id', 'color_id', 'is_spare'], 'idx_inventory_part_color_spare');
         });
     }
 

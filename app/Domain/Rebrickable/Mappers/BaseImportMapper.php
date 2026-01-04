@@ -54,4 +54,12 @@ abstract class BaseImportMapper implements RebrickableMapper
     {
         return $this->uniqueKey;
     }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getMapping(): array
+    {
+        return $this->mapping;
+    }
 }
