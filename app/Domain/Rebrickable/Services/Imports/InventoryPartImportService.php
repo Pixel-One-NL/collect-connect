@@ -11,8 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class InventoryPartImportService extends BaseImportService
 {
-    protected int $batchSize = 1000;
-
     public function getUrl(): string
     {
         return 'https://cdn.rebrickable.com/media/downloads/inventory_parts.csv.zip';
