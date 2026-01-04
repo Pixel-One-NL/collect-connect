@@ -17,8 +17,6 @@ abstract class BaseImportService implements ImportsRebrickableEntity
 
     protected int $processedCount = 0;
 
-    protected int $skippedCount = 0;
-
     protected RebrickableMapper $mapper;
 
     public function __construct()
@@ -28,15 +26,31 @@ abstract class BaseImportService implements ImportsRebrickableEntity
 
     public function import(): void
     {
-        $rows = [];
         $data = app(RebrickableDownloader::class)->retrieveRebrickableDataFromUrl($this->getUrl());
 
-        while ($row = array_shift($data)) {
+        $rows = [];
+        foreach ($data as $row) {
             $rows[] = $this->mapper->map($row);
+
+            if (count($rows) >= $this->batchSize) {
+                $this->upsertRows($rows, $this->mapper->getUniqueKey());
+                $this->processedCount += count($rows);
+                $rows = [];
+            }
         }
 
-        foreach (array_chunk($rows, $this->batchSize) as $chunk) {
-            $this->getModel()::upsert($chunk, $this->mapper->getUniqueKey());
+        if (count($rows) > 0) {
+            $this->upsertRows($rows, $this->mapper->getUniqueKey());
+            $this->processedCount += count($rows);
         }
+    }
+
+    /**
+     * @param  list<array<string, mixed>>  $rows
+     * @param  string|list<string>  $uniqueKey
+     */
+    protected function upsertRows(array $rows, string|array $uniqueKey): void
+    {
+        $this->getModel()::upsert($rows, $uniqueKey);
     }
 }
