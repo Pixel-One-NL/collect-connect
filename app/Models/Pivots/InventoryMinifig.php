@@ -11,10 +11,14 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class InventoryMinifig extends Pivot
 {
+    public $timestamps = false;
+
+    protected $table = 'inventory_minifigs';
+
     protected $fillable = [
-        'rebrickable_id',
         'inventory_id',
-        'part_id',
+        'minifig_id',
+        'quantity',
     ];
 
     /**
@@ -28,7 +32,7 @@ class InventoryMinifig extends Pivot
     /**
      * @return BelongsTo<Part, $this>
      */
-    public function part(): BelongsTo
+    public function minifig(): BelongsTo
     {
         return $this->belongsTo(Part::class);
     }
