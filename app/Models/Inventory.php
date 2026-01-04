@@ -27,7 +27,7 @@ class Inventory extends Model
     public function parts(): BelongsToMany
     {
         return $this
-            ->belongsToMany(Part::class)
+            ->belongsToMany(Part::class, 'inventory_parts')
             ->using(InventoryPart::class);
     }
 
@@ -37,7 +37,7 @@ class Inventory extends Model
     public function minifigs(): BelongsToMany
     {
         return $this
-            ->belongsToMany(Minifig::class)
+            ->belongsToMany(Minifig::class, 'inventory_minifigs')
             ->using(InventoryMinifig::class);
     }
 }

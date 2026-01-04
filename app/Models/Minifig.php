@@ -29,7 +29,7 @@ class Minifig extends Model
     public function inventories(): BelongsToMany
     {
         return $this
-            ->belongsToMany(Inventory::class)
+            ->belongsToMany(Inventory::class, 'inventory_minifigs')
             ->using(InventoryMinifig::class);
     }
 
