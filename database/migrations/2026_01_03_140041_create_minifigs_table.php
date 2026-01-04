@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
 
             $table->string('rebrickable_id', 20)->unique()->index();
-            $table->string('bricklink_id', 20)->nullable()->unique();
+            $table->string('bricklink_id', 20)->nullable();
             $table->string('name');
         });
     }
