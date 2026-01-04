@@ -14,8 +14,9 @@ class InventoryPart extends Pivot
 {
     public $timestamps = false;
 
+    protected $table = 'inventory_parts';
+
     protected $fillable = [
-        'rebrickable_id',
         'inventory_id',
         'part_id',
         'color_id',

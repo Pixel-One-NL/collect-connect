@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Rebrickable\Mappers\Imports;
 
 use App\Domain\Rebrickable\Mappers\BaseImportMapper;
-use App\Domain\Rebrickable\Mappers\Transformers\PartCategoryExpressionTransformer;
+use App\Domain\Rebrickable\Mappers\Transformers\PartCategoryIdExpressionTransformer;
 
 class PartImportMapper extends BaseImportMapper
 {
@@ -16,6 +16,6 @@ class PartImportMapper extends BaseImportMapper
     ];
 
     protected array $transformers = [
-        'part_cat_id' => PartCategoryExpressionTransformer::class,
+        'part_cat_id' => PartCategoryIdExpressionTransformer::class,
     ];
 }

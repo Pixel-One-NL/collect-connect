@@ -7,7 +7,7 @@ namespace App\Domain\Rebrickable\Mappers\Transformers;
 use App\Domain\Rebrickable\Contracts\RebrickableFieldTransformer;
 use Illuminate\Database\Query\Expression;
 
-class PartCategoryExpressionTransformer implements RebrickableFieldTransformer
+class PartCategoryIdExpressionTransformer implements RebrickableFieldTransformer
 {
     /**
      * @return Expression<non-falsy-string>

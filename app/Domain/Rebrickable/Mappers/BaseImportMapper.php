@@ -24,7 +24,10 @@ abstract class BaseImportMapper implements RebrickableMapper
      */
     protected array $defaults = [];
 
-    protected string $uniqueKey = 'rebrickable_id';
+    /**
+     * @var string|list<string>
+     */
+    protected string|array $uniqueKey = 'rebrickable_id';
 
     public function map(array $row): array
     {
@@ -47,7 +50,7 @@ abstract class BaseImportMapper implements RebrickableMapper
         return $mapped;
     }
 
-    public function getUniqueKey(): string
+    public function getUniqueKey(): string|array
     {
         return $this->uniqueKey;
     }

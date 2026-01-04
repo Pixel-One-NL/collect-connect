@@ -12,5 +12,8 @@ interface RebrickableMapper
      */
     public function map(array $row): array;
 
-    public function getUniqueKey(): string;
+    /**
+     * @return string|list<string>
+     */
+    public function getUniqueKey(): string|array;
 }

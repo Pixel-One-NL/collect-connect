@@ -5,58 +5,56 @@ declare(strict_types=1);
 namespace App\Domain\Rebrickable\Services;
 
 use App\Domain\Rebrickable\Contracts\RebrickableDownloader;
+use Generator;
 use Illuminate\Support\Facades\Http;
 use ZipArchive;
 
 class RebrickableDownloadService implements RebrickableDownloader
 {
-    public function retrieveRebrickableDataFromUrl(string $url): array
+    public function retrieveRebrickableDataFromUrl(string $url): Generator
     {
-        $csvContents = $this->getCsvContentsFromUrl($url);
+        $response = Http::get($url);
 
-        if (empty($csvContents)) {
-            return [];
+        if ($response->failed()) {
+            return; // TODO: Handle error
         }
 
-        $data = [];
+        $tempZip = tmpfile();
+        fwrite($tempZip, $response->body());
+        $zipPath = data_get(stream_get_meta_data($tempZip), 'uri');
 
-        $lines = explode("\n", $csvContents);
-        $header = array_filter(str_getcsv(array_shift($lines)));
-
-        while ($line = array_shift($lines)) {
-            if (empty(trim($line))) {
-                continue;
-            }
-
-            $row = str_getcsv($line);
-            $data[] = array_combine($header, $row);
+        if (! $zipPath) {
+            return; // TODO: Handle error
         }
 
-        return $data;
-    }
-
-    /**
-     * Use this method to retrieve the contents of a zipped .csv file
-     * from the rebrickable server. It will be unpacked and return the
-     * file as a resource
-     */
-    protected function getCsvContentsFromUrl(string $url): false|string
-    {
-        $response = Http::withOptions(['stream' => true])->get($url);
-
-        if (! $response->successful()) {
-            // TODO: Handle error
-            return false;
-        }
-
-        // Store the zip in memory temporarily
-        $temporaryPath = tempnam(sys_get_temp_dir(), 'rebrickable_');
-        file_put_contents($temporaryPath, $response->body());
-
-        // Unzip the file and retrieve the first .csv file
         $zip = new ZipArchive;
-        $zip->open($temporaryPath);
+        $zip->open($zipPath);
 
-        return $zip->getFromIndex(0);
+        $csvName = $zip->getNameIndex(0);
+
+        if (! $csvName) {
+            return; // TODO: Handle error
+        }
+
+        $csvStream = $zip->getStream($csvName);
+
+        if (! $csvStream) {
+            return; // TODO: Handle error
+        }
+
+        $header = fgetcsv($csvStream);
+
+        if (! $header) {
+            return; // TODO: Handle error
+        }
+
+        $header = array_filter($header);
+
+        while (($row = fgetcsv($csvStream)) !== false) {
+            yield array_combine($header, $row);
+        }
+
+        fclose($csvStream);
+        $zip->close();
     }
 }
