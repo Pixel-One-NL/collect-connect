@@ -8,7 +8,7 @@ use App\Domain\Rebrickable\Contracts\RebrickableDownloader;
 use App\Domain\Rebrickable\Services\RebrickableDownloadService;
 use Illuminate\Support\ServiceProvider;
 
-class RebrickableProvider extends ServiceProvider
+class RebrickableServiceProvider extends ServiceProvider
 {
     public function register(): void
     {

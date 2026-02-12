@@ -21,6 +21,7 @@ class Part extends Model
     protected $fillable = [
         'part_category_id',
         'rebrickable_id',
+        'bricklink_id',
         'name',
     ];
 

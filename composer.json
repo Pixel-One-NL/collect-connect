@@ -5,11 +5,14 @@
     "prefer-stable": true,
     "require": {
         "php": "^8.2",
+        "ext-intl": "*",
+        "ext-zip": "*",
         "filament/filament": "^4.0",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "ext-zip": "*",
-        "ext-intl": "*"
+        "saloonphp/laravel-plugin": "^3.8",
+        "saloonphp/saloon": "^3.14",
+        "spatie/laravel-data": "^4.19"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

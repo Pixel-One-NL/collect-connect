@@ -2,7 +2,8 @@
 
 declare(strict_types=1);
 
-use App\Domain\Rebrickable\Providers\RebrickableProvider;
+use App\Domain\Rebrickable\Providers\RebrickableServiceProvider;
+use App\Integrations\Rebrickable\RebrickableServiceProvider as RebrickableIntegrationServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -20,9 +21,12 @@ return Application::configure(basePath: dirname(__DIR__))
         //
     })
     ->withProviders([
-        RebrickableProvider::class,
+        RebrickableServiceProvider::class,
+        RebrickableIntegrationServiceProvider::class,
     ])
     ->withCommands([
         app_path('Domain/Rebrickable/Commands'),
+        app_path('Domain/Minifig/Commands'),
+        app_path('Domain/Part/Commands'),
     ])
     ->create();

@@ -21,6 +21,7 @@ class PartFactory extends Factory
         return [
             'part_category_id' => PartCategory::factory(),
             'rebrickable_id' => fake()->unique()->numerify(),
+            'bricklink_id' => fake()->unique()->numerify(),
             'name' => fake()->words(asText: true),
         ];
     }
