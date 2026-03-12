@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Domain\Rebrickable\Providers\RebrickableServiceProvider;
+use App\Integrations\Bricqer\BricqerServiceProvider;
 use App\Integrations\Rebrickable\RebrickableServiceProvider as RebrickableIntegrationServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -23,6 +24,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ->withProviders([
         RebrickableServiceProvider::class,
         RebrickableIntegrationServiceProvider::class,
+        BricqerServiceProvider::class,
     ])
     ->withCommands([
         app_path('Domain/Rebrickable/Commands'),
