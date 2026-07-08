@@ -86,6 +86,19 @@ services:
       networks:
         - laravel
 
+    phpmyadmin:
+      image: phpmyadmin:latest
+      restart: unless-stopped
+      environment:
+        PMA_HOST: mysql
+        PMA_PORT: 3306
+        UPLOAD_LIMIT: 100M
+      depends_on:
+        mysql:
+          condition: service_healthy
+      networks:
+        - laravel
+
     typesense:
       image: typesense/typesense:27.1
       restart: unless-stopped
