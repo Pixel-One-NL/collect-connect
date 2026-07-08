@@ -10,9 +10,11 @@ use App\Domain\Rebrickable\Services\Imports\ColorImportService;
 use App\Domain\Rebrickable\Services\Imports\InventoryImportService;
 use App\Domain\Rebrickable\Services\Imports\InventoryMinifigImportService;
 use App\Domain\Rebrickable\Services\Imports\InventoryPartImportService;
+use App\Domain\Rebrickable\Services\Imports\InventorySetImportService;
 use App\Domain\Rebrickable\Services\Imports\MinifigImportService;
 use App\Domain\Rebrickable\Services\Imports\PartCategoryImportService;
 use App\Domain\Rebrickable\Services\Imports\PartImportService;
+use App\Domain\Rebrickable\Services\Imports\SetImportService;
 use Illuminate\Console\Command;
 
 class ImportRebrickableEntityCommand extends Command
@@ -30,6 +32,8 @@ class ImportRebrickableEntityCommand extends Command
         InventoryPartImportService::class => 'inventory_parts',
         MinifigImportService::class => 'minifigs',
         InventoryMinifigImportService::class => 'inventory_minifigs',
+        InventorySetImportService::class => 'inventory_sets',
+        SetImportService::class => 'sets',
     ];
 
     public function handle(): void

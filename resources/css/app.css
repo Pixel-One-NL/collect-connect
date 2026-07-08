@@ -1,4 +1,5 @@
-@import 'tailwindcss';
+@import 'tailwindcss' source('../');
+@plugin '@tailwindcss/typography';
 
 @source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
 @source '../../storage/framework/views/*.php';
@@ -8,4 +9,88 @@
 @theme {
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+@theme {
+    --color-primary: #00A2FE;
+    --color-secondary: #26C6FF;
+    --color-accent: #E3F8FF;
+}
+
+.border-brick-top-primary,
+.border-brick-top-secondary,
+.border-brick-top-accent,
+.border-brick-bottom-primary,
+.border-brick-bottom-secondary,
+.border-brick-bottom-accent,
+.border-brick-y-primary,
+.border-brick-y-secondary,
+.border-brick-y-accent {
+    @apply relative;
+}
+
+.border-brick-top-primary,
+.border-brick-top-secondary,
+.border-brick-top-accent {
+    @apply mt-6;
+}
+
+.border-brick-bottom-primary,
+.border-brick-bottom-secondary,
+.border-brick-bottom-accent {
+    @apply mb-6;
+}
+
+.border-brick-y-primary,
+.border-brick-y-secondary,
+.border-brick-y-accent {
+    @apply my-6;
+}
+
+.border-brick-top-primary::before,
+.border-brick-top-secondary::before,
+.border-brick-top-accent::before,
+.border-brick-y-primary::before,
+.border-brick-y-secondary::before,
+.border-brick-y-accent::before {
+    @apply content-[''] bg-repeat-x absolute left-0 bottom-full h-6 w-full bg-bottom;
+}
+
+.border-brick-top-primary::before,
+.border-brick-y-primary::before {
+    background-image: url('data:image/svg+xml;utf8,<svg width="50" height="20" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4C0 1.79086 1.79086 0 4 0H34C36.2091 0 38 1.79086 38 4V20H0V4Z" fill="%2300A2FE"/></svg>');
+}
+
+.border-brick-top-secondary::before,
+.border-brick-y-secondary::before {
+    background-image: url('data:image/svg+xml;utf8,<svg width="50" height="20" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4C0 1.79086 1.79086 0 4 0H34C36.2091 0 38 1.79086 38 4V20H0V4Z" fill="%2326C6FF"/></svg>');
+}
+
+.border-brick-top-accent::before,
+.border-brick-y-accent::before {
+    background-image: url('data:image/svg+xml;utf8,<svg width="50" height="20" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M0 4C0 1.79086 1.79086 0 4 0H34C36.2091 0 38 1.79086 38 4V20H0V4Z" fill="%23E3F8FF"/></svg>');
+}
+
+.border-brick-bottom-primary::after,
+.border-brick-bottom-secondary::after,
+.border-brick-bottom-accent::after,
+.border-brick-y-primary::after,
+.border-brick-y-secondary::after,
+.border-brick-y-accent::after {
+    @apply content-[''] bg-repeat-x absolute left-0 top-full h-6 w-full bg-top;
+}
+
+.border-brick-bottom-primary::after,
+.border-brick-y-primary::after {
+    background-image: url('data:image/svg+xml;utf8,<svg width="50" height="20" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M38 16C38 18.2091 36.2091 20 34 20L4 20C1.7909 20 1.56562e-07 18.2091 3.49691e-07 16L1.74846e-06 -3.32207e-06L38 0L38 16Z" fill="%2300A2FE"/></svg>');
+}
+
+.border-brick-bottom-secondary::after,
+.border-brick-y-secondary::after {
+    background-image: url('data:image/svg+xml;utf8,<svg width="50" height="20" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M38 16C38 18.2091 36.2091 20 34 20L4 20C1.7909 20 1.56562e-07 18.2091 3.49691e-07 16L1.74846e-06 -3.32207e-06L38 0L38 16Z" fill="%2326C6FF"/></svg>');
+}
+
+.border-brick-bottom-accent::after,
+.border-brick-y-accent::after {
+    background-image: url('data:image/svg+xml;utf8,<svg width="50" height="20" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M38 16C38 18.2091 36.2091 20 34 20L4 20C1.7909 20 1.56562e-07 18.2091 3.49691e-07 16L1.74846e-06 -3.32207e-06L38 0L38 16Z" fill="%23E3F8FF"/></svg>');
 }

@@ -6,8 +6,10 @@ namespace App\Models;
 
 use App\Models\Pivots\InventoryMinifig;
 use App\Models\Pivots\InventoryPart;
+use App\Models\Pivots\InventorySet;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Inventory extends Model
@@ -19,7 +21,16 @@ class Inventory extends Model
 
     protected $fillable = [
         'rebrickable_id',
+        'set_id',
     ];
+
+    /**
+     * @return BelongsTo<Set, $this>
+     */
+    public function set(): BelongsTo
+    {
+        return $this->belongsTo(Set::class);
+    }
 
     /**
      * @return BelongsToMany<Part, $this, InventoryPart>
@@ -39,5 +50,15 @@ class Inventory extends Model
         return $this
             ->belongsToMany(Minifig::class, 'inventory_minifigs')
             ->using(InventoryMinifig::class);
+    }
+
+    /**
+     * @return BelongsToMany<Set, $this, InventorySet>
+     */
+    public function sets(): BelongsToMany
+    {
+        return $this
+            ->belongsToMany(Set::class, 'inventory_sets')
+            ->using(InventorySet::class);
     }
 }

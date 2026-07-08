@@ -2,18 +2,20 @@ services:
     laravel:
       build:
         context: docker/
-        target: development
         args:
           USER_ID: ${USER_ID:-1000}
           GROUP_ID: ${GROUP_ID:-1000}
       ports:
-        - 80:8080
+        - '80:8080'
+        - '${VITE_PORT:-5173}:${VITE_PORT:-5173}'
       volumes:
         - ./:/var/www/html
+        - /var/www/html/node_modules
       environment:
         PHP_UPLOAD_MAX_FILE_SIZE: 500M
         PHP_OPCACHE_ENABLE: 1
         PHP_MEMORY_LIMIT: 1024M
+        XDEBUG_MODE: 'off'
       networks:
         - laravel
 
@@ -30,6 +32,7 @@ services:
         - ${FORWARD_DB_PORT:-3306}:3306
       volumes:
         - ./docker/database/create-testing-database.sh:/docker-entrypoint-initdb.d/create-testing-database.sh:ro
+        - mysql-data:/var/lib/mysql
       environment:
         MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
         MYSQL_DATABASE: ${DB_DATABASE}
@@ -45,6 +48,34 @@ services:
       networks:
         - laravel
 
+    typesense:
+      image: 'typesense/typesense:27.1'
+      ports:
+        - '${FORWARD_TYPESENSE_PORT:-8108}:8108'
+      environment:
+        TYPESENSE_DATA_DIR: '${TYPESENSE_DATA_DIR:-/typesense-data}'
+        TYPESENSE_API_KEY: '${TYPESENSE_API_KEY:-xyz}'
+        TYPESENSE_ENABLE_CORS: '${TYPESENSE_ENABLE_CORS:-true}'
+      networks:
+        - laravel
+      volumes:
+        - typesense-data:/typesense-data
+      healthcheck:
+        test: [ CMD, bash, -c, "exec 3<>/dev/tcp/localhost/8108 && printf 'GET /health HTTP/1.1\\r\\nConnection: close\\r\\n\\r\\n' >&3 && head -n1 <&3 | grep '200' && exec 3>&-" ]
+        retries: 5
+        timeout: 7s
+
+    typesense-dashboard:
+      image: ghcr.io/bfritscher/typesense-dashboard:latest
+      ports:
+        - '8109:80'
+      networks:
+        - laravel
+
 networks:
   laravel:
     driver: bridge
+
+volumes:
+  typesense-data:
+  mysql-data:

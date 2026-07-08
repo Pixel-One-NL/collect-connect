@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Database\Factories;
 
+use App\Models\Color;
 use App\Models\Product;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,6 +21,7 @@ class ProductFactory extends Factory
     public function definition(): array
     {
         return [
+            'color_id' => Color::factory(),
             'stock' => fake()->numberBetween(0, 1000),
             'price' => fake()->optional(default: 0)->numberBetween(100, 1000),
         ];

@@ -42,7 +42,9 @@ class ImportPartBricklinkNumbersJob implements ShouldQueue
 
         DB::transaction(fn () => $rebrickableParts->each(fn (RebrickablePart $rebrickablePart) => Part::query()
             ->where('rebrickable_id', $rebrickablePart->partNum)
-            ->update(['bricklink_id' => $rebrickablePart->bricklinkIds?->first()])
+            ->update([
+                'bricklink_id' => $rebrickablePart->bricklinkIds?->first(),
+            ])
         ));
 
         if ($parts->count() === $this->batchSize) {
@@ -64,14 +66,6 @@ class ImportPartBricklinkNumbersJob implements ShouldQueue
      */
     protected function retrievePartsToUpdate(): Collection
     {
-        if (! $this->lastProcessedPartId) {
-            $this->lastProcessedPartId = Part::query()
-                ->whereNotNull('bricklink_id')
-                ->orderByDesc('id')
-                ->value('id');
-        }
-
-        // TODO: Implement filtering on part number
         return Part::query()
             ->orderBy('id')
             ->whereNull('bricklink_id')

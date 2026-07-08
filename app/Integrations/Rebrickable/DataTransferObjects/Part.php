@@ -33,4 +33,10 @@ class Part extends BaseDataTransferObject
      */
     #[MapName('external_ids.BrickOwl')]
     public ?Collection $brickOwlIds;
+
+    /**
+     * @var Collection<int, string> $ldrawIds
+     */
+    #[MapName('external_ids.LDraw')]
+    public ?Collection $ldrawIds;
 }

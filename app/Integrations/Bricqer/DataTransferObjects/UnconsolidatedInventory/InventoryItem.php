@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Integrations\Bricqer\DataTransferObjects\UnconsolidatedInventory;
 
 use Spatie\LaravelData\Attributes\MapName;
@@ -8,59 +10,59 @@ use Spatie\LaravelData\Data;
 class InventoryItem extends Data
 {
     #[MapName('Purchase ID')]
-    public readonly string $purchaseId;
+    public string $purchaseId;
 
     #[MapName('Batch ID')]
-    public readonly string $batchId;
+    public string $batchId;
 
     #[MapName('BatchItem ID')]
-    public readonly string $batchItemId;
+    public string $batchItemId;
 
     #[MapName('Definition ID')]
-    public readonly string $definitionId;
+    public string $definitionId;
 
     #[MapName('Purchase description')]
-    public readonly string $purchaseDescription;
+    public string $purchaseDescription;
 
     #[MapName('Purchase contact')]
-    public readonly string $purchaseContact;
+    public string $purchaseContact;
 
     #[MapName('Item Type')]
-    public readonly string $itemType;
+    public string $itemType;
 
     #[MapName('Item ID')]
-    public readonly string $itemId;
+    public string $itemId;
 
     #[MapName('Color')]
-    public readonly string $color;
+    public string $color;
 
     #[MapName('Color ID')]
-    public readonly string $colorId;
+    public string $colorId;
 
     #[MapName('Condition')]
-    public readonly string $condition;
+    public string $condition;
 
     #[MapName('Completeness')]
-    public readonly string $completeness;
+    public string $completeness;
 
     #[MapName('Comments')]
-    public readonly string $comments;
+    public string $comments;
 
     #[MapName('Original quantity')]
-    public readonly int $originalQuantity;
+    public int $originalQuantity;
 
     #[MapName('Remaining quantity')]
-    public readonly int $remainingQuantity;
+    public int $remainingQuantity;
 
     #[MapName('Cost')]
-    public readonly float $cost;
+    public float $cost;
 
     #[MapName('Price')]
-    public readonly float $price;
+    public float $price;
 
     #[MapName('Location')]
-    public readonly string $location;
+    public string $location;
 
     #[MapName('Description')]
-    public readonly string $description;
+    public string $description;
 }

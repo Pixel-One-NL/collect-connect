@@ -22,6 +22,9 @@ class PartFactory extends Factory
             'part_category_id' => PartCategory::factory(),
             'rebrickable_id' => fake()->unique()->numerify(),
             'bricklink_id' => fake()->unique()->numerify(),
+            'ldraw_id' => null,
+            'rebrickable_img_url' => null,
+            'bricqer_img_url' => null,
             'name' => fake()->words(asText: true),
         ];
     }

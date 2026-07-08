@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Integrations\Bricqer;
 
 use Illuminate\Foundation\Application;
@@ -11,12 +13,12 @@ class BricqerServiceProvider extends ServiceProvider
     {
         $this->app->bind(
             BricqerConnector::class,
-            fn(): BricqerConnector => new BricqerConnector(config('bricqer.domain'), config('bricqer.api_key')),
+            fn (): BricqerConnector => new BricqerConnector(config('bricqer.domain'), config('bricqer.api_key')),
         );
 
         $this->app->bind(
             BricqerApi::class,
-            fn(Application $app): BricqerApi => new BricqerApi($app->make(BricqerConnector::class)),
+            fn (Application $app): BricqerApi => new BricqerApi($app->make(BricqerConnector::class)),
         );
     }
 }

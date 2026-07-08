@@ -55,7 +55,7 @@ class InventoryPartImportService extends BaseImportService
             INSERT INTO inventory_parts (inventory_id, part_id, color_id, quantity, is_spare)
             SELECT inventories.id, parts.id, colors.id, source.quantity, source.is_spare
             FROM ({$selectsString}) AS source
-            INNER JOIN inventories ON inventories.id = source.inventory_id
+            INNER JOIN inventories ON inventories.rebrickable_id = source.inventory_id
             INNER JOIN parts ON parts.id = source.part_id
             INNER JOIN colors ON colors.id = source.color_id
             ON DUPLICATE KEY UPDATE

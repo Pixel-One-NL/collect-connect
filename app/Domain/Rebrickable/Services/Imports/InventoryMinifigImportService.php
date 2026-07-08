@@ -55,7 +55,7 @@ class InventoryMinifigImportService extends BaseImportService
             INSERT INTO inventory_minifigs (inventory_id, minifig_id, quantity)
             SELECT inventories.id, minifigs.id, source.quantity
             FROM ({$selectsString}) AS source
-            INNER JOIN inventories ON inventories.id = source.inventory_id
+            INNER JOIN inventories ON inventories.rebrickable_id = source.inventory_id
             INNER JOIN minifigs ON minifigs.id = source.minifig_id
             ON DUPLICATE KEY UPDATE quantity = VALUES(quantity)
         ", $bindings);

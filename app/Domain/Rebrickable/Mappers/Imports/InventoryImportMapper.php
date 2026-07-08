@@ -10,5 +10,6 @@ class InventoryImportMapper extends BaseImportMapper
 {
     protected array $mapping = [
         'id' => 'rebrickable_id',
+        'set_num' => 'set_num',
     ];
 }
