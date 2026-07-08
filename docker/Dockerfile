@@ -1,14 +1,19 @@
-FROM serversideup/php:8.5-frankenphp-alpine
+FROM serversideup/php:8.5-frankenphp-alpine AS base
 
 WORKDIR /var/www/html
 
 USER root
 
+# Install PHP extensions
+RUN install-php-extensions intl pcntl pdo_mysql redis sodium zip bcmath exif gd
+
+FROM base AS development
+
 # Install NodeJS and NPM
 RUN apk add --update nodejs npm
 
-# Install PHP extensions
-RUN install-php-extensions intl pcntl pdo_mysql redis sodium zip bcmath exif gd xdebug
+# Xdebug is development-only, keep it out of the base/production image
+RUN install-php-extensions xdebug
 
 ARG USER_ID
 ARG GROUP_ID
@@ -19,7 +24,8 @@ RUN docker-php-serversideup-set-id www-data $USER_ID:$GROUP_ID && \
     chmod -R u+w /composer && \
     docker-php-serversideup-set-file-permissions --owner $USER_ID:$GROUP_ID
 
-<<<<<<< Updated upstream
+USER www-data
+
 FROM base AS vendor
 
 WORKDIR /var/www/html
@@ -46,7 +52,3 @@ COPY --from=vendor --chown=www-data:www-data /var/www/html /var/www/html
 COPY --from=assets --chown=www-data:www-data /var/www/html/public/build /var/www/html/public/build
 
 USER www-data
-
-=======
-USER www-data
->>>>>>> Stashed changes
