@@ -16,8 +16,7 @@
 /.phpunit.cache
 
 # Laravel
-/storage/*.key
-/storage/pail
+/storage/*
 
 # Node.js/assets
 /node_modules
@@ -25,3 +24,13 @@
 /public/hot
 /public/storage
 /public/*/filament/*
+
+# Local development
+.claude/settings.local.json
+
+# Kilo
+.kilo/.gitignore
+.kilo/package.json
+.kilo/package-lock.json
+.kilo/node_modules
+.kilo/plans/*upstream-merge-report-*.md

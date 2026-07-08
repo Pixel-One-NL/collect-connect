@@ -1,0 +1,1077 @@
+{
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Color/Commands/ImportBrickerColorsCommand.php": {
+    "mtime": 1780218088.2747858,
+    "ast_hash": "caed47c09f5f0b38772ce9f9b14f548f",
+    "semantic_hash": "caed47c09f5f0b38772ce9f9b14f548f"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Color/Jobs/ImportBrickerColorsJob.php": {
+    "mtime": 1780218082.4385512,
+    "ast_hash": "7cc78436ea44f209e07a108c2d2898a2",
+    "semantic_hash": "7cc78436ea44f209e07a108c2d2898a2"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Minifig/Commands/ImportMinifigBricklinkNumbersCommand.php": {
+    "mtime": 1779872484.458626,
+    "ast_hash": "d25d958775bc7763cbf65c6814b0ba56",
+    "semantic_hash": "d25d958775bc7763cbf65c6814b0ba56"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Minifig/Jobs/ImportMinifigBricklinkNumbersJob.php": {
+    "mtime": 1779872484.4587724,
+    "ast_hash": "77776fa5a0629ddce32644f4c8cc9686",
+    "semantic_hash": "77776fa5a0629ddce32644f4c8cc9686"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Part/Actions/SyncPartColorsFromProducts.php": {
+    "mtime": 1780492244.3030171,
+    "ast_hash": "49b8e867b0dd28bdde951b59e10b228d",
+    "semantic_hash": "49b8e867b0dd28bdde951b59e10b228d"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Part/Commands/ImportPartBricklinkNumbersCommand.php": {
+    "mtime": 1779872484.4589815,
+    "ast_hash": "a4d3fba5d2c7995b25b0b108f8e8d8dd",
+    "semantic_hash": "a4d3fba5d2c7995b25b0b108f8e8d8dd"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Part/Commands/ImportPartBricqerImageUrlsCommand.php": {
+    "mtime": 1780483281.1125748,
+    "ast_hash": "c529120ce5fe7b68ef69ac4bb6aaad8b",
+    "semantic_hash": "c529120ce5fe7b68ef69ac4bb6aaad8b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Part/Commands/ImportPartColorBricqerImagesCommand.php": {
+    "mtime": 1780486538.6493251,
+    "ast_hash": "843188627cd25c4f7ac318046f9bf693",
+    "semantic_hash": "843188627cd25c4f7ac318046f9bf693"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Part/Commands/ImportPartColorImagesCommand.php": {
+    "mtime": 1780475922.1213696,
+    "ast_hash": "19e84c3775d6c112c912cdf2ea02178d",
+    "semantic_hash": "19e84c3775d6c112c912cdf2ea02178d"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Part/Commands/SyncPartColorsFromProductsCommand.php": {
+    "mtime": 1780475103.3407001,
+    "ast_hash": "cf3e7bc44d5b498ad7760dcc03bfeddc",
+    "semantic_hash": "cf3e7bc44d5b498ad7760dcc03bfeddc"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Part/Jobs/AttachPartColorImagesJob.php": {
+    "mtime": 1780486745.4548478,
+    "ast_hash": "91bbd3d7687ed39c9f4bd1540b9f9ac1",
+    "semantic_hash": "91bbd3d7687ed39c9f4bd1540b9f9ac1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Part/Jobs/ImportColorBricqerImagesJob.php": {
+    "mtime": 1780487685.1357994,
+    "ast_hash": "762a9894de83b95af5d9b0b970a4d8b6",
+    "semantic_hash": "762a9894de83b95af5d9b0b970a4d8b6"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Part/Jobs/ImportColorLdrawImagesJob.php": {
+    "mtime": 1780486601.987125,
+    "ast_hash": "64fe43578a6aeb74b541a52ef9baf52b",
+    "semantic_hash": "64fe43578a6aeb74b541a52ef9baf52b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Part/Jobs/ImportPartBricklinkNumbersJob.php": {
+    "mtime": 1780486784.0816,
+    "ast_hash": "da23d6fef8c072557554974119b54bbe",
+    "semantic_hash": "da23d6fef8c072557554974119b54bbe"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Part/Jobs/ImportPartBricqerImageUrlsJob.php": {
+    "mtime": 1780484242.704506,
+    "ast_hash": "e421f0f0cbffe2a691b4c668ce70d57e",
+    "semantic_hash": "e421f0f0cbffe2a691b4c668ce70d57e"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Product/Commands/ImportInventoryCommand.php": {
+    "mtime": 1780218260.4227653,
+    "ast_hash": "889858bb526467995159045b12354979",
+    "semantic_hash": "889858bb526467995159045b12354979"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Product/Jobs/ImportInventoryJob.php": {
+    "mtime": 1780475116.0035086,
+    "ast_hash": "2def0d1d42f901f4e79baf56348c5046",
+    "semantic_hash": "2def0d1d42f901f4e79baf56348c5046"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Commands/ImportRebrickableEntityCommand.php": {
+    "mtime": 1779872484.4593444,
+    "ast_hash": "555fae54e714c8237e4553167400db21",
+    "semantic_hash": "555fae54e714c8237e4553167400db21"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Contracts/ImportsRebrickableEntity.php": {
+    "mtime": 1779872484.4595792,
+    "ast_hash": "62ae8c0cd3a4f7d525c21a537b7d10a1",
+    "semantic_hash": "62ae8c0cd3a4f7d525c21a537b7d10a1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Contracts/RebrickableDownloader.php": {
+    "mtime": 1780486784.0818567,
+    "ast_hash": "817fd3a918916cda3bfbbc8c5a722f40",
+    "semantic_hash": "817fd3a918916cda3bfbbc8c5a722f40"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Contracts/RebrickableFieldTransformer.php": {
+    "mtime": 1779872484.4599977,
+    "ast_hash": "13635b89479ca93565e6ba57bcf7bc18",
+    "semantic_hash": "13635b89479ca93565e6ba57bcf7bc18"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Contracts/RebrickableMapper.php": {
+    "mtime": 1779872484.4601028,
+    "ast_hash": "a43094a2bf9aa7cfe6f4a74cbd7d5847",
+    "semantic_hash": "a43094a2bf9aa7cfe6f4a74cbd7d5847"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Jobs/ImportRebrickableEntityJob.php": {
+    "mtime": 1779872484.4602542,
+    "ast_hash": "a94a72284857a811619a5fe4d7fba0c1",
+    "semantic_hash": "a94a72284857a811619a5fe4d7fba0c1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/BaseImportMapper.php": {
+    "mtime": 1779872484.460398,
+    "ast_hash": "0f7e350d9040a1f96b47e28ce410123c",
+    "semantic_hash": "0f7e350d9040a1f96b47e28ce410123c"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Imports/ColorImportMapper.php": {
+    "mtime": 1779872484.4605658,
+    "ast_hash": "eb6eba06d9c6a3f1b5c5313dd2c31769",
+    "semantic_hash": "eb6eba06d9c6a3f1b5c5313dd2c31769"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Imports/InventoryImportMapper.php": {
+    "mtime": 1779872484.4606602,
+    "ast_hash": "55ce823e41f7ec1f8ec91e3c07e6e424",
+    "semantic_hash": "55ce823e41f7ec1f8ec91e3c07e6e424"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Imports/InventoryMinifigImportMapper.php": {
+    "mtime": 1779872484.4607432,
+    "ast_hash": "8687cfcad090726dbdef5c9470249aa3",
+    "semantic_hash": "8687cfcad090726dbdef5c9470249aa3"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Imports/InventoryPartImportMapper.php": {
+    "mtime": 1779872484.4608347,
+    "ast_hash": "48495d03792aecc925c55a9debb9be2b",
+    "semantic_hash": "48495d03792aecc925c55a9debb9be2b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Imports/MinifigImportMapper.php": {
+    "mtime": 1779872484.460923,
+    "ast_hash": "670d8dc9494ff755dba1a18b691db7d2",
+    "semantic_hash": "670d8dc9494ff755dba1a18b691db7d2"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Imports/PartCategoryImportMapper.php": {
+    "mtime": 1779872484.4610195,
+    "ast_hash": "eace34edbfa0175ec63f0cfa0adf1c54",
+    "semantic_hash": "eace34edbfa0175ec63f0cfa0adf1c54"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Imports/PartImportMapper.php": {
+    "mtime": 1779872484.4611154,
+    "ast_hash": "48b63d4e47f4180911fd1594e54deb25",
+    "semantic_hash": "48b63d4e47f4180911fd1594e54deb25"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Transformers/BooleanTransformer.php": {
+    "mtime": 1779872484.4612615,
+    "ast_hash": "0b8bc3a4e8c7ae7dc98ef0c85da315d3",
+    "semantic_hash": "0b8bc3a4e8c7ae7dc98ef0c85da315d3"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Transformers/ColorIdExpressionTransformer.php": {
+    "mtime": 1779872484.46134,
+    "ast_hash": "5e3815ed510c5e59d65cad2597e01651",
+    "semantic_hash": "5e3815ed510c5e59d65cad2597e01651"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Transformers/InventoryIdExpressionTransformer.php": {
+    "mtime": 1779872484.4614213,
+    "ast_hash": "5abfe0ca24a6b755f32ba3dd01419a76",
+    "semantic_hash": "5abfe0ca24a6b755f32ba3dd01419a76"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Transformers/MinifigIdExpressionTransformer.php": {
+    "mtime": 1779872484.4614959,
+    "ast_hash": "80afd5cae5b5a9fb5de0997a4cd9ef32",
+    "semantic_hash": "80afd5cae5b5a9fb5de0997a4cd9ef32"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Transformers/PartCategoryIdExpressionTransformer.php": {
+    "mtime": 1779872484.4615781,
+    "ast_hash": "d5cfc19875d641e098e709a55be5a51b",
+    "semantic_hash": "d5cfc19875d641e098e709a55be5a51b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Mappers/Transformers/PartIdExpressionTransformer.php": {
+    "mtime": 1779872484.461711,
+    "ast_hash": "dc25aeece692daaabed97fe515b34bbf",
+    "semantic_hash": "dc25aeece692daaabed97fe515b34bbf"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Providers/RebrickableServiceProvider.php": {
+    "mtime": 1779872484.4619691,
+    "ast_hash": "994e7f9f2953826e3544592e44b207e1",
+    "semantic_hash": "994e7f9f2953826e3544592e44b207e1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Services/BaseImportService.php": {
+    "mtime": 1779872484.462128,
+    "ast_hash": "991904f8caef8d16cce6ed3a2312290a",
+    "semantic_hash": "991904f8caef8d16cce6ed3a2312290a"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Services/Imports/ColorImportService.php": {
+    "mtime": 1779872484.462286,
+    "ast_hash": "499e46022c22318997a7491ba4dd8471",
+    "semantic_hash": "499e46022c22318997a7491ba4dd8471"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Services/Imports/InventoryImportService.php": {
+    "mtime": 1779872484.4623556,
+    "ast_hash": "a9028c05d7091ea64c4bf6b87ca0ac6d",
+    "semantic_hash": "a9028c05d7091ea64c4bf6b87ca0ac6d"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Services/Imports/InventoryMinifigImportService.php": {
+    "mtime": 1779872484.462429,
+    "ast_hash": "1568c7c54458bab3febae383ccdfbee5",
+    "semantic_hash": "1568c7c54458bab3febae383ccdfbee5"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Services/Imports/InventoryPartImportService.php": {
+    "mtime": 1779872484.462509,
+    "ast_hash": "2efb1ac38f63ddc25e32ff982f715e78",
+    "semantic_hash": "2efb1ac38f63ddc25e32ff982f715e78"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Services/Imports/MinifigImportService.php": {
+    "mtime": 1779872484.4625728,
+    "ast_hash": "6119577443776fe1c9fd23c47f2c777b",
+    "semantic_hash": "6119577443776fe1c9fd23c47f2c777b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Services/Imports/PartCategoryImportService.php": {
+    "mtime": 1779872484.4626312,
+    "ast_hash": "d55fa2246ce6ed18c50e0f56103c5df8",
+    "semantic_hash": "d55fa2246ce6ed18c50e0f56103c5df8"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Services/Imports/PartImportService.php": {
+    "mtime": 1779872484.4626927,
+    "ast_hash": "c06999a7ce27e10cca13ee2fb4e13ef9",
+    "semantic_hash": "c06999a7ce27e10cca13ee2fb4e13ef9"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Domain/Rebrickable/Services/RebrickableDownloadService.php": {
+    "mtime": 1780486784.0820787,
+    "ast_hash": "14bdec57eb22c3580fc5e99bffe23808",
+    "semantic_hash": "14bdec57eb22c3580fc5e99bffe23808"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Inventories/InventoryResource.php": {
+    "mtime": 1779872484.463148,
+    "ast_hash": "86e6152e63c52a1901cfdd70a1fdb25f",
+    "semantic_hash": "86e6152e63c52a1901cfdd70a1fdb25f"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Inventories/Pages/CreateInventory.php": {
+    "mtime": 1779872484.4632826,
+    "ast_hash": "9fb0bbdff83e151b30761f158c320335",
+    "semantic_hash": "9fb0bbdff83e151b30761f158c320335"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Inventories/Pages/EditInventory.php": {
+    "mtime": 1779872484.4634724,
+    "ast_hash": "4faeae03c8c465426f46a3bf6448f77a",
+    "semantic_hash": "4faeae03c8c465426f46a3bf6448f77a"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Inventories/Pages/ListInventories.php": {
+    "mtime": 1779872484.463641,
+    "ast_hash": "ec2ac7e5ae8eee148bc5aa4864574aa1",
+    "semantic_hash": "ec2ac7e5ae8eee148bc5aa4864574aa1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Inventories/RelationManagers/MinifigsRelationManager.php": {
+    "mtime": 1779872484.463868,
+    "ast_hash": "d60a7a70add32a5c54bd871c65655f3c",
+    "semantic_hash": "d60a7a70add32a5c54bd871c65655f3c"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Inventories/RelationManagers/PartsRelationManager.php": {
+    "mtime": 1779872484.4639592,
+    "ast_hash": "6b0ae552cc888d6cca7fcb7e4084f3c1",
+    "semantic_hash": "6b0ae552cc888d6cca7fcb7e4084f3c1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Inventories/Schemas/InventoryForm.php": {
+    "mtime": 1779872484.4641483,
+    "ast_hash": "8497e55be429e3288b96e046f97fce38",
+    "semantic_hash": "8497e55be429e3288b96e046f97fce38"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Inventories/Tables/Columns/InventoryRebrickableIdTextColumn.php": {
+    "mtime": 1779872484.464323,
+    "ast_hash": "986d850dc670bb7c8ca57b187d000322",
+    "semantic_hash": "986d850dc670bb7c8ca57b187d000322"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Inventories/Tables/InventoriesTable.php": {
+    "mtime": 1779872484.4643955,
+    "ast_hash": "c1d0f408b6bfd3a1a559063072e09714",
+    "semantic_hash": "c1d0f408b6bfd3a1a559063072e09714"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Minifigs/MinifigResource.php": {
+    "mtime": 1779872484.464525,
+    "ast_hash": "e7a8c4872a40ba020e96c87da0154f47",
+    "semantic_hash": "e7a8c4872a40ba020e96c87da0154f47"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Minifigs/Pages/CreateMinifig.php": {
+    "mtime": 1779872484.464676,
+    "ast_hash": "e2f03572e2ad4fe02dd6bc36eb448bef",
+    "semantic_hash": "e2f03572e2ad4fe02dd6bc36eb448bef"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Minifigs/Pages/EditMinifig.php": {
+    "mtime": 1779872484.4648688,
+    "ast_hash": "cc55471599f2c793ee25d5c4a339ef85",
+    "semantic_hash": "cc55471599f2c793ee25d5c4a339ef85"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Minifigs/Pages/ListMinifigs.php": {
+    "mtime": 1779872484.4650545,
+    "ast_hash": "4337e1d01f977922b11af9c686ba2f66",
+    "semantic_hash": "4337e1d01f977922b11af9c686ba2f66"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Minifigs/RelationManagers/Columns/InventoryMinifigsQuantityTextColumn.php": {
+    "mtime": 1779872484.4654331,
+    "ast_hash": "3ebaba207a1c85e1dd790aa023f2772b",
+    "semantic_hash": "3ebaba207a1c85e1dd790aa023f2772b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Minifigs/RelationManagers/InventoriesRelationManager.php": {
+    "mtime": 1779872484.465594,
+    "ast_hash": "b912edf77cb30ef7738e1384ff5c00fb",
+    "semantic_hash": "b912edf77cb30ef7738e1384ff5c00fb"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Minifigs/Schemas/MinifigForm.php": {
+    "mtime": 1779872484.4657586,
+    "ast_hash": "bf563df5f4c2d90aece1b4f65336fcc1",
+    "semantic_hash": "bf563df5f4c2d90aece1b4f65336fcc1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Minifigs/Tables/Columns/MinifigBricklinkIdTextColumn.php": {
+    "mtime": 1779872484.465919,
+    "ast_hash": "932dfeb1a2579544fac7917ddba78058",
+    "semantic_hash": "932dfeb1a2579544fac7917ddba78058"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Minifigs/Tables/Columns/MinifigNameTextColumn.php": {
+    "mtime": 1779872484.465987,
+    "ast_hash": "a0b6f2fc7e77316eb3e605df464ac189",
+    "semantic_hash": "a0b6f2fc7e77316eb3e605df464ac189"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Minifigs/Tables/MinifigsTable.php": {
+    "mtime": 1779872484.466245,
+    "ast_hash": "89e85b27c1effe1fd6d9e538f499bf68",
+    "semantic_hash": "89e85b27c1effe1fd6d9e538f499bf68"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/Pages/CreatePart.php": {
+    "mtime": 1779872484.4665976,
+    "ast_hash": "6f25e8bae4baf9f912ac11e7705a6f2e",
+    "semantic_hash": "6f25e8bae4baf9f912ac11e7705a6f2e"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/Pages/EditPart.php": {
+    "mtime": 1779872484.4667158,
+    "ast_hash": "b6e16a3b41366d2d5c44f5fafb6dab82",
+    "semantic_hash": "b6e16a3b41366d2d5c44f5fafb6dab82"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/Pages/ListParts.php": {
+    "mtime": 1779872484.466866,
+    "ast_hash": "3697f5d628b807a5d3526a5c12ed827d",
+    "semantic_hash": "3697f5d628b807a5d3526a5c12ed827d"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/PartResource.php": {
+    "mtime": 1779872484.467012,
+    "ast_hash": "275abbf22e211529bf7df528eafc8934",
+    "semantic_hash": "275abbf22e211529bf7df528eafc8934"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/RelationManagers/Columns/InventoryPartsQuantityTextColumn.php": {
+    "mtime": 1779872484.4672885,
+    "ast_hash": "8fc811d3731ba54ed38d96c3e02d77a4",
+    "semantic_hash": "8fc811d3731ba54ed38d96c3e02d77a4"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/RelationManagers/InventoriesRelationManager.php": {
+    "mtime": 1779872484.467421,
+    "ast_hash": "b4b0658b2dd29d4f2b6d348c10c1c45c",
+    "semantic_hash": "b4b0658b2dd29d4f2b6d348c10c1c45c"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/Schemas/Inputs/PartCategorySelect.php": {
+    "mtime": 1779872484.467685,
+    "ast_hash": "6023c49072dd5e240d5b14c146622c35",
+    "semantic_hash": "6023c49072dd5e240d5b14c146622c35"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/Schemas/Inputs/PartNameTextInput.php": {
+    "mtime": 1779872484.4677532,
+    "ast_hash": "b420d8d18014e84245cd512279371315",
+    "semantic_hash": "b420d8d18014e84245cd512279371315"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/Schemas/PartForm.php": {
+    "mtime": 1779872484.4678206,
+    "ast_hash": "280ae1c0ebd18054a8f1ff426876bf4f",
+    "semantic_hash": "280ae1c0ebd18054a8f1ff426876bf4f"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/Tables/Columns/PartCategoryNameTextColumn.php": {
+    "mtime": 1779872484.4680483,
+    "ast_hash": "9333b93484eaf0dbee955045c902f65d",
+    "semantic_hash": "9333b93484eaf0dbee955045c902f65d"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/Tables/Columns/PartNameTextColumn.php": {
+    "mtime": 1779872484.4682653,
+    "ast_hash": "d09f500ab2455b4b69941e0d2069621f",
+    "semantic_hash": "d09f500ab2455b4b69941e0d2069621f"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/Tables/Filters/PartCategorySelectFilter.php": {
+    "mtime": 1779872484.468422,
+    "ast_hash": "231edfaffd3d11bacec8c3595510cda6",
+    "semantic_hash": "231edfaffd3d11bacec8c3595510cda6"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Filament/Resources/Parts/Tables/PartsTable.php": {
+    "mtime": 1779872484.468607,
+    "ast_hash": "704dd268d52623ccec7783163f53a86b",
+    "semantic_hash": "704dd268d52623ccec7783163f53a86b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Http/Controllers/Api/SearchController.php": {
+    "mtime": 1780228762.4164066,
+    "ast_hash": "d108681cc414a9c0f52d3cfe6c8f6d8d",
+    "semantic_hash": "d108681cc414a9c0f52d3cfe6c8f6d8d"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Http/Controllers/BlogController.php": {
+    "mtime": 1780067749.4657378,
+    "ast_hash": "cc79b7bde7bac3f62ea7e7fb51db0f4c",
+    "semantic_hash": "cc79b7bde7bac3f62ea7e7fb51db0f4c"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Http/Controllers/CartController.php": {
+    "mtime": 1780220714.4292915,
+    "ast_hash": "6d203d0ce8032ddf4d8198ab28864f11",
+    "semantic_hash": "6d203d0ce8032ddf4d8198ab28864f11"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Http/Controllers/Controller.php": {
+    "mtime": 1779868144.0516803,
+    "ast_hash": "38733b29a70ab8d10f08918bb689be81",
+    "semantic_hash": "38733b29a70ab8d10f08918bb689be81"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Http/Controllers/ProductController.php": {
+    "mtime": 1780228757.3904822,
+    "ast_hash": "9b3dc927f933b00c51c53d88354457a6",
+    "semantic_hash": "9b3dc927f933b00c51c53d88354457a6"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Http/Middleware/HandleInertiaRequests.php": {
+    "mtime": 1780225052.0087721,
+    "ast_hash": "ff84baa5e611da4d3225c81e3ac88de9",
+    "semantic_hash": "ff84baa5e611da4d3225c81e3ac88de9"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Http/Resources/ArticleResource.php": {
+    "mtime": 1780067749.4633353,
+    "ast_hash": "9da3eb04dd15fc15859c6d6986bf50b9",
+    "semantic_hash": "9da3eb04dd15fc15859c6d6986bf50b9"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Http/Resources/ProductResource.php": {
+    "mtime": 1780348879.975085,
+    "ast_hash": "ed6a5f551f04883e7604d59f3f609f4c",
+    "semantic_hash": "ed6a5f551f04883e7604d59f3f609f4c"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Http/Resources/ProductSearchResource.php": {
+    "mtime": 1780503412.133806,
+    "ast_hash": "029c41e04615a797534dbf3048f9d148",
+    "semantic_hash": "029c41e04615a797534dbf3048f9d148"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/BricqerApi.php": {
+    "mtime": 1780486784.0823143,
+    "ast_hash": "d99b2ceeabe0dd0c4b1f2abbe1fcceca",
+    "semantic_hash": "d99b2ceeabe0dd0c4b1f2abbe1fcceca"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/BricqerConnector.php": {
+    "mtime": 1780486784.0826008,
+    "ast_hash": "189070652401a4767369b586d58280a6",
+    "semantic_hash": "189070652401a4767369b586d58280a6"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/BricqerServiceProvider.php": {
+    "mtime": 1779872484.4691856,
+    "ast_hash": "e67c2bd264eb369a5f445588b08691b9",
+    "semantic_hash": "e67c2bd264eb369a5f445588b08691b9"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/DataTransferObjects/Inventory/Color.php": {
+    "mtime": 1780218048.9594796,
+    "ast_hash": "fbb47b2fa076037e81e2258cdd5e1126",
+    "semantic_hash": "fbb47b2fa076037e81e2258cdd5e1126"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/DataTransferObjects/LegoVisual/LegoVisualItem.php": {
+    "mtime": 1780483212.6332088,
+    "ast_hash": "6b5fe345bf074e9edb115b328edb913d",
+    "semantic_hash": "6b5fe345bf074e9edb115b328edb913d"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/DataTransferObjects/LegoVisual/LegoVisualPage.php": {
+    "mtime": 1780483223.2723248,
+    "ast_hash": "c64550a6b2d8c810b245a86da6f82570",
+    "semantic_hash": "c64550a6b2d8c810b245a86da6f82570"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/DataTransferObjects/UnconsolidatedInventory/InventoryItem.php": {
+    "mtime": 1780486784.0828295,
+    "ast_hash": "c3c4a8a7ff01ed074e00da36e73b54c9",
+    "semantic_hash": "c3c4a8a7ff01ed074e00da36e73b54c9"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/Facades/Bricqer.php": {
+    "mtime": 1779872484.4696414,
+    "ast_hash": "1c1a52bba71378b1f1382091f6b0a8dc",
+    "semantic_hash": "1c1a52bba71378b1f1382091f6b0a8dc"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/Requests/Inventory/GetColorsRequest.php": {
+    "mtime": 1780218055.2985942,
+    "ast_hash": "ee592360086c09a3025e893628075146",
+    "semantic_hash": "ee592360086c09a3025e893628075146"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/Requests/Lego/Report/GetUnconsolidatedInventoryRequest.php": {
+    "mtime": 1780486784.0830815,
+    "ast_hash": "694f3a1b1e5e3d1c97566fd46362213f",
+    "semantic_hash": "694f3a1b1e5e3d1c97566fd46362213f"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/Requests/LegoVisual/ListItemsRequest.php": {
+    "mtime": 1780483232.2940507,
+    "ast_hash": "49be6c11c0a0914bd069deb87034f53f",
+    "semantic_hash": "49be6c11c0a0914bd069deb87034f53f"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/Resources/BaseResource.php": {
+    "mtime": 1779872484.4701467,
+    "ast_hash": "0447e681923c24c82faa507b89c85bd7",
+    "semantic_hash": "0447e681923c24c82faa507b89c85bd7"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/Resources/InventoryResource.php": {
+    "mtime": 1780218060.0026817,
+    "ast_hash": "cc3112f9bdf818847ff3f69f8941e8ec",
+    "semantic_hash": "cc3112f9bdf818847ff3f69f8941e8ec"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/Resources/Lego/Report/UnconsolidatedInventoryResource.php": {
+    "mtime": 1780486784.083378,
+    "ast_hash": "750c88734adadf4bc53784163d00d84c",
+    "semantic_hash": "750c88734adadf4bc53784163d00d84c"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/Resources/Lego/ReportResource.php": {
+    "mtime": 1779872484.470554,
+    "ast_hash": "1c4513491c752dcd2348b08797c61ecf",
+    "semantic_hash": "1c4513491c752dcd2348b08797c61ecf"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/Resources/LegoResource.php": {
+    "mtime": 1779872484.4706612,
+    "ast_hash": "94d5c42f3e665a848b797ec6faa39df1",
+    "semantic_hash": "94d5c42f3e665a848b797ec6faa39df1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/Resources/LegoVisual/LegoVisualItemsResource.php": {
+    "mtime": 1780483245.142554,
+    "ast_hash": "16ba1a0f4ba3f1df5cea574b0d3b8e1b",
+    "semantic_hash": "16ba1a0f4ba3f1df5cea574b0d3b8e1b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Bricqer/Resources/LegoVisualResource.php": {
+    "mtime": 1780483237.2053578,
+    "ast_hash": "b6a8d825d6d748f72de91d1b0acb50f8",
+    "semantic_hash": "b6a8d825d6d748f72de91d1b0acb50f8"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/BaseDataTransferObject.php": {
+    "mtime": 1779872484.4707813,
+    "ast_hash": "c5bdede2671a9015cfc14b14788b5bbd",
+    "semantic_hash": "c5bdede2671a9015cfc14b14788b5bbd"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/DataTransferObjects/Part.php": {
+    "mtime": 1780486784.083685,
+    "ast_hash": "2b1923ee7cce23d35ba1e87caff43867",
+    "semantic_hash": "2b1923ee7cce23d35ba1e87caff43867"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/DataTransferObjects/PartColor.php": {
+    "mtime": 1780228670.472676,
+    "ast_hash": "d3b261fda12ecf58f55f1a1a38328b5a",
+    "semantic_hash": "d3b261fda12ecf58f55f1a1a38328b5a"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/Facades/Rebrickable.php": {
+    "mtime": 1779872484.4710417,
+    "ast_hash": "0d8d55665eefc852f21262b94842363a",
+    "semantic_hash": "0d8d55665eefc852f21262b94842363a"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/PaginatedCollection.php": {
+    "mtime": 1779872484.4711044,
+    "ast_hash": "54ee9e4c1ee2a3186b113b7999d19568",
+    "semantic_hash": "54ee9e4c1ee2a3186b113b7999d19568"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/RebrickableApi.php": {
+    "mtime": 1779872484.4711626,
+    "ast_hash": "27c96d7b2ee5a5980384647b45b4dace",
+    "semantic_hash": "27c96d7b2ee5a5980384647b45b4dace"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/RebrickableConnector.php": {
+    "mtime": 1779872484.471224,
+    "ast_hash": "f34ef08f98e28bc6d02ea92f9de7b2f0",
+    "semantic_hash": "f34ef08f98e28bc6d02ea92f9de7b2f0"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/RebrickableResponse.php": {
+    "mtime": 1779872484.471282,
+    "ast_hash": "46f950474cf53d0909f7f2d71fa313fd",
+    "semantic_hash": "46f950474cf53d0909f7f2d71fa313fd"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/RebrickableServiceProvider.php": {
+    "mtime": 1779872484.4713666,
+    "ast_hash": "2c5c0af50be9c6ea8ce1948b35d6e4ce",
+    "semantic_hash": "2c5c0af50be9c6ea8ce1948b35d6e4ce"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/Requests/PaginatedRequest.php": {
+    "mtime": 1779872484.4715562,
+    "ast_hash": "e78b9dbfd834442792269ca3dca704c2",
+    "semantic_hash": "e78b9dbfd834442792269ca3dca704c2"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/Requests/Parts/ListPartColorsRequest.php": {
+    "mtime": 1780228676.1053185,
+    "ast_hash": "9c029a2924ac20c4f7d6c68217e0cd09",
+    "semantic_hash": "9c029a2924ac20c4f7d6c68217e0cd09"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/Requests/Parts/ListPartsRequest.php": {
+    "mtime": 1779872484.4717696,
+    "ast_hash": "f13a7d91e38b9e3e3bc184282ca03078",
+    "semantic_hash": "f13a7d91e38b9e3e3bc184282ca03078"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/Resources/BaseResource.php": {
+    "mtime": 1779872484.4719467,
+    "ast_hash": "086f53fa71fd530ec548e8c91b4e0f6e",
+    "semantic_hash": "086f53fa71fd530ec548e8c91b4e0f6e"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/Resources/PaginatedResource.php": {
+    "mtime": 1779872484.472018,
+    "ast_hash": "50ae0365d5b07e14f5dcc5be4b468094",
+    "semantic_hash": "50ae0365d5b07e14f5dcc5be4b468094"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/Resources/Parts/ListPartColorsResource.php": {
+    "mtime": 1780228681.2175894,
+    "ast_hash": "d4635505bddd58d5f8570acf5ff59d1b",
+    "semantic_hash": "d4635505bddd58d5f8570acf5ff59d1b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/Resources/Parts/ListPartsResource.php": {
+    "mtime": 1779872484.4721177,
+    "ast_hash": "8dabd632a444d450da84386c4b82c8b7",
+    "semantic_hash": "8dabd632a444d450da84386c4b82c8b7"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Integrations/Rebrickable/Resources/PartsResource.php": {
+    "mtime": 1780486784.0839767,
+    "ast_hash": "ba5553f7aad49759275852ce0da62cb7",
+    "semantic_hash": "ba5553f7aad49759275852ce0da62cb7"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Models/Article.php": {
+    "mtime": 1780067749.4464896,
+    "ast_hash": "add6b73b069c374190a5cd65db484b22",
+    "semantic_hash": "add6b73b069c374190a5cd65db484b22"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Models/Color.php": {
+    "mtime": 1780486784.0842893,
+    "ast_hash": "38b22f8c33863558e2bd60d5d692a38a",
+    "semantic_hash": "38b22f8c33863558e2bd60d5d692a38a"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Models/Inventory.php": {
+    "mtime": 1779872484.4723413,
+    "ast_hash": "f128dedeef2e002c49e28c2b389cd778",
+    "semantic_hash": "f128dedeef2e002c49e28c2b389cd778"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Models/Minifig.php": {
+    "mtime": 1779872484.4724295,
+    "ast_hash": "2467d8ea2ced9724e3efc52e1422e093",
+    "semantic_hash": "2467d8ea2ced9724e3efc52e1422e093"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Models/Part.php": {
+    "mtime": 1780486784.08468,
+    "ast_hash": "de73e5bd5e24f2c34e0be856c9259d2e",
+    "semantic_hash": "de73e5bd5e24f2c34e0be856c9259d2e"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Models/PartCategory.php": {
+    "mtime": 1779872484.4725606,
+    "ast_hash": "657103375398db7f38f68ec13ed96896",
+    "semantic_hash": "657103375398db7f38f68ec13ed96896"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Models/Pivots/InventoryMinifig.php": {
+    "mtime": 1779872484.4726934,
+    "ast_hash": "8333ac9d92476628444a5e69496b9cda",
+    "semantic_hash": "8333ac9d92476628444a5e69496b9cda"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Models/Pivots/InventoryPart.php": {
+    "mtime": 1779872484.4727705,
+    "ast_hash": "ef44d7010f5fe3b2db262115b59f8e9d",
+    "semantic_hash": "ef44d7010f5fe3b2db262115b59f8e9d"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Models/Pivots/PartColor.php": {
+    "mtime": 1780483415.2043672,
+    "ast_hash": "96d2ce60bd0d8ac750d170b2809ea4b1",
+    "semantic_hash": "96d2ce60bd0d8ac750d170b2809ea4b1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Models/Product.php": {
+    "mtime": 1780486784.084987,
+    "ast_hash": "da7f95220189ecbe698f771b41c51bc8",
+    "semantic_hash": "da7f95220189ecbe698f771b41c51bc8"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Models/User.php": {
+    "mtime": 1779868144.051769,
+    "ast_hash": "43fc39f020390747babf31983678b787",
+    "semantic_hash": "43fc39f020390747babf31983678b787"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Providers/AppServiceProvider.php": {
+    "mtime": 1780486784.0852714,
+    "ast_hash": "458213d97b754a9d480697db550299b7",
+    "semantic_hash": "458213d97b754a9d480697db550299b7"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Providers/Filament/DashboardPanelProvider.php": {
+    "mtime": 1780486784.0855427,
+    "ast_hash": "7c349cd78b16e5d7745554664aa62458",
+    "semantic_hash": "7c349cd78b16e5d7745554664aa62458"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/app/Services/CartService.php": {
+    "mtime": 1780228785.5578346,
+    "ast_hash": "6af49d37ab0fee5d578a48aa361afc82",
+    "semantic_hash": "6af49d37ab0fee5d578a48aa361afc82"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/factories/ArticleFactory.php": {
+    "mtime": 1780067749.4330852,
+    "ast_hash": "94aabbde21e528a82c609afe26ae58b8",
+    "semantic_hash": "94aabbde21e528a82c609afe26ae58b8"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/factories/ColorFactory.php": {
+    "mtime": 1780486784.0875897,
+    "ast_hash": "2c3953cb0d8e93e18691c13139804963",
+    "semantic_hash": "2c3953cb0d8e93e18691c13139804963"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/factories/InventoryFactory.php": {
+    "mtime": 1779872484.474606,
+    "ast_hash": "30d074f4905cc2116efc6bb84848ee16",
+    "semantic_hash": "30d074f4905cc2116efc6bb84848ee16"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/factories/MinifigFactory.php": {
+    "mtime": 1779872484.4746985,
+    "ast_hash": "691dde09938a4b24eddc96dca6b1f17f",
+    "semantic_hash": "691dde09938a4b24eddc96dca6b1f17f"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/factories/PartCategoryFactory.php": {
+    "mtime": 1779872484.4749136,
+    "ast_hash": "e8ce7f838870912304929be7d4459468",
+    "semantic_hash": "e8ce7f838870912304929be7d4459468"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/factories/PartColorFactory.php": {
+    "mtime": 1780228624.192212,
+    "ast_hash": "835fb251571df3b22fc286cfbce450fe",
+    "semantic_hash": "835fb251571df3b22fc286cfbce450fe"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/factories/PartFactory.php": {
+    "mtime": 1780486784.0879357,
+    "ast_hash": "1645082d6bc9c15b57e8b276f6cc6127",
+    "semantic_hash": "1645082d6bc9c15b57e8b276f6cc6127"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/factories/ProductFactory.php": {
+    "mtime": 1780486784.088195,
+    "ast_hash": "d5451edcd664e9d8992c75086836f369",
+    "semantic_hash": "d5451edcd664e9d8992c75086836f369"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/factories/UserFactory.php": {
+    "mtime": 1779868144.0543349,
+    "ast_hash": "88a3a1fdbeae70ac138fe31c269f316a",
+    "semantic_hash": "88a3a1fdbeae70ac138fe31c269f316a"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/0001_01_01_000000_create_users_table.php": {
+    "mtime": 1779868144.0545065,
+    "ast_hash": "66718d3b0fbad110b81397a83d33e0bc",
+    "semantic_hash": "66718d3b0fbad110b81397a83d33e0bc"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/0001_01_01_000001_create_cache_table.php": {
+    "mtime": 1779868144.0545945,
+    "ast_hash": "0bd1deb9afe907a60d466c6c328c9bd8",
+    "semantic_hash": "0bd1deb9afe907a60d466c6c328c9bd8"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/0001_01_01_000002_create_jobs_table.php": {
+    "mtime": 1779868144.054694,
+    "ast_hash": "0b10e84dcccfbc39af50475b32c86974",
+    "semantic_hash": "0b10e84dcccfbc39af50475b32c86974"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_01_03_133521_create_part_categories_table.php": {
+    "mtime": 1779872484.4753757,
+    "ast_hash": "d1fbe528bfeef636258b0fd090984969",
+    "semantic_hash": "d1fbe528bfeef636258b0fd090984969"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_01_03_133812_create_parts_table.php": {
+    "mtime": 1779872484.4754348,
+    "ast_hash": "fa9dcba8b2fe30d516b7b6d6708c476d",
+    "semantic_hash": "fa9dcba8b2fe30d516b7b6d6708c476d"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_01_03_134225_create_inventories_table.php": {
+    "mtime": 1779872484.4754965,
+    "ast_hash": "5462b3c44e1cfaf09817129c47839eb1",
+    "semantic_hash": "5462b3c44e1cfaf09817129c47839eb1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_01_03_134842_create_colors_table.php": {
+    "mtime": 1779872484.4755979,
+    "ast_hash": "05419bc053b886a5736937521d7f87f9",
+    "semantic_hash": "05419bc053b886a5736937521d7f87f9"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_01_03_134856_create_inventory_parts_table.php": {
+    "mtime": 1779872484.4756825,
+    "ast_hash": "c9df1f93f9894640b7486a8e7b5b3465",
+    "semantic_hash": "c9df1f93f9894640b7486a8e7b5b3465"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_01_03_140041_create_minifigs_table.php": {
+    "mtime": 1779872484.4757538,
+    "ast_hash": "3f74cc68fa3827e324cd349b2e5aaae5",
+    "semantic_hash": "3f74cc68fa3827e324cd349b2e5aaae5"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_01_03_140355_create_inventory_minifigs_table.php": {
+    "mtime": 1779872484.4758382,
+    "ast_hash": "6c2f2a0abf9ba232469a129a87694b32",
+    "semantic_hash": "6c2f2a0abf9ba232469a129a87694b32"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_01_03_140904_create_products_table.php": {
+    "mtime": 1779872484.4758961,
+    "ast_hash": "e77c9117a17066e20a77c2ca7061e821",
+    "semantic_hash": "e77c9117a17066e20a77c2ca7061e821"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_02_01_144413_add_bricklink_id_columns_to_parts_table.php": {
+    "mtime": 1779872484.475957,
+    "ast_hash": "c7171fec50d26718667be577ef9a1117",
+    "semantic_hash": "c7171fec50d26718667be577ef9a1117"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_05_27_215217_create_articles_table.php": {
+    "mtime": 1780067749.4276981,
+    "ast_hash": "1c5361011a8c0bc2c8cc539e7ae11403",
+    "semantic_hash": "1c5361011a8c0bc2c8cc539e7ae11403"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_05_30_134534_create_media_table.php": {
+    "mtime": 1780151835.3809383,
+    "ast_hash": "ce00d88f03f7e92ccffa93ae0dc2b233",
+    "semantic_hash": "ce00d88f03f7e92ccffa93ae0dc2b233"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_05_30_214925_add_unique_productable_index_to_products_table.php": {
+    "mtime": 1780177785.2938886,
+    "ast_hash": "23c088074f6022a44ceafcdd5625fab6",
+    "semantic_hash": "23c088074f6022a44ceafcdd5625fab6"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_05_31_090016_add_bricker_color_id_to_colors_table.php": {
+    "mtime": 1780218032.1191337,
+    "ast_hash": "62697def45d5478331316a5cd6eb053c",
+    "semantic_hash": "62697def45d5478331316a5cd6eb053c"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_05_31_090246_add_color_id_to_products_table.php": {
+    "mtime": 1780218191.384128,
+    "ast_hash": "4ee55ca81c9ce9274019558e73804806",
+    "semantic_hash": "4ee55ca81c9ce9274019558e73804806"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_05_31_093351_create_carts_table.php": {
+    "mtime": 1780220751.2251663,
+    "ast_hash": "37103eeda52536807b19efff79e1ae32",
+    "semantic_hash": "37103eeda52536807b19efff79e1ae32"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_05_31_093352_create_cart_items_table.php": {
+    "mtime": 1780220751.2377744,
+    "ast_hash": "6eff6c7cdedf9285a3e4de35bf0195b1",
+    "semantic_hash": "6eff6c7cdedf9285a3e4de35bf0195b1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_05_31_100000_create_part_colors_table.php": {
+    "mtime": 1780228612.0713513,
+    "ast_hash": "c6458e4e8086eaf47dfb1653484ffa29",
+    "semantic_hash": "c6458e4e8086eaf47dfb1653484ffa29"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_06_01_194717_add_ldraw_images_imported_at_to_colors_table.php": {
+    "mtime": 1780343244.8438933,
+    "ast_hash": "dec73ac9469c962d0a6beed9803b096c",
+    "semantic_hash": "dec73ac9469c962d0a6beed9803b096c"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_06_02_000000_add_ldraw_id_to_parts_table.php": {
+    "mtime": 1780474987.6372192,
+    "ast_hash": "d21ff1195d6208949fda1b17fc042855",
+    "semantic_hash": "d21ff1195d6208949fda1b17fc042855"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_06_02_000001_add_rebrickable_img_url_to_parts_table.php": {
+    "mtime": 1780478336.7123582,
+    "ast_hash": "c0a0821bc3bdfce0e70237fe7fd8fddb",
+    "semantic_hash": "c0a0821bc3bdfce0e70237fe7fd8fddb"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_06_03_000000_add_bricqer_img_url_to_parts_table.php": {
+    "mtime": 1780483151.4158006,
+    "ast_hash": "0fa313edab461b3894086faf376ef918",
+    "semantic_hash": "0fa313edab461b3894086faf376ef918"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/migrations/2026_06_03_000001_add_bricqer_images_imported_at_to_colors_table.php": {
+    "mtime": 1780483157.7102432,
+    "ast_hash": "58611cc23e3eacfab8c70a7bda261e2c",
+    "semantic_hash": "58611cc23e3eacfab8c70a7bda261e2c"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/database/seeders/DatabaseSeeder.php": {
+    "mtime": 1779868144.0548213,
+    "ast_hash": "b2705ed0688b4cf2b69f815b2409015e",
+    "semantic_hash": "b2705ed0688b4cf2b69f815b2409015e"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/app.jsx": {
+    "mtime": 1780486784.0912125,
+    "ast_hash": "fd43756aa1b10332af31fffd310e56fc",
+    "semantic_hash": "fd43756aa1b10332af31fffd310e56fc"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Cart/CartDrawer.jsx": {
+    "mtime": 1780223412.68746,
+    "ast_hash": "43807b107ea3f2411770828c8eba1a81",
+    "semantic_hash": "43807b107ea3f2411770828c8eba1a81"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Cart/CartItem.jsx": {
+    "mtime": 1780486784.0913734,
+    "ast_hash": "239e557decabc0a1b8c886b1cf0e90ac",
+    "semantic_hash": "239e557decabc0a1b8c886b1cf0e90ac"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Cart/EmptyCart.jsx": {
+    "mtime": 1780486784.091486,
+    "ast_hash": "43c1b4b4b5c903748bfe3beb6c756591",
+    "semantic_hash": "43c1b4b4b5c903748bfe3beb6c756591"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Container.jsx": {
+    "mtime": 1780486784.0916176,
+    "ast_hash": "dc50727446f359ecb494d478127f59fb",
+    "semantic_hash": "dc50727446f359ecb494d478127f59fb"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Layout/AppLayout.jsx": {
+    "mtime": 1780223396.406824,
+    "ast_hash": "703e3f4a55987bdcb7baf6653717d01a",
+    "semantic_hash": "703e3f4a55987bdcb7baf6653717d01a"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Layout/Footer.jsx": {
+    "mtime": 1779896538.8228595,
+    "ast_hash": "28fb497ddf3fe7f5dcee32c642b29eb9",
+    "semantic_hash": "28fb497ddf3fe7f5dcee32c642b29eb9"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Layout/FooterLinks.jsx": {
+    "mtime": 1780076626.935306,
+    "ast_hash": "3a4284e22daf4d529b96b9ec76971b2b",
+    "semantic_hash": "3a4284e22daf4d529b96b9ec76971b2b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Layout/Header.jsx": {
+    "mtime": 1780223386.285946,
+    "ast_hash": "7befcdb3b2eed99d114a405eb8d6d45f",
+    "semantic_hash": "7befcdb3b2eed99d114a405eb8d6d45f"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Layout/HeaderTopBar.jsx": {
+    "mtime": 1780156066.268434,
+    "ast_hash": "6a4cf10059373454d4a3dccaa13c06bb",
+    "semantic_hash": "6a4cf10059373454d4a3dccaa13c06bb"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Navigation/CartIcon.jsx": {
+    "mtime": 1780223357.3402157,
+    "ast_hash": "7117de785085cb2fdf915b661f0fb086",
+    "semantic_hash": "7117de785085cb2fdf915b661f0fb086"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Navigation/MegaMenu.jsx": {
+    "mtime": 1780156086.3898473,
+    "ast_hash": "6ce133857b70406aaec8f6e45c07fa1b",
+    "semantic_hash": "6ce133857b70406aaec8f6e45c07fa1b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Navigation/MenuItem.jsx": {
+    "mtime": 1780156071.2954793,
+    "ast_hash": "0b1f9b945e4732ee564001a7b7aa93f4",
+    "semantic_hash": "0b1f9b945e4732ee564001a7b7aa93f4"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Navigation/MobileMenu.jsx": {
+    "mtime": 1780156076.32166,
+    "ast_hash": "686482f310ddecfe124fc5b3092c0943",
+    "semantic_hash": "686482f310ddecfe124fc5b3092c0943"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Navigation/ModeToggle.jsx": {
+    "mtime": 1780156091.439863,
+    "ast_hash": "a9554f2ff9ea8521b0bc0d8598bb4ec1",
+    "semantic_hash": "a9554f2ff9ea8521b0bc0d8598bb4ec1"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Navigation/NavLink.jsx": {
+    "mtime": 1780077493.2761037,
+    "ast_hash": "945c90d5f038182525045327e1ff11be",
+    "semantic_hash": "945c90d5f038182525045327e1ff11be"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Navigation/SearchBar.jsx": {
+    "mtime": 1780156116.6582122,
+    "ast_hash": "59969d27bf17589256de8b7021133ba3",
+    "semantic_hash": "59969d27bf17589256de8b7021133ba3"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Navigation/SearchOverlay.jsx": {
+    "mtime": 1780156106.5716553,
+    "ast_hash": "3c3fea9954f19cdb16531322e18d0c9f",
+    "semantic_hash": "3c3fea9954f19cdb16531322e18d0c9f"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Navigation/SearchResults.jsx": {
+    "mtime": 1780158556.4716861,
+    "ast_hash": "f3b2dfad8099717b78864f2cbf025750",
+    "semantic_hash": "f3b2dfad8099717b78864f2cbf025750"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Shop/Collections/Collection.jsx": {
+    "mtime": 1780486784.091829,
+    "ast_hash": "305a599e0f9fe55eea8c214594bbf2c7",
+    "semantic_hash": "305a599e0f9fe55eea8c214594bbf2c7"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/Shop/Products/InlineProduct.jsx": {
+    "mtime": 1780486784.0920079,
+    "ast_hash": "f9102ad1571eb45659bd5e1ef3d27381",
+    "semantic_hash": "f9102ad1571eb45659bd5e1ef3d27381"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/UI/Button.jsx": {
+    "mtime": 1780010222.8789601,
+    "ast_hash": "89fde48e7c11aec5860f9f7f6571cfd0",
+    "semantic_hash": "89fde48e7c11aec5860f9f7f6571cfd0"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/components/UI/Tooltip.jsx": {
+    "mtime": 1780218379.341755,
+    "ast_hash": "142a3e540392db05559d4cd606e5134e",
+    "semantic_hash": "142a3e540392db05559d4cd606e5134e"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/hooks/useCart.js": {
+    "mtime": 1780223298.652684,
+    "ast_hash": "e4d5f9c4c69a4984c44582fab9212141",
+    "semantic_hash": "e4d5f9c4c69a4984c44582fab9212141"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/pages/blog/article.jsx": {
+    "mtime": 1780486784.0921488,
+    "ast_hash": "f26902ebae033e725b8ad125eefa6f67",
+    "semantic_hash": "f26902ebae033e725b8ad125eefa6f67"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/pages/blog/index.jsx": {
+    "mtime": 1780486784.0923755,
+    "ast_hash": "726973eb435ad2d27fee44e61e429cae",
+    "semantic_hash": "726973eb435ad2d27fee44e61e429cae"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/pages/index.jsx": {
+    "mtime": 1780486784.0925112,
+    "ast_hash": "7d069d499cb4ef2cebbaa78610f6e0d4",
+    "semantic_hash": "7d069d499cb4ef2cebbaa78610f6e0d4"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/pages/shop/product.jsx": {
+    "mtime": 1780227064.9844902,
+    "ast_hash": "ec5031a9a7476a945ffe0327730db1ec",
+    "semantic_hash": "ec5031a9a7476a945ffe0327730db1ec"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/js/services/search.js": {
+    "mtime": 1780218414.7170198,
+    "ast_hash": "266e996dbd6a44f1cf62f0e7b1dbe1ee",
+    "semantic_hash": "266e996dbd6a44f1cf62f0e7b1dbe1ee"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/resources/views/app.blade.php": {
+    "mtime": 1780486784.092663,
+    "ast_hash": "e1a82f8c70f8ae3a0157f7d198cf2e07",
+    "semantic_hash": "e1a82f8c70f8ae3a0157f7d198cf2e07"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Feature/Api/SearchControllerTest.php": {
+    "mtime": 1780218641.3011534,
+    "ast_hash": "a7d04f57ddb00acdcad98da4c9645193",
+    "semantic_hash": "a7d04f57ddb00acdcad98da4c9645193"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Feature/Domain/Color/ImportBrickerColorsJobTest.php": {
+    "mtime": 1780218548.36779,
+    "ast_hash": "a1b6cdb3abf9e9ad713868a231eb16b9",
+    "semantic_hash": "a1b6cdb3abf9e9ad713868a231eb16b9"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Feature/Domain/Part/ImportColorBricqerImagesTest.php": {
+    "mtime": 1780486724.250647,
+    "ast_hash": "b43d5e3fbad4139b3f625b6d0e5cf36a",
+    "semantic_hash": "b43d5e3fbad4139b3f625b6d0e5cf36a"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Feature/Domain/Part/ImportColorLdrawImagesTest.php": {
+    "mtime": 1780478595.8897424,
+    "ast_hash": "8d7b7b8a966f370825aa8757ded5b562",
+    "semantic_hash": "8d7b7b8a966f370825aa8757ded5b562"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Feature/Domain/Part/ImportPartBricklinkNumbersJobTest.php": {
+    "mtime": 1780478621.3613784,
+    "ast_hash": "3e50327fab975ce8f22bd461fa47cd6f",
+    "semantic_hash": "3e50327fab975ce8f22bd461fa47cd6f"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Feature/Domain/Part/ImportPartBricqerImageUrlsJobTest.php": {
+    "mtime": 1780483371.6054106,
+    "ast_hash": "09ccae53ebaf58d095e38a0b1332d8eb",
+    "semantic_hash": "09ccae53ebaf58d095e38a0b1332d8eb"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Feature/Domain/Part/ProductColorImageTest.php": {
+    "mtime": 1780229026.6992786,
+    "ast_hash": "fd82f63baec7a430de4ada1b4b7c3495",
+    "semantic_hash": "fd82f63baec7a430de4ada1b4b7c3495"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Feature/Domain/Part/SyncPartColorsFromProductsTest.php": {
+    "mtime": 1780476346.2558503,
+    "ast_hash": "f9579bf808a36e4d34b28f361c0acace",
+    "semantic_hash": "f9579bf808a36e4d34b28f361c0acace"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Feature/Domain/Product/ImportInventoryJobTest.php": {
+    "mtime": 1780218528.4822245,
+    "ast_hash": "a7ec6f7bc661811bcc1a09dbac91e8cc",
+    "semantic_hash": "a7ec6f7bc661811bcc1a09dbac91e8cc"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Feature/Domain/Rebrickable/RebrickableDownloadServiceTest.php": {
+    "mtime": 1780344558.077486,
+    "ast_hash": "53e0d8680fc39611d6dbbfb5ec96979b",
+    "semantic_hash": "53e0d8680fc39611d6dbbfb5ec96979b"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Feature/ExampleTest.php": {
+    "mtime": 1779868144.0575662,
+    "ast_hash": "479bfd34545495b8bc47f3c8d87fd9be",
+    "semantic_hash": "479bfd34545495b8bc47f3c8d87fd9be"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/TestCase.php": {
+    "mtime": 1779868144.0576365,
+    "ast_hash": "3ed7937d4310f5bfaa2117d9d69e06e7",
+    "semantic_hash": "3ed7937d4310f5bfaa2117d9d69e06e7"
+  },
+  "/Users/pukjennekens/Documents/development/collect-connect/tests/Unit/ExampleTest.php": {
+    "mtime": 1779868144.0577488,
+    "ast_hash": "4a0c9ee4c958302f0faccbd29701142f",
+    "semantic_hash": "4a0c9ee4c958302f0faccbd29701142f"
+  }
+}
