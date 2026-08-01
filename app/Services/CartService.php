@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\Pivots\PartColor;
 use App\Models\Product;
+use App\Support\BricqerImageUrl;
 use Binafy\LaravelCart\Drivers\Driver;
 use Binafy\LaravelCart\LaravelCart;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 
@@ -20,9 +23,51 @@ class CartService
     private const SESSION_KEY_PREFIX = 'cart_';
 
     /**
-     * Returns the authenticated user ID or a session-scoped guest UUID.
-     * Always returns a non-null string to avoid the session driver's null-userId TypeError.
+     * @return list<string>
      */
+    public function revalidateStock(): array
+    {
+        $messages = [];
+        $raw = $this->getRawItems();
+        $changed = false;
+
+        if ($raw === []) {
+            return $messages;
+        }
+
+        $products = Product::query()
+            ->whereIn('id', array_column($raw, 'itemable_id'))
+            ->get()
+            ->keyBy('id');
+
+        $next = [];
+
+        foreach ($raw as $item) {
+            $product = $products->get($item['itemable_id'] ?? 0);
+
+            if ($product === null || $product->stock <= 0) {
+                $messages[] = 'Een artikel is niet meer beschikbaar en is uit je winkelwagen gehaald.';
+                $changed = true;
+
+                continue;
+            }
+
+            if ($item['quantity'] > $product->stock) {
+                $item['quantity'] = $product->stock;
+                $messages[] = "Voorraad bijgewerkt voor product #{$product->id}.";
+                $changed = true;
+            }
+
+            $next[] = $item;
+        }
+
+        if ($changed) {
+            session()->put($this->sessionKey(), $next);
+        }
+
+        return array_values(array_unique($messages));
+    }
+
     protected function userId(): string
     {
         if (auth()->check()) {
@@ -83,16 +128,11 @@ class CartService
             return;
         }
 
-        /**
-         * Write directly to avoid LaravelCartSession::storeItem() serialising the full
-         * Eloquent model into the session. The format is what the package expects for
-         * increaseQuantity / decreaseQuantity / removeItem to work correctly.
-         */
         $raw = $this->getRawItems();
         $raw[] = [
             'itemable_id' => $product->getKey(),
             'itemable_type' => Product::class,
-            'quantity' => min($quantity, $product->stock),
+            'quantity' => min($quantity, max(0, $product->stock)),
         ];
         session()->put($this->sessionKey(), $raw);
     }
@@ -126,20 +166,68 @@ class CartService
         $this->driver()->emptyCart($this->userId());
     }
 
+    public function mergeGuestCartIntoUser(int|string $userId): void
+    {
+        $guestKey = self::SESSION_KEY_PREFIX.(string) session('cart_guest_id');
+        $userKey = self::SESSION_KEY_PREFIX.(string) $userId;
+        $guestItems = session($guestKey, []);
+
+        if ($guestItems === []) {
+            return;
+        }
+
+        $userItems = session($userKey, []);
+        $byId = collect($userItems)->keyBy('itemable_id');
+
+        foreach ($guestItems as $item) {
+            $id = $item['itemable_id'] ?? null;
+            if ($id === null) {
+                continue;
+            }
+            if ($byId->has($id)) {
+                $byId[$id]['quantity'] = ($byId[$id]['quantity'] ?? 0) + ($item['quantity'] ?? 0);
+            } else {
+                $byId[$id] = $item;
+            }
+        }
+
+        $productStocks = Product::query()
+            ->whereIn('id', $byId->keys()->all())
+            ->pluck('stock', 'id');
+
+        $merged = $byId->map(function (array $item) use ($productStocks): array {
+            $id = $item['itemable_id'] ?? null;
+            $stock = (int) ($productStocks[$id] ?? 0);
+            $item['quantity'] = max(0, min((int) ($item['quantity'] ?? 0), $stock));
+
+            return $item;
+        })->filter(fn (array $item): bool => ($item['quantity'] ?? 0) > 0)->values()->all();
+
+        session()->put($userKey, $merged);
+        session()->forget($guestKey);
+    }
+
     /**
-     * @return Collection<int, array{id: int, name: string, image: string|null, price: float, quantity: int, stock: int, color: string|null, color_hex: string|null}>
+     * @return Collection<int, array{id: int, name: string, image: string|null, price: float, quantity: int, stock: int, color: string|null, color_hex: string|null, lego_number: string|null, weight_grams: float|null}>
      */
     public function getItems(): Collection
     {
+        $this->revalidateStock();
         $rawItems = $this->getRawItems();
 
-        if (empty($rawItems)) {
+        if ($rawItems === []) {
             return collect();
         }
 
         $productIds = array_column($rawItems, 'itemable_id');
         $products = Product::whereIn('id', $productIds)
-            ->with(['productable.partColors.media', 'color'])
+            ->with([
+                'color',
+                'productable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
+                    Part::class => ['partColors.media'],
+                    Minifig::class => ['media'],
+                ]),
+            ])
             ->get()
             ->keyBy('id');
 
@@ -152,30 +240,52 @@ class CartService
                     return null;
                 }
 
+                $unitWeight = $this->unitWeightGrams($product);
+
                 return [
                     'id' => $product->id,
                     'name' => $product->productable->name,
-                    'image' => $product->productable instanceof Part
-                        ? $product->productable->partColors->firstWhere('color_id', $product->color_id)
-                            ?->getFirstMedia(PartColor::BRICQER_IMAGE_COLLECTION)
-                            ?->getAvailableUrl([PartColor::THUMB_CONVERSION])
-                        : null,
+                    'lego_number' => $product->productable->bricklink_id ?? null,
+                    'image' => $this->imageFor($product),
                     'price' => $product->price / 100,
                     'quantity' => $item['quantity'],
                     'stock' => $product->stock,
                     'color' => $product->color?->name,
                     'color_hex' => $product->color?->hex,
+                    'weight_grams' => $unitWeight,
                 ];
             })
             ->filter()
             ->values();
     }
 
+    /**
+     * Total cart weight in grams (sum of unit weight × quantity).
+     * Lines without a known weight are excluded from the sum.
+     */
+    public function getTotalWeightGrams(): float
+    {
+        return (float) $this->getItems()->sum(
+            fn (array $item): float => (($item['weight_grams'] ?? 0) * $item['quantity']),
+        );
+    }
+
+    protected function unitWeightGrams(Product $product): ?float
+    {
+        $weight = data_get($product->productable, 'weight_grams');
+
+        if ($weight === null) {
+            return null;
+        }
+
+        return (float) $weight;
+    }
+
     public function getTotal(): int
     {
         $rawItems = $this->getRawItems();
 
-        if (empty($rawItems)) {
+        if ($rawItems === []) {
             return 0;
         }
 
@@ -187,5 +297,42 @@ class CartService
 
             return $product !== null ? (int) $product->price * $item['quantity'] : 0;
         });
+    }
+
+    protected function imageFor(Product $product): ?string
+    {
+        if ($product->productable instanceof Part) {
+            $partColor = $product->productable->partColors->firstWhere('color_id', $product->color_id);
+            $media = $partColor
+                ?->getFirstMedia(PartColor::BRICQER_IMAGE_COLLECTION)
+                ?->getAvailableUrl([PartColor::THUMB_CONVERSION]);
+
+            if ($media) {
+                return $media;
+            }
+
+            if ($product->productable->bricklink_id && $product->color?->bricklink_color_id) {
+                return BricqerImageUrl::part(
+                    $product->productable->bricklink_id,
+                    $product->color->bricklink_color_id,
+                );
+            }
+        }
+
+        if ($product->productable instanceof Minifig) {
+            $media = $product->productable
+                ->getFirstMedia(Minifig::BRICQER_IMAGE_COLLECTION)
+                ?->getAvailableUrl([Minifig::THUMB_CONVERSION]);
+
+            if ($media) {
+                return $media;
+            }
+
+            if ($product->productable->bricklink_id) {
+                return BricqerImageUrl::minifig($product->productable->bricklink_id);
+            }
+        }
+
+        return null;
     }
 }
