@@ -43,6 +43,16 @@ class HandleInertiaRequests extends Middleware
 
             'navigation' => config('navigation.menu'),
 
+            'auth' => [
+                'user' => $request->user()
+                    ? ['id' => $request->user()->id, 'name' => $request->user()->name, 'email' => $request->user()->email]
+                    : null,
+            ],
+
+            'flash' => [
+                'status' => fn () => $request->session()->get('status'),
+            ],
+
             'cart' => static function (): array {
                 $items = app(CartService::class)->getItems()->all();
 

@@ -34,3 +34,4 @@
 .kilo/package-lock.json
 .kilo/node_modules
 .kilo/plans/*upstream-merge-report-*.md
+data.csv
