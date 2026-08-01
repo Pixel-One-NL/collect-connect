@@ -57,7 +57,7 @@ return [
     |
     */
 
-    'after_commit' => false,
+    'after_commit' => env('SCOUT_AFTER_COMMIT', true),
 
     /*
     |--------------------------------------------------------------------------
@@ -153,11 +153,40 @@ return [
                             'name' => 'bricklink_id',
                             'type' => 'string',
                         ],
+                        [
+                            'name' => 'name',
+                            'type' => 'string',
+                        ],
                     ],
                     // 'default_sorting_field' => 'rebrickable_id',
                 ],
                 'search-parameters' => [
-                    'query_by' => 'name',
+                    'query_by' => 'name,bricklink_id,rebrickable_id',
+                ],
+            ],
+            App\Models\Minifig::class => [
+                'collection-schema' => [
+                    'fields' => [
+                        [
+                            'name' => 'id',
+                            'type' => 'string',
+                        ],
+                        [
+                            'name' => 'rebrickable_id',
+                            'type' => 'string',
+                        ],
+                        [
+                            'name' => 'bricklink_id',
+                            'type' => 'string',
+                        ],
+                        [
+                            'name' => 'name',
+                            'type' => 'string',
+                        ],
+                    ],
+                ],
+                'search-parameters' => [
+                    'query_by' => 'name,bricklink_id,rebrickable_id',
                 ],
             ],
             App\Models\Product::class => [
@@ -183,10 +212,40 @@ return [
                             'name' => 'stock',
                             'type' => 'int32',
                         ],
+                        [
+                            'name' => 'type',
+                            'type' => 'string',
+                            'facet' => true,
+                        ],
+                        [
+                            'name' => 'color_id',
+                            'type' => 'int32',
+                            'facet' => true,
+                            'optional' => true,
+                        ],
+                        [
+                            'name' => 'color_name',
+                            'type' => 'string',
+                            'facet' => true,
+                            'optional' => true,
+                        ],
+                        [
+                            'name' => 'category_id',
+                            'type' => 'int32',
+                            'facet' => true,
+                            'optional' => true,
+                        ],
+                        [
+                            'name' => 'category_name',
+                            'type' => 'string',
+                            'facet' => true,
+                            'optional' => true,
+                        ],
                     ],
                 ],
                 'search-parameters' => [
-                    'query_by' => 'name,bricklink_id',
+                    'query_by' => 'name,bricklink_id,color_name,category_name',
+                    'num_typos' => 2,
                 ],
             ],
             App\Models\Set::class => [

@@ -10,7 +10,7 @@ import InlineSet from "../Shop/Sets/InlineSet.jsx";
  * @param {string} props.query
  */
 export default function SearchResults({ query }) {
-    const [results, setResults] = useState({ products: [], sets: [] });
+    const [results, setResults] = useState({ products: [], minifigs: [], sets: [] });
     const [isLoading, setIsLoading] = useState(false);
     const [activeTab, setActiveTab] = useState('products');
 
@@ -18,7 +18,7 @@ export default function SearchResults({ query }) {
 
     useEffect(() => {
         if (trimmedQuery === "") {
-            setResults({ products: [], sets: [] });
+            setResults({ products: [], minifigs: [], sets: [] });
             setIsLoading(false);
             return;
         }
@@ -31,15 +31,19 @@ export default function SearchResults({ query }) {
                 const data = await searchAll(trimmedQuery, { signal: controller.signal });
                 setResults(data);
                 setIsLoading(false);
-                // Auto-select the tab that has results
-                if (data.products.length === 0 && data.sets.length > 0) {
+                // Prefer the first tab that has results.
+                if (data.products.length > 0) {
+                    setActiveTab('products');
+                } else if (data.minifigs.length > 0) {
+                    setActiveTab('minifigs');
+                } else if (data.sets.length > 0) {
                     setActiveTab('sets');
                 } else {
                     setActiveTab('products');
                 }
             } catch (error) {
                 if (error.name !== "AbortError") {
-                    setResults({ products: [], sets: [] });
+                    setResults({ products: [], minifigs: [], sets: [] });
                     setIsLoading(false);
                 }
             }
@@ -67,9 +71,20 @@ export default function SearchResults({ query }) {
     }
 
     const hasProducts = results.products.length > 0;
+    const hasMinifigs = results.minifigs.length > 0;
     const hasSets = results.sets.length > 0;
-    const hasAny = hasProducts || hasSets;
-    const hasBoth = hasProducts && hasSets;
+    const hasAny = hasProducts || hasMinifigs || hasSets;
+    const tabCount = [hasProducts, hasMinifigs, hasSets].filter(Boolean).length;
+    const hasMultipleTabs = tabCount > 1;
+
+    const tabs = [
+        hasProducts && { key: 'products', label: `Onderdelen (${results.products.length})` },
+        hasMinifigs && { key: 'minifigs', label: `Minifiguren (${results.minifigs.length})` },
+        hasSets && { key: 'sets', label: `Sets (${results.sets.length})` },
+    ].filter(Boolean);
+
+    const activeTabIndex = Math.max(0, tabs.findIndex((tab) => tab.key === activeTab));
+    const panelWidthPct = tabs.length > 0 ? 100 / tabs.length : 100;
 
     const loadingOrEmpty = isLoading ? (
         <div className="flex items-center justify-center py-12 text-gray-400">
@@ -95,55 +110,59 @@ export default function SearchResults({ query }) {
                     <div className="flex-1">{loadingOrEmpty}</div>
                 ) : (
                     <>
-                        {/* Floating tab switcher — sits above the scroll area */}
-                        {hasBoth && (
-                            <div className="shrink-0 flex gap-2 px-4 py-3 bg-white shadow-md z-10">
-                                <button
-                                    onClick={() => setActiveTab('products')}
-                                    className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition border ${
-                                        activeTab === 'products'
-                                            ? 'bg-primary text-white border-primary'
-                                            : 'bg-white text-gray-600 border-gray-200 hover:bg-accent'
-                                    }`}
-                                >
-                                    Onderdelen ({results.products.length})
-                                </button>
-                                <button
-                                    onClick={() => setActiveTab('sets')}
-                                    className={`flex-1 rounded-md px-4 py-2 text-sm font-medium transition border ${
-                                        activeTab === 'sets'
-                                            ? 'bg-primary text-white border-primary'
-                                            : 'bg-white text-gray-600 border-gray-200 hover:bg-accent'
-                                    }`}
-                                >
-                                    Sets ({results.sets.length})
-                                </button>
+                        {hasMultipleTabs && (
+                            <div className="shrink-0 flex gap-2 px-4 py-3 bg-white shadow-md z-10 overflow-x-auto">
+                                {tabs.map((tab) => (
+                                    <button
+                                        key={tab.key}
+                                        onClick={() => setActiveTab(tab.key)}
+                                        className={`shrink-0 rounded-md px-4 py-2 text-sm font-medium transition border ${
+                                            activeTab === tab.key
+                                                ? 'bg-primary text-white border-primary'
+                                                : 'bg-white text-gray-600 border-gray-200 hover:bg-accent'
+                                        }`}
+                                    >
+                                        {tab.label}
+                                    </button>
+                                ))}
                             </div>
                         )}
 
-                        {/* Sliding track — each panel scrolls independently */}
                         <div className="flex-1 min-h-0 overflow-hidden">
                             <div
                                 className="flex h-full transition-transform duration-300 ease-in-out"
                                 style={{
-                                    width: '200%',
-                                    transform: `translateX(${activeTab === 'sets' ? '-50%' : '0%'})`,
+                                    width: `${tabs.length * 100}%`,
+                                    transform: `translateX(-${activeTabIndex * panelWidthPct}%)`,
                                 }}
                             >
-                                <div className="overflow-y-auto h-full px-4 py-4" style={{ width: '50%' }}>
-                                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                                        {results.products.map((product) => (
-                                            <InlineProduct key={product.id} product={product} />
-                                        ))}
+                                {hasProducts && (
+                                    <div className="overflow-y-auto h-full px-4 py-4" style={{ width: `${panelWidthPct}%` }}>
+                                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                                            {results.products.map((product) => (
+                                                <InlineProduct key={product.id} product={product} />
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
-                                <div className="overflow-y-auto h-full px-4 py-4" style={{ width: '50%' }}>
-                                    <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
-                                        {results.sets.map((set) => (
-                                            <InlineSet key={set.id} set={set} />
-                                        ))}
+                                )}
+                                {hasMinifigs && (
+                                    <div className="overflow-y-auto h-full px-4 py-4" style={{ width: `${panelWidthPct}%` }}>
+                                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                                            {results.minifigs.map((minifig) => (
+                                                <InlineProduct key={`minifig-${minifig.id}`} product={minifig} />
+                                            ))}
+                                        </div>
                                     </div>
-                                </div>
+                                )}
+                                {hasSets && (
+                                    <div className="overflow-y-auto h-full px-4 py-4" style={{ width: `${panelWidthPct}%` }}>
+                                        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+                                            {results.sets.map((set) => (
+                                                <InlineSet key={set.id} set={set} />
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </>
@@ -162,6 +181,18 @@ export default function SearchResults({ query }) {
                                 <div className="grid grid-cols-4 gap-4 xl:grid-cols-5">
                                     {results.products.map((product) => (
                                         <InlineProduct key={product.id} product={product} />
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+                        {hasMinifigs && (
+                            <section>
+                                <h4 className="text-xs font-semibold uppercase tracking-wider text-gray-400 mb-4">
+                                    Minifiguren
+                                </h4>
+                                <div className="grid grid-cols-4 gap-4 xl:grid-cols-5">
+                                    {results.minifigs.map((minifig) => (
+                                        <InlineProduct key={`minifig-${minifig.id}`} product={minifig} />
                                     ))}
                                 </div>
                             </section>

@@ -1,6 +1,7 @@
 import { MinusIcon } from '@phosphor-icons/react/dist/csr/Minus';
 import { PlusIcon } from '@phosphor-icons/react/dist/csr/Plus';
 import { ShoppingCartIcon } from '@phosphor-icons/react/dist/csr/ShoppingCart';
+import { router } from '@inertiajs/react';
 import { useState } from 'react';
 import Button from '../../components/UI/Button';
 import Container from '../../components/Container';
@@ -12,10 +13,8 @@ import InlineProduct from "../../components/Shop/Products/InlineProduct.jsx";
 
 /**
  * @param {Object} props
- * @param {{ id: number, name: string, image: string|null, price: number, stock: number, color: { name: string|null, hex: string|null } }} props.product
  */
-export default function ProductPage({ product: { data: product }, suggestions: { data: suggestions } }) {
-    console.log(product, suggestions)
+export default function ProductPage({ product: { data: product }, suggestions: { data: suggestions }, status }) {
     const { items, addItem, open, processing } = useCart();
 
     const currentCartQty = items.find((i) => i.id === product.id)?.quantity ?? 0;
@@ -24,6 +23,8 @@ export default function ProductPage({ product: { data: product }, suggestions: {
     const isProcessing = processing === product.id;
 
     const [quantity, setQuantity] = useState(1);
+    const [notifyEmail, setNotifyEmail] = useState('');
+    const [notifySent, setNotifySent] = useState(false);
 
     function decrement() {
         setQuantity((q) => Math.max(1, q - 1));
@@ -45,7 +46,7 @@ export default function ProductPage({ product: { data: product }, suggestions: {
     return (
         <Container className="max-w-250 my-8">
             <div className="py-10 grid grid-cols-1 md:grid-cols-5 gap-10 md:shadow-[0_0px_10px_rgba(0,0,0,0.1)] md:px-6 rounded-xl">
-                <div className="rounded-xl overflow-hidden flex items-center justify-center aspect-square md:col-span-2 max-h-60 md:max-h-none mx-auto">
+                <div className="rounded-xl overflow-hidden flex items-center justify-center md:col-span-2 max-h-60 md:max-h-none mx-auto">
                     {product.image ? (
                         <img
                             src={product.image}
@@ -95,9 +96,14 @@ export default function ProductPage({ product: { data: product }, suggestions: {
                                     <MinusIcon size={16} />
                                 </button>
 
-                                <span className="px-4 py-2 min-w-12 text-center font-medium tabular-nums w-full">
-                                    {quantity}
-                                </span>
+                                <input
+                                    type="number"
+                                    className="h-full py-2 px-2 w-[4ch] text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                                    min={1} value={quantity} // max={available}
+                                    onChange={e => setQuantity(
+                                        Math.max(1, Math.min(available, parseInt(e.target.value) || 1))
+                                    )}
+                                />
 
                                 <button
                                     className="px-3 py-2 hover:bg-gray-100 transition disabled:opacity-40 cursor-pointer"
@@ -119,11 +125,51 @@ export default function ProductPage({ product: { data: product }, suggestions: {
                             </Button>
                         </div>
                     ) : (
-                        <p className="text-sm text-gray-500">
-                            {product.stock === 0
-                                ? 'Dit product is momenteel uitverkocht'
-                                : 'Je hebt al de maximale hoeveelheid in je winkelmandje'}
-                        </p>
+                        <div className="space-y-3">
+                            <p className="text-sm text-gray-500">
+                                {product.stock === 0
+                                    ? 'Dit product is momenteel uitverkocht'
+                                    : 'Je hebt al de maximale hoeveelheid in je winkelmandje'}
+                            </p>
+                            {product.stock === 0 && (
+                                <form
+                                    className="flex flex-col sm:flex-row gap-2"
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        router.post(`/products/${product.id}/stock-notifications`, {
+                                            email: notifyEmail,
+                                        }, {
+                                            preserveScroll: true,
+                                            onSuccess: () => setNotifySent(true),
+                                        });
+                                    }}
+                                >
+                                    <input
+                                        type="email"
+                                        required
+                                        value={notifyEmail}
+                                        onChange={(e) => setNotifyEmail(e.target.value)}
+                                        placeholder="jouw@email.nl"
+                                        className="flex-1 border border-gray-200 rounded-md px-3 py-2"
+                                    />
+                                    <Button type="submit" variant="primary">Houd me op de hoogte</Button>
+                                </form>
+                            )}
+                            {(notifySent || status) && (
+                                <p className="text-sm text-green-700">{status || 'Bedankt! We mailen je bij voorraad.'}</p>
+                            )}
+                        </div>
+                    )}
+
+                    {product.attributes?.length > 0 && (
+                        <dl className="mt-2 space-y-2 border-t border-gray-100 pt-4">
+                            {product.attributes.map((attr) => (
+                                <div key={attr.label} className="flex gap-4 text-sm">
+                                    <dt className="w-32 text-gray-500">{attr.label}</dt>
+                                    <dd className="font-medium text-gray-900">{attr.value}</dd>
+                                </div>
+                            ))}
+                        </dl>
                     )}
 
                     {product.sibling_colors?.length > 0 && (
