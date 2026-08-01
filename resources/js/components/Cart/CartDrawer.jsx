@@ -68,12 +68,18 @@ export default function CartDrawer({ isOpen, onClose }) {
                         </span>
                     </div>
 
-                    <button
-                        className="w-full bg-primary text-white py-3 rounded-lg font-medium opacity-50 cursor-not-allowed"
-                        disabled
+                    <a
+                        href="/cart"
+                        className="block w-full text-center border border-gray-200 py-3 rounded-lg font-medium hover:bg-gray-50"
                     >
-                        Checkout
-                    </button>
+                        Winkelwagen bekijken
+                    </a>
+                    <a
+                        href="/checkout"
+                        className="block w-full text-center bg-primary text-white py-3 rounded-lg font-medium"
+                    >
+                        Afrekenen
+                    </a>
                 </div>
             </div>
         </>
