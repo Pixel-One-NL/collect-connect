@@ -23,6 +23,7 @@ class MinifigFactory extends Factory
             'rebrickable_id' => fake()->unique()->numerify(),
             'bricklink_id' => fake()->unique()->numerify(),
             'name' => fake()->words(asText: true),
+            'weight_grams' => fake()->optional(0.8)->randomFloat(4, 1, 20),
         ];
     }
 }

@@ -7,9 +7,11 @@ namespace App\Domain\Bricqer\Jobs;
 use App\Integrations\Bricqer\DataTransferObjects\UnconsolidatedInventory\InventoryItem;
 use App\Integrations\Bricqer\Facades\Bricqer;
 use App\Models\Color;
+use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\Pivots\PartColor;
 use App\Models\Product;
+use App\Models\SyncRun;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,6 +19,8 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use RuntimeException;
+use Throwable;
 
 class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
 {
@@ -28,40 +32,127 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
     protected int $chunkSize = 1000;
 
     /**
-     * @var Collection<int, string>
+     * @var Collection<string, int>
      */
     protected Collection $colorIdMap;
 
-    public function __construct() {}
+    /**
+     * @var list<int>
+     */
+    protected array $syncedProductIds = [];
 
-    public function handle(): void
+    /**
+     * @return array{
+     *     found: int,
+     *     color_unmatched: int,
+     *     item_not_found: int,
+     *     zeroed: int,
+     *     minifig_definitions_updated: int,
+     *     part_definitions_updated: int
+     * }
+     */
+    public function handle(): array
     {
-        $this->colorIdMap = $this->retrieveColorIdMap();
+        $run = SyncRun::query()->create([
+            'source' => 'bricqer_inventory',
+            'status' => 'running',
+            'started_at' => now(),
+        ]);
 
-        $consolidated = $this->consolidate();
+        try {
+            $this->colorIdMap = $this->retrieveColorIdMap();
+            $this->syncedProductIds = [];
 
-        foreach (array_chunk($consolidated, $this->chunkSize) as $chunk) {
-            $this->upsertProducts($chunk);
+            $previouslyOutOfStock = Product::query()
+                ->where('stock', '<=', 0)
+                ->pluck('id')
+                ->all();
+
+            $stats = [
+                'found' => 0,
+                'color_unmatched' => 0,
+                'item_not_found' => 0,
+                'zeroed' => 0,
+                'minifig_definitions_updated' => 0,
+                'part_definitions_updated' => 0,
+            ];
+
+            $consolidated = $this->consolidate();
+
+            // Never wipe the shop if the feed is empty/misconfigured.
+            if ($consolidated === []) {
+                throw new RuntimeException(
+                    'Bricqer unconsolidated inventory returned no new-condition P/M rows; refusing to zero stock.',
+                );
+            }
+
+            // Aggregate definition ids across the full feed first so chunk order
+            // cannot regress a higher definition id written by an earlier chunk.
+            $stats['minifig_definitions_updated'] = $this->applyMinifigDefinitionIdsFromInventory(
+                $consolidated,
+                $this->mapBricklinkIds(
+                    array_column(array_filter($consolidated, fn (array $r): bool => $r['item_type'] === 'M'), 'item_id'),
+                    Minifig::class,
+                ),
+            );
+            $stats['part_definitions_updated'] = $this->applyPartDefinitionIdsFromInventory(
+                $consolidated,
+                $this->mapBricklinkIds(
+                    array_column(array_filter($consolidated, fn (array $r): bool => $r['item_type'] === 'P'), 'item_id'),
+                    Part::class,
+                ),
+            );
+
+            foreach (array_chunk($consolidated, $this->chunkSize) as $chunk) {
+                $chunkStats = $this->upsertProducts($chunk);
+                $stats['found'] += $chunkStats['found'];
+                $stats['color_unmatched'] += $chunkStats['color_unmatched'];
+                $stats['item_not_found'] += $chunkStats['item_not_found'];
+            }
+
+            $stats['zeroed'] = $this->zeroStockForMissingProducts();
+
+            $restockedIds = Product::query()
+                ->whereIn('id', $previouslyOutOfStock)
+                ->where('stock', '>', 0)
+                ->pluck('id')
+                ->all();
+
+            if ($restockedIds !== []) {
+                DispatchStockNotificationsJob::dispatch($restockedIds);
+            }
+
+            $run->update([
+                'status' => 'succeeded',
+                'stats' => $stats,
+                'finished_at' => now(),
+            ]);
+
+            return $stats;
+        } catch (Throwable $e) {
+            $run->update([
+                'status' => 'failed',
+                'error' => $e->getMessage(),
+                'finished_at' => now(),
+            ]);
+
+            throw $e;
         }
     }
 
     /**
-     * @return Collection<int, string>
+     * @return Collection<string, int>
      */
     protected function retrieveColorIdMap(): Collection
     {
         return Color::query()
             ->whereNotNull('bricklink_color_id')
-            ->pluck('id', 'bricklink_color_id');
+            ->pluck('id', 'bricklink_color_id')
+            ->mapWithKeys(fn (int $id, string|int $bricklinkColorId): array => [(string) $bricklinkColorId => $id]);
     }
 
     /**
-     * Stream the unconsolidated inventory and reduce the many entries per
-     * part+color into a single stock (summed) and price (highest). A part in a
-     * specific color is a distinct product, so entries are keyed by item id and
-     * color id. Only new-condition part rows (item type "P") are considered.
-     *
-     * @return list<array{item_id: string, color_id: string, stock: int, price: float}>
+     * @return list<array{item_type: string, item_id: string, color_id: string, stock: int, price: int, definition_id: string}>
      */
     protected function consolidate(): array
     {
@@ -69,76 +160,340 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
 
         /** @var InventoryItem $item */
         foreach (Bricqer::lego()->report()->unconsolidatedInventory()->get() as $item) {
-            if ($item->itemType !== 'P') {
+            if (! in_array($item->itemType, ['P', 'M'], true)) {
                 continue;
             }
 
-            if ($item->condition !== 'N') { // Only import new parts
+            if ($item->condition !== 'N') {
                 continue;
             }
 
-            $key = "{$item->itemId}_{$item->colorId}";
-
-            if (! $item->definitionId) {
-                dump('test');
-            }
+            $colorId = $item->colorId !== '' ? $item->colorId : '0';
+            $key = "{$item->itemType}_{$item->itemId}_{$colorId}";
+            $priceInCents = (int) round($item->price * 100);
+            $definitionId = trim($item->definitionId);
 
             if (! isset($consolidated[$key])) {
                 $consolidated[$key] = [
+                    'item_type' => $item->itemType,
                     'item_id' => $item->itemId,
-                    'color_id' => $item->colorId,
+                    'color_id' => $colorId,
                     'stock' => $item->remainingQuantity,
-                    'price' => (int) round($item->price * 100),
-                    'definition_id' => $item->definitionId,
+                    'price' => $priceInCents,
+                    'definition_id' => $definitionId,
                 ];
 
                 continue;
             }
 
             $consolidated[$key]['stock'] += $item->remainingQuantity;
-            $consolidated[$key]['price'] = max($consolidated[$key]['price'], $item->price);
+            $consolidated[$key]['price'] = max($consolidated[$key]['price'], $priceInCents);
+            $consolidated[$key]['definition_id'] = $this->preferDefinitionId(
+                $consolidated[$key]['definition_id'],
+                $definitionId,
+            );
         }
 
         return array_values($consolidated);
     }
 
     /**
-     * @param  list<array{item_id: string, color_id: string, stock: int, price: float}>  $chunk
+     * Keep the best definition id when multiple lots consolidate: prefer any
+     * meaningful non-empty value (treat "0" as unset), and when both are set
+     * prefer the higher numeric id (newer Bricqer definition). Never regress
+     * a real id to "0".
      */
-    protected function upsertProducts(array $chunk): void
+    protected function preferDefinitionId(string $current, string $candidate): string
     {
-        DB::transaction(function () use ($chunk): void {
-            $bricqerIds = array_unique(data_get($chunk, '*.item_id'));
+        $current = $this->normalizeDefinitionId($current);
+        $candidate = $this->normalizeDefinitionId($candidate);
 
-            $partIds = Part::query()
-                ->whereIn('bricklink_id', $bricqerIds)
-                ->pluck('id', 'bricklink_id')
-                ->mapWithKeys(fn (int $id, string $bricklinkId): array => [strtolower($bricklinkId) => $id]);
+        if ($candidate === '') {
+            return $current;
+        }
 
-            foreach ($chunk as $part) {
-                // Check if the part and color exist, if not skip this entry
-                $colorId = $this->colorIdMap->get(data_get($part, 'color_id'));
-                $partId = $partIds->get(strtolower(data_get($part, 'item_id')));
+        if ($current === '') {
+            return $candidate;
+        }
 
-                if (! $colorId || ! $partId) {
+        if (ctype_digit($current) && ctype_digit($candidate)) {
+            return (int) $candidate > (int) $current ? $candidate : $current;
+        }
+
+        return $candidate;
+    }
+
+    protected function normalizeDefinitionId(string $definitionId): string
+    {
+        $definitionId = trim($definitionId);
+
+        return $definitionId === '0' ? '' : $definitionId;
+    }
+
+    /**
+     * @param  list<array{item_type: string, item_id: string, color_id: string, stock: int, price: int, definition_id: string}>  $chunk
+     * @return array{found: int, color_unmatched: int, item_not_found: int}
+     */
+    protected function upsertProducts(array $chunk): array
+    {
+        $stats = [
+            'found' => 0,
+            'color_unmatched' => 0,
+            'item_not_found' => 0,
+        ];
+
+        DB::transaction(function () use ($chunk, &$stats): void {
+            $partIds = $this->mapBricklinkIds(
+                array_column(array_filter($chunk, fn (array $r): bool => $r['item_type'] === 'P'), 'item_id'),
+                Part::class,
+            );
+
+            $minifigIds = $this->mapBricklinkIds(
+                array_column(array_filter($chunk, fn (array $r): bool => $r['item_type'] === 'M'), 'item_id'),
+                Minifig::class,
+            );
+
+            $partMorph = (new Part)->getMorphClass();
+            $minifigMorph = (new Minifig)->getMorphClass();
+
+            foreach ($chunk as $row) {
+                $colorId = $this->colorIdMap->get((string) $row['color_id']);
+
+                if (! $colorId) {
+                    $stats['color_unmatched']++;
+
                     continue;
                 }
 
-                Product::updateOrCreate([
-                    'productable_type' => (new Part)->getMorphClass(),
-                    'productable_id' => $partId,
+                if ($row['item_type'] === 'P') {
+                    $entityId = $partIds->get(strtolower($row['item_id']));
+                    $morph = $partMorph;
+                } else {
+                    $entityId = $minifigIds->get(strtolower($row['item_id']));
+                    $morph = $minifigMorph;
+                }
+
+                if (! $entityId) {
+                    $stats['item_not_found']++;
+
+                    continue;
+                }
+
+                $product = Product::updateOrCreate([
+                    'productable_type' => $morph,
+                    'productable_id' => $entityId,
                     'color_id' => $colorId,
                 ], [
-                    'stock' => data_get($part, 'stock'),
-                    'price' => data_get($part, 'price'),
+                    'stock' => $row['stock'],
+                    'price' => $row['price'],
                 ]);
 
-                PartColor::updateOrCreate([
-                    'part_id' => $partId,
-                    'color_id' => $colorId,
-                    'bricqer_definition_id' => data_get($part, 'definition_id'),
-                ]);
+                $this->syncedProductIds[] = $product->id;
+                $stats['found']++;
+
+                if ($row['item_type'] === 'P') {
+                    $partColorAttributes = [];
+
+                    if ($row['definition_id'] !== '') {
+                        $existing = PartColor::query()
+                            ->where('part_id', $entityId)
+                            ->where('color_id', $colorId)
+                            ->value('bricqer_definition_id');
+
+                        $partColorAttributes['bricqer_definition_id'] = $this->preferDefinitionId(
+                            (string) ($existing ?? ''),
+                            $row['definition_id'],
+                        );
+                    }
+
+                    // Ensure pivot exists even without a definition id (stock/catalog path).
+                    if ($partColorAttributes === []) {
+                        PartColor::query()->firstOrCreate(
+                            [
+                                'part_id' => $entityId,
+                                'color_id' => $colorId,
+                            ],
+                            [
+                                'bricqer_definition_id' => '0',
+                            ],
+                        );
+                    } else {
+                        PartColor::updateOrCreate(
+                            [
+                                'part_id' => $entityId,
+                                'color_id' => $colorId,
+                            ],
+                            $partColorAttributes,
+                        );
+                    }
+                }
             }
         });
+
+        return $stats;
+    }
+
+    /**
+     * @param  list<array{item_type: string, item_id: string, color_id: string, stock: int, price: int, definition_id: string}>  $rows
+     * @param  Collection<string, int>  $minifigIds
+     */
+    protected function applyMinifigDefinitionIdsFromInventory(array $rows, Collection $minifigIds): int
+    {
+        /** @var array<string, string> $definitionsByBricklink */
+        $definitionsByBricklink = [];
+
+        foreach ($rows as $row) {
+            if ($row['item_type'] !== 'M' || $row['definition_id'] === '') {
+                continue;
+            }
+
+            $key = strtolower($row['item_id']);
+            $definitionsByBricklink[$key] = $this->preferDefinitionId(
+                $definitionsByBricklink[$key] ?? '',
+                $row['definition_id'],
+            );
+        }
+
+        return $this->bulkUpdateDefinitionIds(Minifig::class, $minifigIds, $definitionsByBricklink);
+    }
+
+    /**
+     * @param  list<array{item_type: string, item_id: string, color_id: string, stock: int, price: int, definition_id: string}>  $rows
+     * @param  Collection<string, int>  $partIds
+     */
+    protected function applyPartDefinitionIdsFromInventory(array $rows, Collection $partIds): int
+    {
+        /** @var array<string, string> $definitionsByBricklink */
+        $definitionsByBricklink = [];
+
+        foreach ($rows as $row) {
+            if ($row['item_type'] !== 'P' || $row['definition_id'] === '') {
+                continue;
+            }
+
+            $key = strtolower($row['item_id']);
+            $definitionsByBricklink[$key] = $this->preferDefinitionId(
+                $definitionsByBricklink[$key] ?? '',
+                $row['definition_id'],
+            );
+        }
+
+        return $this->bulkUpdateDefinitionIds(Part::class, $partIds, $definitionsByBricklink);
+    }
+
+    /**
+     * @param  class-string<Part|Minifig>  $model
+     * @param  Collection<string, int>  $entityIdsByBricklink
+     * @param  array<string, string>  $definitionsByBricklink
+     */
+    protected function bulkUpdateDefinitionIds(string $model, Collection $entityIdsByBricklink, array $definitionsByBricklink): int
+    {
+        if ($definitionsByBricklink === [] || $entityIdsByBricklink->isEmpty()) {
+            return 0;
+        }
+
+        $candidateIds = [];
+        $candidatesById = [];
+
+        foreach ($definitionsByBricklink as $bricklinkId => $definitionId) {
+            $entityId = $entityIdsByBricklink->get($bricklinkId);
+
+            if ($entityId === null || $definitionId === '') {
+                continue;
+            }
+
+            $candidateIds[] = $entityId;
+            $candidatesById[$entityId] = $this->preferDefinitionId(
+                $candidatesById[$entityId] ?? '',
+                $definitionId,
+            );
+        }
+
+        if ($candidatesById === []) {
+            return 0;
+        }
+
+        $entities = $model::query()
+            ->whereIn('id', array_keys($candidatesById))
+            ->get(['id', 'bricqer_definition_id'])
+            ->keyBy('id');
+
+        $toUpdate = [];
+
+        foreach ($candidatesById as $entityId => $definitionId) {
+            $entity = $entities->get($entityId);
+
+            if ($entity === null) {
+                continue;
+            }
+
+            $current = (string) ($entity->bricqer_definition_id ?? '');
+            $best = $this->preferDefinitionId($current, $definitionId);
+
+            if ($best !== '' && $best !== $current) {
+                $toUpdate[$entityId] = $best;
+            }
+        }
+
+        if ($toUpdate === []) {
+            return 0;
+        }
+
+        $cases = [];
+        $bindings = [];
+
+        foreach ($toUpdate as $entityId => $definitionId) {
+            $cases[] = 'WHEN ? THEN ?';
+            $bindings[] = $entityId;
+            $bindings[] = $definitionId;
+        }
+
+        $ids = array_keys($toUpdate);
+        $idPlaceholders = implode(',', array_fill(0, count($ids), '?'));
+        $caseSql = implode(' ', $cases);
+        $table = (new $model)->getTable();
+
+        return DB::update(
+            "UPDATE {$table}
+             SET bricqer_definition_id = CASE id {$caseSql} END
+             WHERE id IN ({$idPlaceholders})",
+            [...$bindings, ...$ids],
+        );
+    }
+
+    /**
+     * @param  list<string>  $bricklinkIds
+     * @param  class-string<Part|Minifig>  $model
+     * @return Collection<string, int>
+     */
+    protected function mapBricklinkIds(array $bricklinkIds, string $model): Collection
+    {
+        $bricklinkIds = array_values(array_unique($bricklinkIds));
+        $lowerIds = array_map(strtolower(...), $bricklinkIds);
+
+        if ($lowerIds === []) {
+            return collect();
+        }
+
+        $placeholders = implode(',', array_fill(0, count($lowerIds), '?'));
+
+        return $model::query()
+            ->whereNotNull('bricklink_id')
+            ->whereRaw("LOWER(bricklink_id) IN ({$placeholders})", $lowerIds)
+            ->get(['id', 'bricklink_id'])
+            ->mapWithKeys(fn (Part|Minifig $entity): array => [strtolower((string) $entity->bricklink_id) => $entity->id]);
+    }
+
+    protected function zeroStockForMissingProducts(): int
+    {
+        // Require that we actually synced something before zeroing outsiders.
+        if ($this->syncedProductIds === []) {
+            return 0;
+        }
+
+        return Product::query()
+            ->where('stock', '>', 0)
+            ->whereNotIn('id', array_unique($this->syncedProductIds))
+            ->update(['stock' => 0]);
     }
 }

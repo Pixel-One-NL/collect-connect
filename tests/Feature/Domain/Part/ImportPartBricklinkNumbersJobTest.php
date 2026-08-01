@@ -24,10 +24,7 @@ class ImportPartBricklinkNumbersJobTest extends TestCase
     }
 
     /**
-     * Fake the Rebrickable parts list with a paginated payload built from the
-     * given part rows.
-     *
-     * @param  array<int, array{part_num: string, bricklink?: ?string, ldraw?: ?string, img?: ?string}>  $parts
+     * @param  array<int, array{part_num: string, bricklink?: ?string}>  $parts
      */
     private function fakeParts(array $parts): void
     {
@@ -38,16 +35,12 @@ class ImportPartBricklinkNumbersJobTest extends TestCase
                 $externalIds['BrickLink'] = [$part['bricklink']];
             }
 
-            if (array_key_exists('ldraw', $part) && $part['ldraw'] !== null) {
-                $externalIds['LDraw'] = [$part['ldraw']];
-            }
-
             return [
                 'part_num' => $part['part_num'],
                 'name' => 'Part '.$part['part_num'],
                 'part_cat_id' => 1,
                 'part_url' => 'https://example.test/'.$part['part_num'],
-                'part_img_url' => $part['img'] ?? null,
+                'part_img_url' => null,
                 'external_ids' => $externalIds,
             ];
         }, $parts);
@@ -62,75 +55,44 @@ class ImportPartBricklinkNumbersJobTest extends TestCase
         ]);
     }
 
-    public function test_it_imports_both_bricklink_and_ldraw_ids(): void
+    public function test_it_imports_bricklink_ids_for_parts_missing_them(): void
     {
         $part = Part::factory()->create([
             'rebrickable_id' => '3001',
             'bricklink_id' => null,
-            'ldraw_id' => null,
         ]);
 
         $this->fakeParts([
-            ['part_num' => '3001', 'bricklink' => '3001bl', 'ldraw' => '3001ld', 'img' => 'https://img.test/3001.png'],
+            ['part_num' => '3001', 'bricklink' => '3001bl'],
         ]);
 
         (new ImportPartBricklinkNumbersJob)->handle();
 
-        $part->refresh();
-        $this->assertSame('3001bl', $part->bricklink_id);
-        $this->assertSame('3001ld', $part->ldraw_id);
-        $this->assertSame('https://img.test/3001.png', $part->rebrickable_img_url);
+        $this->assertSame('3001bl', $part->refresh()->bricklink_id);
     }
 
-    public function test_it_picks_up_parts_missing_only_the_ldraw_id(): void
+    public function test_it_skips_parts_that_already_have_a_bricklink_id(): void
     {
-        // This part already has a bricklink id but no ldraw id, so it must be
-        // re-selected for the backfill.
-        $part = Part::factory()->create([
-            'rebrickable_id' => '3002',
-            'bricklink_id' => 'existing-bl',
-            'ldraw_id' => null,
-        ]);
-
-        $this->fakeParts([
-            ['part_num' => '3002', 'bricklink' => '3002bl', 'ldraw' => '3002ld'],
-        ]);
-
-        (new ImportPartBricklinkNumbersJob)->handle();
-
-        $part->refresh();
-        $this->assertSame('3002bl', $part->bricklink_id);
-        $this->assertSame('3002ld', $part->ldraw_id);
-    }
-
-    public function test_it_does_not_reprocess_parts_with_both_ids_set(): void
-    {
-        // Fully populated part sits below the resume cursor and is skipped.
         Part::factory()->create([
             'rebrickable_id' => '3003',
             'bricklink_id' => 'bl',
-            'ldraw_id' => 'ld',
         ]);
 
         $pending = Part::factory()->create([
             'rebrickable_id' => '3004',
             'bricklink_id' => null,
-            'ldraw_id' => null,
         ]);
 
         $this->fakeParts([
-            ['part_num' => '3004', 'bricklink' => '3004bl', 'ldraw' => '3004ld'],
+            ['part_num' => '3004', 'bricklink' => '3004bl'],
         ]);
 
         (new ImportPartBricklinkNumbersJob)->handle();
 
         Saloon::assertSent(function (ListPartsRequest $request): bool {
-            // The fully populated 3003 must not be requested; only 3004.
             return $request->partNumbers === ['3004'];
         });
 
-        $pending->refresh();
-        $this->assertSame('3004bl', $pending->bricklink_id);
-        $this->assertSame('3004ld', $pending->ldraw_id);
+        $this->assertSame('3004bl', $pending->refresh()->bricklink_id);
     }
 }

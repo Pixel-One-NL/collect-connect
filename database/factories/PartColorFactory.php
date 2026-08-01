@@ -24,6 +24,7 @@ class PartColorFactory extends Factory
         return [
             'part_id' => Part::factory(),
             'color_id' => Color::factory(),
+            'bricqer_definition_id' => (string) fake()->unique()->numerify('########'),
         ];
     }
 }

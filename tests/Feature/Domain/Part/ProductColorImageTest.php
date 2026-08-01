@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Domain\Part;
 
-use App\Http\Resources\ProductResource;
+use App\Http\Resources\Product\ProductResource;
 use App\Models\Color;
 use App\Models\Part;
 use App\Models\Pivots\PartColor;

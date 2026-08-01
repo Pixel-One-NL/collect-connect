@@ -15,3 +15,25 @@ Schedule::command('bricqer:sync')
     ->withoutOverlapping(expiresAt: 60)
     ->onOneServer()
     ->runInBackground();
+
+Schedule::command('bricqer:sync-shipping-methods')
+    ->daily()
+    ->withoutOverlapping()
+    ->onOneServer();
+
+Schedule::command('bricqer:import-weights')
+    ->weeklyOn(1, '04:00')
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->runInBackground();
+
+Schedule::command('rebrickable:import-entity')
+    ->weeklyOn(0, '03:00')
+    ->withoutOverlapping()
+    ->onOneServer()
+    ->runInBackground();
+
+Schedule::command('orders:release-unpaid-stock')
+    ->hourly()
+    ->withoutOverlapping()
+    ->onOneServer();

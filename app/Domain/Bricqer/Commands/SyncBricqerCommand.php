@@ -11,12 +11,14 @@ class SyncBricqerCommand extends Command
 {
     protected $signature = 'bricqer:sync';
 
-    protected $description = 'Sync the Bricqer inventory into products and chain the catalog image import.';
+    protected $description = 'Queue a full Bricqer inventory CSV sync into products.';
 
-    public function handle(): void
+    public function handle(): int
     {
-        SyncBricqerInventoryJob::dispatchSync();
+        SyncBricqerInventoryJob::dispatch();
 
         $this->info('Queued the Bricqer sync job');
+
+        return self::SUCCESS;
     }
 }

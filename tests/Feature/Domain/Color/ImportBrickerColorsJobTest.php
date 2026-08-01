@@ -28,15 +28,13 @@ class ImportBrickerColorsJobTest extends TestCase
 
     public function test_it_maps_bricqer_colors_onto_local_colors_by_name(): void
     {
-        $red = Color::factory()->create(['name' => 'Red', 'bricker_color_id' => null]);
-        $blue = Color::factory()->create(['name' => 'Blue', 'bricker_color_id' => null]);
-        $green = Color::factory()->create(['name' => 'Green', 'bricker_color_id' => null]);
+        $red = Color::factory()->create(['name' => 'Red', 'bricqer_color_id' => null]);
+        $blue = Color::factory()->create(['name' => 'Blue', 'bricqer_color_id' => null]);
+        $green = Color::factory()->create(['name' => 'Green', 'bricqer_color_id' => null]);
 
         $this->fakeColors([
             ['id' => 5, 'bricklink_id' => '5', 'brickowl_id' => '38', 'name' => 'Red', 'name_translated' => 'Rood', 'rgb' => 'B40000', 'is_managed' => true],
-            // Case-insensitive name match.
             ['id' => 6, 'bricklink_id' => '7', 'brickowl_id' => '11', 'name' => 'BLUE', 'name_translated' => 'Blauw', 'rgb' => '0055BF', 'is_managed' => true],
-            // No local color named "Magenta" -> unmatched.
             ['id' => 7, 'bricklink_id' => '71', 'brickowl_id' => '99', 'name' => 'Magenta', 'name_translated' => 'Magenta', 'rgb' => 'E4ADC8', 'is_managed' => false],
         ]);
 
@@ -45,10 +43,12 @@ class ImportBrickerColorsJobTest extends TestCase
         $this->assertSame(3, $stats['bricqer_colors']);
         $this->assertSame(2, $stats['matched']);
         $this->assertSame(1, $stats['unmatched']);
+        $this->assertSame(1, $stats['created']);
 
-        $this->assertSame(5, $red->refresh()->bricker_color_id);
-        $this->assertSame(6, $blue->refresh()->bricker_color_id);
-        $this->assertNull($green->refresh()->bricker_color_id);
+        $this->assertSame('5', (string) $red->refresh()->bricqer_color_id);
+        $this->assertSame('6', (string) $blue->refresh()->bricqer_color_id);
+        $this->assertNull($green->refresh()->bricqer_color_id);
+        $this->assertDatabaseHas(Color::class, ['name' => 'Magenta', 'bricqer_color_id' => '7']);
     }
 
     /**

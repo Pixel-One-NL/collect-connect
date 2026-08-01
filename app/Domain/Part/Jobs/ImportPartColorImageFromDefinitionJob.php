@@ -31,8 +31,6 @@ class ImportPartColorImageFromDefinitionJob implements ShouldQueue
             return;
         }
 
-        $partColor->update(['bricqer_image_url' => $definition->picture]);
-
         ImportPartColorImageJob::dispatch($partColor->id, $definition->picture);
     }
 }
