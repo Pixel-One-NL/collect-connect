@@ -11,19 +11,29 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\LazyCollection;
 
-#[Signature('part:import-color-images {--full} {--definition=}')]
+#[Signature('part:import-color-images {--full : Walk all Bricqer definitions (also imports weights + definition ids)} {--definition=}')]
 class ImportPartColorImagesCommand extends Command
 {
-    public function handle(): void
+    public function handle(): int
     {
         if ($this->option('full')) {
-            FullImportPartColorImagesJob::dispatchSync();
+            $stats = (new FullImportPartColorImagesJob)->handle();
 
-            return;
+            $this->info(sprintf(
+                'Definitions import done: %d parts, %d minifigs updated; %d part/minifig images queued; %d non-P/M skipped.',
+                $stats['parts_updated'],
+                $stats['minifigs_updated'],
+                $stats['images_queued'],
+                $stats['skipped'],
+            ));
+
+            return self::SUCCESS;
         }
 
         $this->retrieveEligiblePartColors($this->option('definition'))
             ->each(fn (PartColor $partColor) => ImportPartColorImageFromDefinitionJob::dispatch($partColor->id));
+
+        return self::SUCCESS;
     }
 
     /**

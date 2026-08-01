@@ -2,42 +2,42 @@
 
 declare(strict_types=1);
 
-namespace App\Domain\Part\Jobs;
+namespace App\Domain\Minifig\Jobs;
 
-use App\Models\Pivots\PartColor;
+use App\Models\Minifig;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Spatie\MediaLibrary\MediaCollections\Exceptions\UnreachableUrl;
 
-class ImportPartColorImageJob implements ShouldQueue
+class ImportMinifigImageJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
 
     public function __construct(
-        public int $partColorId,
+        public int $minifigId,
         public string $imageUrl,
     ) {}
 
     public function handle(): void
     {
-        $partColor = PartColor::query()->find($this->partColorId);
+        $minifig = Minifig::query()->find($this->minifigId);
 
-        if (! $partColor) {
+        if (! $minifig) {
             return;
         }
 
-        if ($partColor->hasMedia(PartColor::BRICQER_IMAGE_COLLECTION)) {
+        if ($minifig->hasMedia(Minifig::BRICQER_IMAGE_COLLECTION)) {
             return;
         }
 
         try {
-            $partColor
+            $minifig
                 ->addMediaFromUrl($this->imageUrl)
-                ->toMediaCollection(PartColor::BRICQER_IMAGE_COLLECTION);
+                ->toMediaCollection(Minifig::BRICQER_IMAGE_COLLECTION);
 
-            $partColor->update(['bricqer_image_url' => $this->imageUrl]);
+            $minifig->update(['bricqer_image_url' => $this->imageUrl]);
         } catch (UnreachableUrl) {
             return;
         }

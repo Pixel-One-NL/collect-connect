@@ -22,6 +22,18 @@ class GetDefinitionRequest extends Request
 
     public function createDtoFromResponse(Response $response): Definition
     {
-        return Definition::from($response->json());
+        /** @var array<string, mixed> $payload */
+        $payload = $response->json() ?? [];
+
+        // Single-definition responses omit `id` (it is only in the URL) and use
+        // `remainingQuantity` instead of the list endpoint's `totalRemainingQuantity`.
+        $payload['id'] = (int) ($payload['id'] ?? $this->definitionId);
+
+        if (! array_key_exists('totalRemainingQuantity', $payload)) {
+            $remaining = $payload['remainingQuantity'] ?? 0;
+            $payload['totalRemainingQuantity'] = is_numeric($remaining) ? (int) $remaining : 0;
+        }
+
+        return Definition::from($payload);
     }
 }

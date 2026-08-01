@@ -28,7 +28,19 @@ class Part extends Model
         'rebrickable_id',
         'bricklink_id',
         'name',
+        'weight_grams',
+        'bricqer_definition_id',
     ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'weight_grams' => 'float',
+        ];
+    }
 
     /**
      * @return BelongsTo<PartCategory, $this>
@@ -95,8 +107,8 @@ class Part extends Model
         return [
             'id' => (string) $this->id,
             'rebrickable_id' => (string) $this->rebrickable_id,
-            'bricklink_id' => (string) $this->bricklink_id,
-            'ldraw_id' => (string) $this->ldraw_id,
+            'bricklink_id' => (string) ($this->bricklink_id ?? ''),
+            'name' => (string) $this->name,
         ];
     }
 }

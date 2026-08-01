@@ -37,5 +37,6 @@ return Application::configure(basePath: dirname(__DIR__))
         app_path('Domain/Part/Commands'),
         app_path('Domain/Product/Commands'),
         app_path('Domain/Color/Commands'),
+        app_path('Domain/Order/Commands'),
     ])
     ->create();
