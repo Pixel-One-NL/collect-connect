@@ -55,26 +55,45 @@ class Product extends Model implements Cartable
      */
     public function toSearchableArray(): array
     {
-        $this->loadMissing('productable');
+        $this->loadMissing([
+            'color',
+            'productable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
+                Part::class => ['partCategory'],
+            ]),
+        ]);
+
+        $productable = $this->productable;
+        $type = $productable instanceof Minifig ? 'minifig' : 'part';
+        $categoryId = $productable instanceof Part ? $productable->part_category_id : null;
+        $categoryName = $productable instanceof Part
+            ? ($productable->partCategory?->name ?? '')
+            : '';
 
         return [
             'id' => (string) $this->id,
-            'name' => (string) ($this->productable->name ?? ''),
-            'bricklink_id' => (string) data_get($this->productable, 'bricklink_id', ''),
+            'name' => (string) ($productable->name ?? ''),
+            'bricklink_id' => (string) data_get($productable, 'bricklink_id', ''),
             'price' => (int) $this->price,
             'stock' => (int) $this->stock,
+            'type' => $type,
+            'color_id' => (int) ($this->color_id ?? 0),
+            'color_name' => (string) ($this->color?->name ?? ''),
+            'category_id' => (int) ($categoryId ?? 0),
+            'category_name' => (string) $categoryName,
         ];
     }
 
     /**
-     * Eager load the productable when (re)building the whole search index to
-     * avoid an N+1 query per product.
-     *
      * @param  Builder<Product>  $query
      * @return Builder<Product>
      */
     public function makeAllSearchableUsing(Builder $query): Builder
     {
-        return $query->with('productable');
+        return $query->with([
+            'color',
+            'productable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
+                Part::class => ['partCategory'],
+            ]),
+        ]);
     }
 }

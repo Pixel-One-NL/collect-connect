@@ -5,38 +5,51 @@ declare(strict_types=1);
 namespace App\Http\Resources\Product;
 
 use App\Http\Resources\Color\ColorResource;
+use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Http\Request;
 
 class ProductSearchResource extends ProductResource
 {
     public function toArray(Request $request): array
     {
-        $siblings = $this->productable->products;
-        $priceMin = $siblings->min('price');
-        $priceMax = $siblings->max('price');
+        $this->loadMissing([
+            'color',
+            'productable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
+                Part::class => ['products.color', 'partColors.media'],
+                Minifig::class => ['media'],
+            ]),
+        ]);
+
+        $siblings = $this->productable instanceof Part
+            ? ($this->productable->products ?? collect())
+            : collect();
+        $priceMin = (int) ($siblings->min('price') ?? $this->price);
+        $priceMax = (int) ($siblings->max('price') ?? $this->price);
 
         return [
             'id' => $this->id,
             'title' => $this->productable->name,
-            'legoNumber' => $this->productable->bricklink_id,
-            'url' => "/products/{$this->id}",
+            'lego_number' => $this->productable->bricklink_id,
+            'url' => route('product.show', $this->id),
             'image' => $this->getImage(),
             'priceMin' => $priceMin,
             'priceMax' => $priceMax,
-            'lego_number' => $this->productable->bricklink_id,
-
-            ...$this->productable instanceof Part
-                ? ['sibling_colors' => $this->productable->products->map(fn (Product $product): array => [
-                    'id' => $product->id,
-                    'stock' => $this->getSafeStock($product->stock),
-                    'price' => $product->price,
-
-                    'image' => $this->getPartImage($product->productable, $product->color_id),
-
-                    'color' => ColorResource::make($product->color),
-                ])] : [],
+            'sibling_colors' => $this->productable instanceof Part
+                ? $siblings
+                    ->sortBy(fn (Product $product): string => $product->color?->name ?? '')
+                    ->values()
+                    ->map(fn (Product $product): array => [
+                        'id' => $product->id,
+                        'stock' => $this->getSafeStock($product->stock),
+                        'price' => $product->price,
+                        'image' => $this->getPartImage($product->productable, $product->color_id),
+                        'color' => ColorResource::make($product->color)->resolve(),
+                    ])
+                    ->all()
+                : [],
         ];
     }
 }

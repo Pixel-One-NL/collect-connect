@@ -1,21 +1,36 @@
 /**
- * @typedef {Object} ProductColor
- * @property {string} name
- * @property {string} hex
+ * @typedef {Object} SiblingColor
+ * @property {number|string} id
  * @property {number} stock
+ * @property {number} price
+ * @property {?string} image
+ * @property {{ name: string, hex: string|null }} color
  */
 
 /**
  * @typedef {Object} ProductResult
  * @property {number|string} id
- * @property {string} name
+ * @property {string} title
  * @property {?string} image
  * @property {string} lego_number
  * @property {string} url
  * @property {?number} priceMin
  * @property {?number} priceMax
- * @property {?ProductColor} primaryColor
- * @property {ProductColor[]} colors
+ * @property {SiblingColor[]} sibling_colors
+ */
+
+/**
+ * @typedef {Object} MinifigResult
+ * @property {number|string} id
+ * @property {string} title
+ * @property {?string} image
+ * @property {?string} lego_number
+ * @property {?string} rebrickable_id
+ * @property {string} url
+ * @property {?number} priceMin
+ * @property {?number} priceMax
+ * @property {SiblingColor[]} sibling_colors
+ * @property {'minifig'} type
  */
 
 /**
@@ -32,11 +47,12 @@
 /**
  * @typedef {Object} SearchResults
  * @property {ProductResult[]} products
+ * @property {MinifigResult[]} minifigs
  * @property {SetResult[]} sets
  */
 
 /**
- * Searches for products and sets matching the given query.
+ * Searches for products, minifigs, and sets matching the given query.
  *
  * @param {string} query
  * @param {Object} [options]
@@ -47,7 +63,7 @@ export async function searchAll(query, { signal } = {}) {
     const term = query.trim();
 
     if (term === '') {
-        return { products: [], sets: [] };
+        return { products: [], minifigs: [], sets: [] };
     }
 
     const response = await fetch(`/api/search?q=${encodeURIComponent(term)}`, {
@@ -61,5 +77,9 @@ export async function searchAll(query, { signal } = {}) {
 
     const { data } = await response.json();
 
-    return data;
+    return {
+        products: data?.products ?? [],
+        minifigs: data?.minifigs ?? [],
+        sets: data?.sets ?? [],
+    };
 }

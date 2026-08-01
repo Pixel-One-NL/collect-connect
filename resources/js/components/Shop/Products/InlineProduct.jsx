@@ -12,9 +12,11 @@ import "react-tooltip/dist/react-tooltip.css";
  * @param {import("../../../services/search.js").ProductResult} props.product
  */
 export default function InlineProduct({ product }) {
-    let { priceMin, priceMax, colors = [] } = product;
+    const siblingColors = product.sibling_colors ?? [];
+    let priceMin = product.priceMin;
+    let priceMax = product.priceMax;
 
-    if(!priceMin || !priceMax) {
+    if (priceMin == null || priceMax == null) {
         priceMin = product.price;
         priceMax = product.price;
     }
@@ -49,32 +51,32 @@ export default function InlineProduct({ product }) {
                 <p className="text-sm font-semibold text-gray-900">{priceLabel}</p>
             </div>
 
-            {product.sibling_colors.length > 0 && (
+            {siblingColors.length > 0 && (
                 <>
                     <span data-tooltip-id={tooltipId} className="flex items-center gap-1">
-                        {product.sibling_colors.slice(0, 6).map(sibling => (
+                        {siblingColors.slice(0, 6).map((sibling) => (
                             <span
-                                key={sibling.color.name}
+                                key={sibling.id ?? sibling.color?.name}
                                 className="h-3 w-3 rounded-full border border-gray-200"
-                                style={{ backgroundColor: `#${sibling.color.hex}` }}
+                                style={{ backgroundColor: `#${sibling.color?.hex ?? 'ccc'}` }}
                             />
                         ))}
 
-                        {product.sibling_colors.length > 6 && (
-                            <span className="text-xs text-gray-400">+{product.sibling_colors.length - 6}</span>
+                        {siblingColors.length > 6 && (
+                            <span className="text-xs text-gray-400">+{siblingColors.length - 6}</span>
                         )}
                     </span>
 
                     <ReactTooltip id={tooltipId} place="top" className="z-50">
                         <span className="flex flex-col gap-1">
-                            {product.sibling_colors.map(sibling => (
-                                <span key={sibling.color.name} className="flex items-center gap-2 whitespace-nowrap">
+                            {siblingColors.map((sibling) => (
+                                <span key={sibling.id ?? sibling.color?.name} className="flex items-center gap-2 whitespace-nowrap">
                                     <span
                                         className="inline-block h-3 w-3 shrink-0 rounded-sm border border-white/30"
-                                        style={{ backgroundColor: `#${sibling.color.hex}` }}
+                                        style={{ backgroundColor: `#${sibling.color?.hex ?? 'ccc'}` }}
                                     />
-                                    <span className="flex-1">{sibling.color.name}</span>
-                                    <span className="text-gray-300">{sibling.color.stock}</span>
+                                    <span className="flex-1">{sibling.color?.name}</span>
+                                    <span className="text-gray-300">{sibling.stock}</span>
                                 </span>
                             ))}
                         </span>

@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Tests\Feature\Api;
 
 use App\Models\Color;
+use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\Product;
+use App\Models\Set;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -21,11 +23,11 @@ class SearchControllerTest extends TestCase
 
         $this->getJson('/api/search?q=red')
             ->assertOk()
-            ->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.name', 'Red Brick 2x4')
-            ->assertJsonPath('data.0.legoNumber', '3001')
-            ->assertJsonPath('data.0.priceMin', 1.5)
-            ->assertJsonPath('data.0.colors.0.stock', 10);
+            ->assertJsonCount(1, 'data.products')
+            ->assertJsonPath('data.products.0.title', 'Red Brick 2x4')
+            ->assertJsonPath('data.products.0.lego_number', '3001')
+            ->assertJsonPath('data.products.0.priceMin', 150)
+            ->assertJsonPath('data.products.0.sibling_colors.0.stock', 10);
     }
 
     public function test_it_searches_products_by_bricklink_number(): void
@@ -35,8 +37,8 @@ class SearchControllerTest extends TestCase
 
         $this->getJson('/api/search?q=3023')
             ->assertOk()
-            ->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.name', 'Blue Plate 1x2');
+            ->assertJsonCount(1, 'data.products')
+            ->assertJsonPath('data.products.0.title', 'Blue Plate 1x2');
     }
 
     public function test_it_groups_color_variants_of_a_part_into_one_result(): void
@@ -48,34 +50,136 @@ class SearchControllerTest extends TestCase
 
         $this->getJson('/api/search?q=brick')
             ->assertOk()
-            ->assertJsonCount(1, 'data')
-            ->assertJsonCount(2, 'data.0.colors')
-            // colors sorted by name asc -> "Azure" is primary.
-            ->assertJsonPath('data.0.primaryColor.name', 'Azure')
-            ->assertJsonPath('data.0.colors.0.name', 'Azure')
-            ->assertJsonPath('data.0.colors.0.stock', 3)
-            ->assertJsonPath('data.0.colors.1.name', 'Blue')
-            // min/max across variants, cents -> euros.
-            ->assertJsonPath('data.0.priceMin', 1.5)
-            ->assertJsonPath('data.0.priceMax', 2);
+            ->assertJsonCount(1, 'data.products')
+            ->assertJsonCount(2, 'data.products.0.sibling_colors')
+            ->assertJsonPath('data.products.0.sibling_colors.0.color.name', 'Azure')
+            ->assertJsonPath('data.products.0.sibling_colors.0.stock', 3)
+            ->assertJsonPath('data.products.0.sibling_colors.1.color.name', 'Blue')
+            ->assertJsonPath('data.products.0.priceMin', 150)
+            ->assertJsonPath('data.products.0.priceMax', 200);
+    }
+
+    public function test_it_searches_minifigs_by_name_and_bricklink_id(): void
+    {
+        Minifig::factory()->create([
+            'name' => 'Luke Skywalker',
+            'bricklink_id' => 'sw0001',
+            'rebrickable_id' => 'fig-000100',
+        ]);
+        Minifig::factory()->create([
+            'name' => 'Han Solo',
+            'bricklink_id' => 'sw0002',
+        ]);
+
+        $this->getJson('/api/search?q=luke')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.minifigs')
+            ->assertJsonPath('data.minifigs.0.title', 'Luke Skywalker')
+            ->assertJsonPath('data.minifigs.0.lego_number', 'sw0001')
+            ->assertJsonPath('data.minifigs.0.type', 'minifig');
+
+        $this->getJson('/api/search?q=sw0002')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.minifigs')
+            ->assertJsonPath('data.minifigs.0.title', 'Han Solo');
+    }
+
+    public function test_it_links_minifig_results_to_their_product_when_available(): void
+    {
+        $minifig = Minifig::factory()->create([
+            'name' => 'Darth Vader',
+            'bricklink_id' => 'sw0003',
+        ]);
+        $product = Product::factory()->create([
+            'productable_type' => $minifig->getMorphClass(),
+            'productable_id' => $minifig->id,
+            'color_id' => Color::factory(),
+            'price' => 1250,
+            'stock' => 4,
+        ]);
+
+        $this->getJson('/api/search?q=vader')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.minifigs')
+            ->assertJsonPath('data.minifigs.0.priceMin', 1250)
+            ->assertJsonPath('data.minifigs.0.url', route('product.show', $product->id));
+    }
+
+    public function test_it_keeps_part_products_and_minifigs_in_separate_buckets(): void
+    {
+        $this->partWithColors('Red Brick 2x4', '3001', [['color' => 'Red', 'price' => 150, 'stock' => 10]]);
+
+        $minifig = Minifig::factory()->create([
+            'name' => 'Red Soldier',
+            'bricklink_id' => 'cas001',
+        ]);
+        Product::factory()->create([
+            'productable_type' => $minifig->getMorphClass(),
+            'productable_id' => $minifig->id,
+            'color_id' => Color::factory(),
+            'price' => 500,
+            'stock' => 2,
+        ]);
+
+        $this->getJson('/api/search?q=red')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.products')
+            ->assertJsonCount(1, 'data.minifigs')
+            ->assertJsonPath('data.products.0.title', 'Red Brick 2x4')
+            ->assertJsonPath('data.minifigs.0.title', 'Red Soldier');
+    }
+
+    public function test_it_returns_sets_alongside_products_and_minifigs(): void
+    {
+        $this->partWithColors('Red Brick 2x4', '3001', [['color' => 'Red', 'price' => 150, 'stock' => 10]]);
+        Minifig::factory()->create(['name' => 'Red Guard', 'bricklink_id' => 'cas002']);
+        Set::factory()->create(['name' => 'Red Castle', 'set_num' => '375-1']);
+
+        $this->getJson('/api/search?q=red')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.products')
+            ->assertJsonCount(1, 'data.minifigs')
+            ->assertJsonCount(1, 'data.sets')
+            ->assertJsonPath('data.sets.0.name', 'Red Castle');
     }
 
     public function test_it_returns_empty_for_a_blank_query(): void
     {
         $this->partWithColors('Red Brick 2x4', '3001', [['color' => 'Red', 'price' => 150, 'stock' => 10]]);
+        Minifig::factory()->create(['name' => 'Luke', 'bricklink_id' => 'sw0001']);
 
         $this->getJson('/api/search?q=')
             ->assertOk()
-            ->assertJsonCount(0, 'data');
+            ->assertJsonPath('data.products', [])
+            ->assertJsonPath('data.minifigs', [])
+            ->assertJsonPath('data.sets', []);
     }
 
     public function test_it_returns_empty_when_nothing_matches(): void
     {
         $this->partWithColors('Red Brick 2x4', '3001', [['color' => 'Red', 'price' => 150, 'stock' => 10]]);
+        Minifig::factory()->create(['name' => 'Luke', 'bricklink_id' => 'sw0001']);
 
         $this->getJson('/api/search?q=nonexistent')
             ->assertOk()
-            ->assertJsonCount(0, 'data');
+            ->assertJsonPath('data.products', [])
+            ->assertJsonPath('data.minifigs', [])
+            ->assertJsonPath('data.sets', []);
+    }
+
+    public function test_it_excludes_out_of_stock_products_from_search(): void
+    {
+        $this->partWithColors('Red Brick 2x4', '3001', [['color' => 'Red', 'price' => 150, 'stock' => 0]]);
+        $this->partWithColors('Blue Plate 1x2', '3023', [['color' => 'Blue', 'price' => 99, 'stock' => 4]]);
+
+        $this->getJson('/api/search?q=red')
+            ->assertOk()
+            ->assertJsonCount(0, 'data.products');
+
+        $this->getJson('/api/search?q=blue')
+            ->assertOk()
+            ->assertJsonCount(1, 'data.products')
+            ->assertJsonPath('data.products.0.title', 'Blue Plate 1x2');
     }
 
     /**
