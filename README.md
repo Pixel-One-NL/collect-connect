@@ -58,3 +58,18 @@ For example, run an artisan command:
 ```bash
 ssu artisan migrate
 ```
+
+## Tests
+
+```bash
+ssu artisan test --compact
+```
+
+CI runs the same suite on every pull request (see `.github/workflows/tests.yml`).
+
+## Staging & production
+
+- **Local / demo:** `docker compose up -d` (see Installation).
+- **Production-like stack:** `docker compose -f docker-compose.prod.yaml up -d` (app, queue worker, scheduler, MySQL, Redis).
+- **Staging:** deploy the same image/config as production with a separate host, database, and `.env` (`APP_ENV=staging`, staging Bricqer/Scout keys, non-public URL). Promote to production only after staging acceptance.
+- Stock sync is a **full** Bricqer CSV import each run (`php artisan bricqer:sync`, scheduled every 30 minutes).

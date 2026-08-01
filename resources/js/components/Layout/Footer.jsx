@@ -19,7 +19,9 @@ export default function Footer() {
 
     return (
         <footer className="relative bg-accent py-10 pb-8 px-8 min-h-62.5 border-brick-top-accent">
-            <img src="/images/elements/alien.png" alt="" className="absolute bottom-full right-8 translate-y-1/2 -rotate-12 hidden lg:block pointer-events-none" />
+            {window.location.pathname === '/' && (
+                <img src="/images/elements/alien.png" alt="" className="absolute bottom-full right-8 translate-y-1/2 -rotate-12 hidden lg:block pointer-events-none" />
+            )}
 
             <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
                 <img src="/images/coco-logo-small.svg" alt="Collect2Connect" className="w-full max-w-60 hidden md:block" />

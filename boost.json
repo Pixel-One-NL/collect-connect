@@ -13,6 +13,12 @@
     "sail": false,
     "skills": [
         "laravel-best-practices",
-        "saloon-development"
+        "scout-development",
+        "inertia-react-development",
+        "tailwindcss-development",
+        "saloon-development",
+        "laravel-patterns",
+        "laravel-security",
+        "laravel-specialist"
     ]
 }
