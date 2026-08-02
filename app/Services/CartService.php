@@ -8,7 +8,7 @@ use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\Pivots\PartColor;
 use App\Models\Product;
-use App\Support\BricqerImageUrl;
+use App\Support\MediaUrl;
 use Binafy\LaravelCart\Drivers\Driver;
 use Binafy\LaravelCart\LaravelCart;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -299,38 +299,25 @@ class CartService
         });
     }
 
+    /**
+     * Cart thumbnails are media-library only (no Bricqer CDN hotlinking).
+     */
     protected function imageFor(Product $product): ?string
     {
         if ($product->productable instanceof Part) {
             $partColor = $product->productable->partColors->firstWhere('color_id', $product->color_id);
-            $media = $partColor
-                ?->getFirstMedia(PartColor::BRICQER_IMAGE_COLLECTION)
-                ?->getAvailableUrl([PartColor::THUMB_CONVERSION]);
 
-            if ($media) {
-                return $media;
-            }
-
-            if ($product->productable->bricklink_id && $product->color?->bricklink_color_id) {
-                return BricqerImageUrl::part(
-                    $product->productable->bricklink_id,
-                    $product->color->bricklink_color_id,
-                );
-            }
+            return MediaUrl::fromMedia(
+                $partColor?->getFirstMedia(PartColor::BRICQER_IMAGE_COLLECTION),
+                [PartColor::THUMB_CONVERSION, PartColor::MEDIUM_CONVERSION, PartColor::LARGE_CONVERSION],
+            );
         }
 
         if ($product->productable instanceof Minifig) {
-            $media = $product->productable
-                ->getFirstMedia(Minifig::BRICQER_IMAGE_COLLECTION)
-                ?->getAvailableUrl([Minifig::THUMB_CONVERSION]);
-
-            if ($media) {
-                return $media;
-            }
-
-            if ($product->productable->bricklink_id) {
-                return BricqerImageUrl::minifig($product->productable->bricklink_id);
-            }
+            return MediaUrl::fromMedia(
+                $product->productable->getFirstMedia(Minifig::BRICQER_IMAGE_COLLECTION),
+                [Minifig::THUMB_CONVERSION, Minifig::MEDIUM_CONVERSION, Minifig::LARGE_CONVERSION],
+            );
         }
 
         return null;

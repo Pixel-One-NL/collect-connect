@@ -63,6 +63,29 @@ class ProductColorImageTest extends TestCase
         // The single product page serves the large conversion (generated
         // synchronously in tests), not the original.
         $this->assertStringContainsString(PartColor::LARGE_CONVERSION, $redData['image']);
+        $this->assertStringStartsWith('/', $redData['image']);
+        $this->assertStringNotContainsString('cdn.bricqer.com', $redData['image']);
+    }
+
+    public function test_product_resource_does_not_fall_back_to_bricqer_cdn_for_parts(): void
+    {
+        $part = Part::factory()->create(['bricklink_id' => '3001']);
+        $color = Color::factory()->create([
+            'name' => 'Red',
+            'bricklink_color_id' => '5',
+        ]);
+
+        $product = Product::factory()->create([
+            'productable_type' => $part->getMorphClass(),
+            'productable_id' => $part->id,
+            'color_id' => $color->id,
+        ]);
+
+        $product->load(['productable.partColors.media', 'color']);
+
+        $data = (new ProductResource($product))->toArray(Request::create('/'));
+
+        $this->assertNull($data['image']);
     }
 
     private function attachImage(Part $part, Color $color, string $fileName): Media

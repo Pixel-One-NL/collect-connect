@@ -33,7 +33,7 @@ class ProductSearchResource extends ProductResource
             'id' => $this->id,
             'title' => $this->productable->name,
             'lego_number' => $this->productable->bricklink_id,
-            'url' => route('product.show', $this->id),
+            'url' => route('product.show', $this->resource, absolute: false),
             'image' => $this->getImage(),
             'priceMin' => $priceMin,
             'priceMax' => $priceMax,

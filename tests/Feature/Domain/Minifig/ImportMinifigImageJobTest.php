@@ -56,8 +56,26 @@ class ImportMinifigImageJobTest extends TestCase
         $data = (new ProductResource($product))->toArray(Request::create('/'));
 
         $this->assertNotEmpty($data['image']);
+        $this->assertStringStartsWith('/', $data['image']);
         $this->assertStringContainsString((string) $media->id, $data['image']);
         $this->assertStringContainsString(Minifig::LARGE_CONVERSION, $data['image']);
+        $this->assertStringNotContainsString('cdn.bricqer.com', $data['image']);
+    }
+
+    public function test_product_resource_does_not_fall_back_to_bricqer_cdn_for_minifigs(): void
+    {
+        $minifig = Minifig::factory()->create(['bricklink_id' => 'sw0001']);
+        $product = Product::factory()->create([
+            'productable_type' => $minifig->getMorphClass(),
+            'productable_id' => $minifig->id,
+            'color_id' => Color::factory(),
+        ]);
+
+        $product->load(['productable.media', 'color']);
+
+        $data = (new ProductResource($product))->toArray(Request::create('/'));
+
+        $this->assertNull($data['image']);
     }
 
     public function test_full_import_queues_minifig_images_from_definitions(): void

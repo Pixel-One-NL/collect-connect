@@ -66,14 +66,10 @@ class SearchController extends Controller
             ->take(40)
             ->get()
             ->load(['media', 'products'])
-            ->filter(function (Minifig $minifig): bool {
-                // Keep catalog-only minifigs; hide ones that only have zero-stock products.
-                if ($minifig->products->isEmpty()) {
-                    return true;
-                }
-
-                return $minifig->products->contains(fn (Product $product): bool => $product->stock > 0);
-            })
+            // Shop search only returns minifigs that link to a sellable product page.
+            ->filter(fn (Minifig $minifig): bool => $minifig->products->contains(
+                fn (Product $product): bool => $product->stock > 0,
+            ))
             ->values();
 
         $sets = Set::search($query)

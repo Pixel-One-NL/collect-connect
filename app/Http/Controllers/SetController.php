@@ -11,7 +11,7 @@ use App\Models\PartCategory;
 use App\Models\Pivots\PartColor;
 use App\Models\Product;
 use App\Models\Set;
-use App\Support\BricqerImageUrl;
+use App\Support\MediaUrl;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Response;
@@ -114,37 +114,24 @@ class SetController extends Controller
         ]);
     }
 
+    /**
+     * Set BOM images are media-library only (no Bricqer CDN hotlinking).
+     */
     private function getPartImage(Part $part, int $colorId): ?string
     {
         $partColor = $part->partColors->firstWhere('color_id', $colorId);
 
-        $media = $partColor
-            ?->getFirstMedia(PartColor::BRICQER_IMAGE_COLLECTION)
-            ?->getAvailableUrl([PartColor::LARGE_CONVERSION]);
-
-        if ($media) {
-            return $media;
-        }
-
-        if ($part->bricklink_id && $partColor?->color?->bricklink_color_id) {
-            return BricqerImageUrl::part($part->bricklink_id, $partColor->color->bricklink_color_id);
-        }
-
-        return null;
+        return MediaUrl::fromMedia(
+            $partColor?->getFirstMedia(PartColor::BRICQER_IMAGE_COLLECTION),
+            [PartColor::LARGE_CONVERSION, PartColor::MEDIUM_CONVERSION, PartColor::THUMB_CONVERSION],
+        );
     }
 
     private function getMinifigImage(Minifig $minifig): ?string
     {
-        $media = $minifig
-            ->getFirstMedia(Minifig::BRICQER_IMAGE_COLLECTION)
-            ?->getAvailableUrl([Minifig::LARGE_CONVERSION]);
-
-        if ($media) {
-            return $media;
-        }
-
-        return $minifig->bricklink_id
-            ? BricqerImageUrl::minifig($minifig->bricklink_id)
-            : null;
+        return MediaUrl::fromMedia(
+            $minifig->getFirstMedia(Minifig::BRICQER_IMAGE_COLLECTION),
+            [Minifig::LARGE_CONVERSION, Minifig::MEDIUM_CONVERSION, Minifig::THUMB_CONVERSION],
+        );
     }
 }

@@ -9,7 +9,7 @@ use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\Pivots\PartColor;
 use App\Models\Product;
-use App\Support\BricqerImageUrl;
+use App\Support\MediaUrl;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -48,7 +48,7 @@ class ProductResource extends JsonResource
             'color' => $this->shouldShowColor()
                 ? ColorResource::make($this->color)
                 : null,
-            'url' => route('product.show', $this->id),
+            'url' => route('product.show', $this->resource, absolute: false),
             'attributes' => $this->attributesList(),
             ...$productable instanceof Part
                 ? ['sibling_colors' => $productable->products->map(fn (Product $product): array => [
@@ -57,7 +57,7 @@ class ProductResource extends JsonResource
                     'price' => $product->price,
                     'image' => $this->getPartImage($product->productable, $product->color_id),
                     'color' => ColorResource::make($product->color),
-                    'url' => route('product.show', $product->id),
+                    'url' => route('product.show', $product, absolute: false),
                 ])]
                 : ['sibling_colors' => []],
         ];
@@ -72,27 +72,18 @@ class ProductResource extends JsonResource
         throw new Exception('Productable type not found');
     }
 
+    /**
+     * Shop images come only from the Spatie media library. Bricqer CDN URLs are
+     * for import jobs only — never hotlinked to the storefront.
+     */
     protected function getPartImage(Part $part, int $colorId): ?string
     {
         $partColor = $part->partColors->firstWhere('color_id', $colorId);
 
-        $mediaUrl = $partColor
-            ?->getFirstMedia(PartColor::BRICQER_IMAGE_COLLECTION)
-            ?->getAvailableUrl([PartColor::LARGE_CONVERSION]);
-
-        if ($mediaUrl) {
-            return $mediaUrl;
-        }
-
-        $bricklinkId = $part->bricklink_id;
-        $blColor = $partColor?->color?->bricklink_color_id
-            ?? $this->color?->bricklink_color_id;
-
-        if ($bricklinkId && $blColor !== null) {
-            return BricqerImageUrl::part($bricklinkId, $blColor);
-        }
-
-        return null;
+        return MediaUrl::fromMedia(
+            $partColor?->getFirstMedia(PartColor::BRICQER_IMAGE_COLLECTION),
+            [PartColor::LARGE_CONVERSION, PartColor::MEDIUM_CONVERSION, PartColor::THUMB_CONVERSION],
+        );
     }
 
     protected function getImage(): ?string
@@ -110,17 +101,10 @@ class ProductResource extends JsonResource
 
     protected function getMinifigImage(Minifig $minifig): ?string
     {
-        $mediaUrl = $minifig
-            ->getFirstMedia(Minifig::BRICQER_IMAGE_COLLECTION)
-            ?->getAvailableUrl([Minifig::LARGE_CONVERSION]);
-
-        if ($mediaUrl) {
-            return $mediaUrl;
-        }
-
-        return $minifig->bricklink_id
-            ? BricqerImageUrl::minifig($minifig->bricklink_id)
-            : null;
+        return MediaUrl::fromMedia(
+            $minifig->getFirstMedia(Minifig::BRICQER_IMAGE_COLLECTION),
+            [Minifig::LARGE_CONVERSION, Minifig::MEDIUM_CONVERSION, Minifig::THUMB_CONVERSION],
+        );
     }
 
     protected function shouldShowColor(): bool

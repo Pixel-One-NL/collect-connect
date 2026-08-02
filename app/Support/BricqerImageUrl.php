@@ -5,8 +5,12 @@ declare(strict_types=1);
 namespace App\Support;
 
 /**
- * Bricqer CDN image URLs observed from live order payloads.
- * Pattern is not fully documented in the OpenAPI export.
+ * Builds Bricqer CDN source URLs for **backend image import jobs only**.
+ *
+ * Never use these URLs in storefront responses (product pages, search, cart,
+ * set BOM). Shop images must come from the Spatie media library after import.
+ *
+ * Pattern is observed from Bricqer payloads; not fully documented in OpenAPI.
  */
 final class BricqerImageUrl
 {
