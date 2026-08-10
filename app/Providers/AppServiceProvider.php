@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace App\Providers;
 
 use App\Domain\Payment\Contracts\PaymentGateway;
-use App\Domain\Payment\Drivers\ManualPaymentGateway;
+use App\Domain\Payment\PaymentGatewayManager;
 use App\Services\CartService;
 use Illuminate\Cache\RateLimiting\Limit;
+use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
@@ -20,7 +21,12 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->singleton(CartService::class);
-        $this->app->bind(PaymentGateway::class, ManualPaymentGateway::class);
+
+        $this->app->singleton(PaymentGatewayManager::class);
+        $this->app->bind(
+            PaymentGateway::class,
+            fn (Application $app): PaymentGateway => $app->make(PaymentGatewayManager::class)->driver(),
+        );
     }
 
     /**

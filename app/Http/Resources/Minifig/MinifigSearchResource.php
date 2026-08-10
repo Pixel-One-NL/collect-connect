@@ -44,15 +44,8 @@ class MinifigSearchResource extends JsonResource
         ];
     }
 
-    /**
-     * Shop-facing minifig images may only come from our Spatie media library.
-     * Bricqer CDN hotlinking is not permitted for the webshop.
-     */
     protected function imageUrl(): ?string
     {
-        return MediaUrl::fromMedia(
-            $this->getFirstMedia(Minifig::BRICQER_IMAGE_COLLECTION),
-            [Minifig::THUMB_CONVERSION],
-        );
+        return MediaUrl::forMinifig($this->resource, [Minifig::THUMB_CONVERSION]);
     }
 }

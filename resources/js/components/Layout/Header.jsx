@@ -4,7 +4,7 @@ import CartIcon from '../Navigation/CartIcon';
 import NavLink from '../Navigation/NavLink';
 import HeaderTopBar from './HeaderTopBar';
 import {Link, usePage} from "@inertiajs/react";
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import Button from '../UI/Button.jsx';
 
 /**
@@ -21,6 +21,13 @@ export default function Header({currentRoute = '/', onOpenCart}) {
         setSearchOrigin(origin);
         setSearchOpen(true);
     };
+
+    // Lets any page open the shared overlay, the way the cart drawer works.
+    useEffect(() => {
+        const handler = (event) => openSearch(event.detail?.origin ?? null);
+        window.addEventListener('search:open', handler);
+        return () => window.removeEventListener('search:open', handler);
+    }, []);
 
     return (
         <header className="sticky top-0 z-50 bg-white border-b border-[#e1e1e1]">

@@ -22,7 +22,7 @@ class SitemapController extends Controller
             ['loc' => url('/blog'), 'changefreq' => 'weekly', 'priority' => '0.6'],
         ]);
 
-        Product::query()->select('id', 'updated_at')->orderBy('id')->chunk(500, function ($products) use (&$urls): void {
+        Product::query()->select('id', 'updated_at')->orderBy('id')->chunk(500, function ($products) use ($urls): void {
             foreach ($products as $product) {
                 $urls->push([
                     'loc' => route('product.show', $product),
@@ -33,7 +33,7 @@ class SitemapController extends Controller
             }
         });
 
-        Set::query()->select('id', 'updated_at')->orderBy('id')->chunk(500, function ($sets) use (&$urls): void {
+        Set::query()->select('id', 'updated_at')->orderBy('id')->chunk(500, function ($sets) use ($urls): void {
             foreach ($sets as $set) {
                 $urls->push([
                     'loc' => route('sets.show', $set),
@@ -44,7 +44,7 @@ class SitemapController extends Controller
             }
         });
 
-        Article::query()->where('is_published', true)->each(function (Article $article) use (&$urls): void {
+        Article::query()->where('is_published', true)->select('id', 'slug', 'updated_at')->each(function (Article $article) use ($urls): void {
             $urls->push([
                 'loc' => url('/blog/'.$article->slug),
                 'lastmod' => optional($article->updated_at)->toAtomString(),
@@ -53,7 +53,7 @@ class SitemapController extends Controller
             ]);
         });
 
-        Page::query()->where('is_published', true)->each(function (Page $page) use (&$urls): void {
+        Page::query()->where('is_published', true)->select('id', 'slug', 'updated_at')->each(function (Page $page) use ($urls): void {
             $urls->push([
                 'loc' => route('pages.show', $page),
                 'lastmod' => optional($page->updated_at)->toAtomString(),

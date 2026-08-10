@@ -3,16 +3,22 @@ import Container from '../../components/Container';
 import InlineProduct from '../../components/Shop/Products/InlineProduct';
 import AddToCartButton from '../../components/Shop/Products/AddToCartButton';
 
+const LISTING_PATHS = {
+    minifig: '/minifiguren',
+    search: '/zoeken',
+    part: '/onderdelen',
+};
+
 export default function CatalogPage({ title, type, query, products, filters, active }) {
     const items = products?.data ?? products ?? [];
-    const meta = products?.meta ?? products?.links ? products : null;
+    const meta = (products?.meta || products?.links) ? products : null;
 
     function updateFilter(key, value) {
         const params = { ...active, [key]: value || undefined };
         Object.keys(params).forEach((k) => {
             if (params[k] == null || params[k] === '') delete params[k];
         });
-        const path = type === 'minifig' ? '/minifiguren' : type === 'search' ? '/zoeken' : '/onderdelen';
+        const path = LISTING_PATHS[type] ?? LISTING_PATHS.part;
         router.get(path, params, { preserveState: true, preserveScroll: true });
     }
 

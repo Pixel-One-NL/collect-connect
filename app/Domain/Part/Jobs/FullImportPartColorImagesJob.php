@@ -65,10 +65,10 @@ class FullImportPartColorImagesJob implements ShouldBeUnique, ShouldQueue
             ->whereIn('bricqer_definition_id', $definitions->pluck('id')->map(fn ($id): string => (string) $id))
             ->get();
 
-        $partColors->each(function (PartColor $partColor) use ($definitions, &$queued): void {
-            $definition = $definitions->first(
-                fn (Definition $definition): bool => (string) $definition->id === (string) $partColor->bricqer_definition_id,
-            );
+        $definitionsById = $definitions->keyBy(fn (Definition $definition): string => (string) $definition->id);
+
+        $partColors->each(function (PartColor $partColor) use ($definitionsById, &$queued): void {
+            $definition = $definitionsById->get((string) $partColor->bricqer_definition_id);
 
             if (! $definition || ! $definition->picture) {
                 return;
@@ -101,15 +101,12 @@ class FullImportPartColorImagesJob implements ShouldBeUnique, ShouldQueue
         }
 
         $keys = $byBricklinkId->keys()->map(fn ($key): string => (string) $key)->all();
+        $placeholders = implode(',', array_fill(0, count($keys), '?'));
 
         $minifigs = Minifig::query()
             ->whereDoesntHave('media', fn ($query) => $query->where('collection_name', Minifig::BRICQER_IMAGE_COLLECTION))
             ->whereNotNull('bricklink_id')
-            ->where(function ($query) use ($keys): void {
-                foreach ($keys as $key) {
-                    $query->orWhereRaw('LOWER(bricklink_id) = ?', [(string) $key]);
-                }
-            })
+            ->whereRaw("LOWER(bricklink_id) IN ({$placeholders})", $keys)
             ->get();
 
         $queued = 0;

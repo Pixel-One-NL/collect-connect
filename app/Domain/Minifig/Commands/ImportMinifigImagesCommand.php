@@ -89,18 +89,10 @@ class ImportMinifigImagesCommand extends Command
 
         return LazyCollection::make(function () use ($ids) {
             foreach ($ids->chunk(100) as $chunk) {
-                $minifigs = Minifig::query()
+                yield from Minifig::query()
                     ->whereIn('id', $chunk->all())
-                    ->get()
-                    ->keyBy('id');
-
-                foreach ($chunk as $id) {
-                    $minifig = $minifigs->get($id);
-
-                    if ($minifig !== null) {
-                        yield $minifig;
-                    }
-                }
+                    ->orderBy('id')
+                    ->get();
             }
         });
     }

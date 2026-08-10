@@ -99,7 +99,8 @@ export default function ProductPage({ product: { data: product }, suggestions: {
                                 <input
                                     type="number"
                                     className="h-full py-2 px-2 w-[4ch] text-center [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
-                                    min={1} value={quantity} // max={available}
+                                    min={1}
+                                    value={quantity}
                                     onChange={e => setQuantity(
                                         Math.max(1, Math.min(available, parseInt(e.target.value) || 1))
                                     )}

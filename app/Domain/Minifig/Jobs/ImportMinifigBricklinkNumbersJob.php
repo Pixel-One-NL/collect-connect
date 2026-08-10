@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace App\Domain\Minifig\Jobs;
 
 use App\Models\Minifig;
+use App\Support\BulkCaseUpdate;
 use Generator;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Http;
 use RuntimeException;
@@ -235,25 +235,11 @@ class ImportMinifigBricklinkNumbersJob implements ShouldQueue
 
         $toUpdate = array_intersect_key($batch, array_flip($matchedIds));
 
-        $cases = [];
-        $bindings = [];
-
-        foreach ($toUpdate as $rebrickableId => $bricklinkId) {
-            $cases[] = 'WHEN ? THEN ?';
-            $bindings[] = $rebrickableId;
-            $bindings[] = $bricklinkId;
-        }
-
-        $ids = array_keys($toUpdate);
-        $idPlaceholders = implode(',', array_fill(0, count($ids), '?'));
-        $caseSql = implode(' ', $cases);
-        $table = (new Minifig)->getTable();
-
-        $updated = DB::update(
-            "UPDATE {$table}
-             SET bricklink_id = CASE rebrickable_id {$caseSql} END
-             WHERE rebrickable_id IN ({$idPlaceholders})",
-            [...$bindings, ...$ids],
+        $updated = BulkCaseUpdate::apply(
+            (new Minifig)->getTable(),
+            'rebrickable_id',
+            'bricklink_id',
+            $toUpdate,
         );
 
         return [

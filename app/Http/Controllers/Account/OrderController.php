@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Account;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Order\OrderResource;
 use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Response as InertiaResponse;
@@ -42,14 +43,12 @@ class OrderController extends Controller
 
         $order->load('items');
 
-        $lines = $order->items->map(function ($item): string {
-            return sprintf(
-                '%s x%d @ €%.2f',
-                $item->title,
-                $item->quantity,
-                $item->unit_price_cents / 100,
-            );
-        })->implode("\n");
+        $lines = $order->items->map(fn (OrderItem $item): string => sprintf(
+            '%s x%d @ €%.2f',
+            $item->title,
+            $item->quantity,
+            $item->unit_price_cents / 100,
+        ))->implode("\n");
 
         $body = "Factuur {$order->number}\n"
             ."Status: {$order->status}\n"

@@ -9,7 +9,9 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CartPageController;
 use App\Http\Controllers\CatalogController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\PaymentSimulationController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\SetController;
 use App\Http\Controllers\SetIndexController;
@@ -17,7 +19,7 @@ use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\StockNotificationController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => inertia('index'))->name('home');
+Route::get('/', HomeController::class)->name('home');
 Route::get('/sitemap.xml', SitemapController::class)->name('sitemap');
 
 Route::get('/blog', [BlogController::class, 'index'])->name('blog.index');
@@ -52,6 +54,16 @@ Route::post('/checkout', [CheckoutController::class, 'store'])
     ->middleware('throttle:checkout')
     ->name('checkout.store');
 Route::get('/checkout/bevestiging/{order}', [CheckoutController::class, 'confirmation'])->name('checkout.confirmation');
+
+// Local payment simulator standing in for a PSP's hosted page. Deliberately not
+// registered in production, so the route does not exist there at all.
+if (app()->environment((array) config('payment.simulator_environments', []))) {
+    Route::get('/checkout/betaling/{order}', [PaymentSimulationController::class, 'show'])
+        ->name('checkout.payment.simulate');
+    Route::post('/checkout/betaling/{order}', [PaymentSimulationController::class, 'store'])
+        ->middleware('throttle:checkout')
+        ->name('checkout.payment.simulate.store');
+}
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [SessionController::class, 'create'])->name('login');

@@ -12,6 +12,7 @@ use App\Models\Part;
 use App\Models\Pivots\PartColor;
 use App\Models\Product;
 use App\Models\SyncRun;
+use App\Support\BulkCaseUpdate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -86,25 +87,34 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
                 );
             }
 
+            // Resolve bricklink ids to local entity ids once for the whole feed; both the
+            // definition-id sync below and the per-chunk upserts reuse these same maps.
+            $partIds = $this->mapBricklinkIds(
+                array_column(array_filter($consolidated, fn (array $r): bool => $r['item_type'] === 'P'), 'item_id'),
+                Part::class,
+            );
+            $minifigIds = $this->mapBricklinkIds(
+                array_column(array_filter($consolidated, fn (array $r): bool => $r['item_type'] === 'M'), 'item_id'),
+                Minifig::class,
+            );
+
             // Aggregate definition ids across the full feed first so chunk order
             // cannot regress a higher definition id written by an earlier chunk.
-            $stats['minifig_definitions_updated'] = $this->applyMinifigDefinitionIdsFromInventory(
+            $stats['minifig_definitions_updated'] = $this->applyDefinitionIdsFromInventory(
                 $consolidated,
-                $this->mapBricklinkIds(
-                    array_column(array_filter($consolidated, fn (array $r): bool => $r['item_type'] === 'M'), 'item_id'),
-                    Minifig::class,
-                ),
+                $minifigIds,
+                'M',
+                Minifig::class,
             );
-            $stats['part_definitions_updated'] = $this->applyPartDefinitionIdsFromInventory(
+            $stats['part_definitions_updated'] = $this->applyDefinitionIdsFromInventory(
                 $consolidated,
-                $this->mapBricklinkIds(
-                    array_column(array_filter($consolidated, fn (array $r): bool => $r['item_type'] === 'P'), 'item_id'),
-                    Part::class,
-                ),
+                $partIds,
+                'P',
+                Part::class,
             );
 
             foreach (array_chunk($consolidated, $this->chunkSize) as $chunk) {
-                $chunkStats = $this->upsertProducts($chunk);
+                $chunkStats = $this->upsertProducts($chunk, $partIds, $minifigIds);
                 $stats['found'] += $chunkStats['found'];
                 $stats['color_unmatched'] += $chunkStats['color_unmatched'];
                 $stats['item_not_found'] += $chunkStats['item_not_found'];
@@ -232,9 +242,11 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
 
     /**
      * @param  list<array{item_type: string, item_id: string, color_id: string, stock: int, price: int, definition_id: string}>  $chunk
+     * @param  Collection<string, int>  $partIds
+     * @param  Collection<string, int>  $minifigIds
      * @return array{found: int, color_unmatched: int, item_not_found: int}
      */
-    protected function upsertProducts(array $chunk): array
+    protected function upsertProducts(array $chunk, Collection $partIds, Collection $minifigIds): array
     {
         $stats = [
             'found' => 0,
@@ -242,19 +254,10 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
             'item_not_found' => 0,
         ];
 
-        DB::transaction(function () use ($chunk, &$stats): void {
-            $partIds = $this->mapBricklinkIds(
-                array_column(array_filter($chunk, fn (array $r): bool => $r['item_type'] === 'P'), 'item_id'),
-                Part::class,
-            );
-
-            $minifigIds = $this->mapBricklinkIds(
-                array_column(array_filter($chunk, fn (array $r): bool => $r['item_type'] === 'M'), 'item_id'),
-                Minifig::class,
-            );
-
+        DB::transaction(function () use ($chunk, $partIds, $minifigIds, &$stats): void {
             $partMorph = (new Part)->getMorphClass();
             $minifigMorph = (new Minifig)->getMorphClass();
+            $existingPartColorDefinitions = $this->existingPartColorDefinitions($chunk, $partIds);
 
             foreach ($chunk as $row) {
                 $colorId = $this->colorIdMap->get((string) $row['color_id']);
@@ -292,13 +295,11 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
                 $stats['found']++;
 
                 if ($row['item_type'] === 'P') {
+                    $partColorKey = ['part_id' => $entityId, 'color_id' => $colorId];
                     $partColorAttributes = [];
 
                     if ($row['definition_id'] !== '') {
-                        $existing = PartColor::query()
-                            ->where('part_id', $entityId)
-                            ->where('color_id', $colorId)
-                            ->value('bricqer_definition_id');
+                        $existing = $existingPartColorDefinitions->get("{$entityId}-{$colorId}");
 
                         $partColorAttributes['bricqer_definition_id'] = $this->preferDefinitionId(
                             (string) ($existing ?? ''),
@@ -308,23 +309,9 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
 
                     // Ensure pivot exists even without a definition id (stock/catalog path).
                     if ($partColorAttributes === []) {
-                        PartColor::query()->firstOrCreate(
-                            [
-                                'part_id' => $entityId,
-                                'color_id' => $colorId,
-                            ],
-                            [
-                                'bricqer_definition_id' => '0',
-                            ],
-                        );
+                        PartColor::query()->firstOrCreate($partColorKey, ['bricqer_definition_id' => '0']);
                     } else {
-                        PartColor::updateOrCreate(
-                            [
-                                'part_id' => $entityId,
-                                'color_id' => $colorId,
-                            ],
-                            $partColorAttributes,
-                        );
+                        PartColor::updateOrCreate($partColorKey, $partColorAttributes);
                     }
                 }
             }
@@ -334,43 +321,56 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
     }
 
     /**
-     * @param  list<array{item_type: string, item_id: string, color_id: string, stock: int, price: int, definition_id: string}>  $rows
-     * @param  Collection<string, int>  $minifigIds
-     */
-    protected function applyMinifigDefinitionIdsFromInventory(array $rows, Collection $minifigIds): int
-    {
-        /** @var array<string, string> $definitionsByBricklink */
-        $definitionsByBricklink = [];
-
-        foreach ($rows as $row) {
-            if ($row['item_type'] !== 'M' || $row['definition_id'] === '') {
-                continue;
-            }
-
-            $key = strtolower($row['item_id']);
-            $definitionsByBricklink[$key] = $this->preferDefinitionId(
-                $definitionsByBricklink[$key] ?? '',
-                $row['definition_id'],
-            );
-        }
-
-        return $this->bulkUpdateDefinitionIds(Minifig::class, $minifigIds, $definitionsByBricklink);
-    }
-
-    /**
-     * @param  list<array{item_type: string, item_id: string, color_id: string, stock: int, price: int, definition_id: string}>  $rows
+     * Batch-fetches existing PartColor.bricqer_definition_id values for every part
+     * this chunk may touch, so upsertProducts() doesn't run a SELECT per row.
+     *
+     * @param  list<array{item_type: string, item_id: string, color_id: string, stock: int, price: int, definition_id: string}>  $chunk
      * @param  Collection<string, int>  $partIds
+     * @return Collection<string, string>
      */
-    protected function applyPartDefinitionIdsFromInventory(array $rows, Collection $partIds): int
+    protected function existingPartColorDefinitions(array $chunk, Collection $partIds): Collection
     {
-        /** @var array<string, string> $definitionsByBricklink */
-        $definitionsByBricklink = [];
+        $entityIds = [];
 
-        foreach ($rows as $row) {
+        foreach ($chunk as $row) {
             if ($row['item_type'] !== 'P' || $row['definition_id'] === '') {
                 continue;
             }
 
+            $entityId = $partIds->get(strtolower($row['item_id']));
+
+            if ($entityId !== null) {
+                $entityIds[] = $entityId;
+            }
+        }
+
+        if ($entityIds === []) {
+            return collect();
+        }
+
+        return PartColor::query()
+            ->whereIn('part_id', array_unique($entityIds))
+            ->get(['part_id', 'color_id', 'bricqer_definition_id'])
+            ->mapWithKeys(fn (PartColor $partColor): array => [
+                "{$partColor->part_id}-{$partColor->color_id}" => $partColor->bricqer_definition_id,
+            ]);
+    }
+
+    /**
+     * @param  list<array{item_type: string, item_id: string, color_id: string, stock: int, price: int, definition_id: string}>  $rows
+     * @param  Collection<string, int>  $entityIds
+     * @param  class-string<Part|Minifig>  $model
+     */
+    protected function applyDefinitionIdsFromInventory(array $rows, Collection $entityIds, string $itemType, string $model): int
+    {
+        /** @var array<string, string> $definitionsByBricklink */
+        $definitionsByBricklink = [];
+
+        foreach ($rows as $row) {
+            if ($row['item_type'] !== $itemType || $row['definition_id'] === '') {
+                continue;
+            }
+
             $key = strtolower($row['item_id']);
             $definitionsByBricklink[$key] = $this->preferDefinitionId(
                 $definitionsByBricklink[$key] ?? '',
@@ -378,7 +378,7 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
             );
         }
 
-        return $this->bulkUpdateDefinitionIds(Part::class, $partIds, $definitionsByBricklink);
+        return $this->bulkUpdateDefinitionIds($model, $entityIds, $definitionsByBricklink);
     }
 
     /**
@@ -392,7 +392,6 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
             return 0;
         }
 
-        $candidateIds = [];
         $candidatesById = [];
 
         foreach ($definitionsByBricklink as $bricklinkId => $definitionId) {
@@ -402,7 +401,6 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
                 continue;
             }
 
-            $candidateIds[] = $entityId;
             $candidatesById[$entityId] = $this->preferDefinitionId(
                 $candidatesById[$entityId] ?? '',
                 $definitionId,
@@ -435,30 +433,7 @@ class SyncBricqerInventoryJob implements ShouldBeUnique, ShouldQueue
             }
         }
 
-        if ($toUpdate === []) {
-            return 0;
-        }
-
-        $cases = [];
-        $bindings = [];
-
-        foreach ($toUpdate as $entityId => $definitionId) {
-            $cases[] = 'WHEN ? THEN ?';
-            $bindings[] = $entityId;
-            $bindings[] = $definitionId;
-        }
-
-        $ids = array_keys($toUpdate);
-        $idPlaceholders = implode(',', array_fill(0, count($ids), '?'));
-        $caseSql = implode(' ', $cases);
-        $table = (new $model)->getTable();
-
-        return DB::update(
-            "UPDATE {$table}
-             SET bricqer_definition_id = CASE id {$caseSql} END
-             WHERE id IN ({$idPlaceholders})",
-            [...$bindings, ...$ids],
-        );
+        return BulkCaseUpdate::apply((new $model)->getTable(), 'id', 'bricqer_definition_id', $toUpdate);
     }
 
     /**

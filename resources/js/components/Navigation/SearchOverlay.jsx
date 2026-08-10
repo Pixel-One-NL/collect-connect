@@ -2,6 +2,7 @@ import { X } from "@phosphor-icons/react/dist/csr/X";
 import { useEffect, useRef, useState } from "react";
 import { router } from "@inertiajs/react";
 import gsap from "gsap";
+import { useMediaQuery } from "../../hooks/useMediaQuery.js";
 import Button from "../UI/Button.jsx";
 import ModeToggle from "./ModeToggle.jsx";
 import MegaMenu from "./MegaMenu.jsx";
@@ -39,6 +40,8 @@ export default function SearchOverlay({ isOpen, origin, onClose, menu = [] }) {
     const [mounted, setMounted] = useState(false);
     const [query, setQuery] = useState("");
     const [mode, setMode] = useState("menu");
+    // Matches the `md` breakpoint the header layout uses.
+    const isDesktop = useMediaQuery("(min-width: 768px)");
     const rootRef = useRef(null);
     const backdropRef = useRef(null);
     const panelRef = useRef(null);
@@ -167,6 +170,9 @@ export default function SearchOverlay({ isOpen, origin, onClose, menu = [] }) {
 
     const isSearching = query.trim() !== "";
 
+    // Desktop follows the mode toggle; mobile has no toggle, so it follows the query.
+    const showResults = isDesktop ? mode === "search" : isSearching;
+
     if (!mounted) {
         return null;
     }
@@ -205,23 +211,26 @@ export default function SearchOverlay({ isOpen, origin, onClose, menu = [] }) {
                 </div>
 
                 <div ref={contentRef} className="flex-1 min-h-0" style={{ opacity: 0 }}>
-                    {/* Desktop: mode-driven (toggle + typing). */}
-                    <div className="hidden md:block h-full max-w-7xl mx-auto w-full">
-                        {mode === "search" ? (
+                    {/*
+                     * Exactly one SearchResults instance is mounted. Rendering it in two
+                     * CSS-hidden wrappers would mount it twice, and each instance would
+                     * fire its own debounced /api/search request per keystroke.
+                     */}
+                    {showResults ? (
+                        <div className="h-full md:max-w-7xl md:mx-auto md:w-full">
                             <SearchResults query={query} />
-                        ) : (
+                        </div>
+                    ) : isDesktop ? (
+                        /* Desktop: mode-driven (toggle + typing). */
+                        <div className="h-full max-w-7xl mx-auto w-full">
                             <MegaMenu menu={menu} onNavigate={navigate} />
-                        )}
-                    </div>
-
-                    {/* Mobile: query-driven, no mode switch. */}
-                    <div className="md:hidden h-full">
-                        {isSearching ? (
-                            <SearchResults query={query} />
-                        ) : (
+                        </div>
+                    ) : (
+                        /* Mobile: query-driven, no mode switch. */
+                        <div className="h-full">
                             <MobileMenu menu={menu} onNavigate={navigate} />
-                        )}
-                    </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

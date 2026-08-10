@@ -61,13 +61,10 @@ class CatalogController extends Controller
             })
             ->orderByDesc('stock');
 
-        $products = $query->paginate(48)->withQueryString();
-
-        return inertia('shop/catalog', [
+        return $this->respondWithListing($query, [
             'title' => $q !== '' ? "Zoekresultaten voor “{$q}”" : 'Zoeken',
             'type' => 'search',
             'query' => $q,
-            'products' => ProductResource::collection($products),
             'filters' => [
                 'categories' => PartCategory::query()->orderBy('name')->get(['id', 'name']),
                 'colors' => Color::query()
@@ -94,19 +91,16 @@ class CatalogController extends Controller
             ->with(ProductListingQuery::forType($type))
             ->where('productable_type', (new $morph)->getMorphClass())
             ->where('stock', '>', 0)
-            ->when($colorId, fn ($q) => $q->where('color_id', $colorId))
-            ->when($categoryId && $type === 'part', function ($q) use ($categoryId): void {
-                $q->whereHasMorph('productable', [Part::class], fn ($p) => $p->where('part_category_id', $categoryId));
+            ->when($colorId, fn (Builder $builder) => $builder->where('color_id', $colorId))
+            ->when($categoryId && $type === 'part', function (Builder $builder) use ($categoryId): void {
+                $builder->whereHasMorph('productable', [Part::class], fn (Builder $part) => $part->where('part_category_id', $categoryId));
             })
             ->orderByDesc('stock');
 
-        $products = $query->paginate(48)->withQueryString();
-
-        return inertia('shop/catalog', [
+        return $this->respondWithListing($query, [
             'title' => $type === 'minifig' ? 'Minifiguren' : 'Onderdelen',
             'type' => $type,
             'query' => null,
-            'products' => ProductResource::collection($products),
             'filters' => [
                 'categories' => $type === 'part'
                     ? PartCategory::query()->orderBy('name')->get(['id', 'name'])
@@ -114,7 +108,7 @@ class CatalogController extends Controller
                 'colors' => $type === 'part'
                     ? Color::query()
                         ->where('bricklink_color_id', '!=', '0')
-                        ->whereHas('products', fn ($p) => $p->where('stock', '>', 0)->where('productable_type', (new Part)->getMorphClass()))
+                        ->whereHas('products', fn (Builder $p) => $p->where('stock', '>', 0)->where('productable_type', (new Part)->getMorphClass()))
                         ->orderBy('name')
                         ->limit(80)
                         ->get(['id', 'name', 'hex'])
@@ -125,6 +119,23 @@ class CatalogController extends Controller
                 'color_id' => $colorId,
                 'q' => null,
             ],
+        ]);
+    }
+
+    /**
+     * Paginate a product listing query and render the catalog page shared by
+     * the search listing and the type-scoped listings.
+     *
+     * @param  Builder<Product>  $query
+     * @param  array{title: string, type: string, query: ?string, filters: array, active: array}  $payload
+     */
+    protected function respondWithListing(Builder $query, array $payload): Response
+    {
+        $products = $query->paginate(48)->withQueryString();
+
+        return inertia('shop/catalog', [
+            ...$payload,
+            'products' => ProductResource::collection($products),
         ]);
     }
 }

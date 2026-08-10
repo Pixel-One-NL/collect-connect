@@ -216,6 +216,67 @@ class CheckoutTest extends TestCase
         $this->assertSame('customer@example.com', $order->email);
     }
 
+    public function test_checkout_persists_the_optional_company_field(): void
+    {
+        $part = Part::factory()->create();
+        $product = Product::factory()->create([
+            'productable_type' => $part->getMorphClass(),
+            'productable_id' => $part->id,
+            'color_id' => Color::factory(),
+            'stock' => 3,
+            'price' => 100,
+        ]);
+
+        app(CartService::class)->addItem($product, 1);
+
+        $this->post(route('checkout.store'), [
+            'name' => 'Company Buyer',
+            'email' => 'company@example.com',
+            'company' => 'Pixel One B.V.',
+            'line1' => 'Straat 1',
+            'postal_code' => '1234AB',
+            'city' => 'Amsterdam',
+            'country_code' => 'NL',
+            'shipping_method_id' => 0,
+            'payment_method' => 'ideal',
+            'create_account' => true,
+            'password' => 'Password1!',
+            'password_confirmation' => 'Password1!',
+        ])->assertRedirect();
+
+        $order = Order::query()->firstOrFail();
+        $this->assertSame('Pixel One B.V.', $order->shipping_company);
+        $this->assertSame('Pixel One B.V.', $order->user->addresses()->firstOrFail()->company);
+    }
+
+    public function test_checkout_company_field_stays_optional(): void
+    {
+        $part = Part::factory()->create();
+        $product = Product::factory()->create([
+            'productable_type' => $part->getMorphClass(),
+            'productable_id' => $part->id,
+            'color_id' => Color::factory(),
+            'stock' => 3,
+            'price' => 100,
+        ]);
+
+        app(CartService::class)->addItem($product, 1);
+
+        $this->post(route('checkout.store'), [
+            'name' => 'Private Buyer',
+            'email' => 'private@example.com',
+            'line1' => 'Straat 1',
+            'postal_code' => '1234AB',
+            'city' => 'Amsterdam',
+            'country_code' => 'NL',
+            'shipping_method_id' => 0,
+            'payment_method' => 'ideal',
+            'create_account' => false,
+        ])->assertRedirect();
+
+        $this->assertNull(Order::query()->firstOrFail()->shipping_company);
+    }
+
     public function test_checkout_rejects_invalid_payment_method_for_country(): void
     {
         $part = Part::factory()->create();

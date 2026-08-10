@@ -1,6 +1,7 @@
 {
     "agents": [
-        "claude_code"
+        "claude_code",
+        "grok_build"
     ],
     "cloud": false,
     "guidelines": true,
@@ -8,7 +9,8 @@
     "nightwatch": false,
     "packages": [
         "filament/filament",
-        "saloonphp/laravel-plugin"
+        "saloonphp/laravel-plugin",
+        "spatie/laravel-medialibrary"
     ],
     "sail": false,
     "skills": [
@@ -17,6 +19,7 @@
         "inertia-react-development",
         "tailwindcss-development",
         "saloon-development",
+        "medialibrary-development",
         "laravel-patterns",
         "laravel-security",
         "laravel-specialist"

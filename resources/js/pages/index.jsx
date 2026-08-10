@@ -1,27 +1,45 @@
-import {ListMagnifyingGlassIcon} from "@phosphor-icons/react/dist/csr/ListMagnifyingGlass";
+import { Head } from '@inertiajs/react';
+import HeroBanners from '../components/Home/HeroBanners.jsx';
+import InstagramFeed from '../components/Home/InstagramFeed.jsx';
+import PopularCategories from '../components/Home/PopularCategories.jsx';
+import SearchHighlight from '../components/Home/SearchHighlight.jsx';
+import SeoSection from '../components/Home/SeoSection.jsx';
+import TrendingProducts from '../components/Home/TrendingProducts.jsx';
 
-export default function Home() {
+const PRIMARY_BANNER = {
+    title: 'Nu korting op heel veel steentjes',
+    href: '/onderdelen',
+    image: '/images/home/hero-sale.jpg',
+};
+
+const SECONDARY_BANNERS = [
+    { title: 'Nieuw binnen', href: '/onderdelen', image: '/images/home/hero-new.jpg' },
+    { title: 'Used', href: '/onderdelen', image: '/images/home/hero-used.png' },
+];
+
+/**
+ * @param {Object} props
+ * @param {{data: Array<Object>}|Array<Object>} [props.trendingProducts]
+ * @param {Array<{id: number, name: string, url: string}>} [props.popularCategories]
+ */
+export default function Home({ trendingProducts = [], popularCategories = [] }) {
+    const products = trendingProducts?.data ?? trendingProducts;
+
     return (
         <>
-            <div className="px-8 py-16 max-w-7xl mx-auto">
-                <h1 className="text-4xl font-bold mb-4 text-[#333]">Welkom bij Collect2Connect</h1>
-                <p className="text-lg text-gray-600">
-                    Dé plek voor al jouw LEGO® onderdelen en minifiguren
-                </p>
-            </div>
+            <Head title="Dé plek voor al jouw LEGO® onderdelen en minifiguren" />
 
-            <section className="my-20 max-w-7xl mx-auto px-8">
-                {/*<CollectionSlider />*/}
-            </section>
+            <HeroBanners primary={PRIMARY_BANNER} secondary={SECONDARY_BANNERS} />
 
-            <section className="my-20 border-brick-y-secondary bg-secondary py-20 text-center px-8">
-                <img src="/images/elements/rocket.png" alt="" className="absolute top-1/2 -left-10 -translate-y-1/2 rotate-30 hidden lg:block pointer-events-none z-10 max-h-72 lg:max-h-96" />
+            <TrendingProducts products={products} />
 
-                <button className="px-8 py-4 bg-white rounded-lg w-full max-w-4xl inline-flex items-center gap-4 cursor-pointer">
-                    <ListMagnifyingGlassIcon size={28} />
-                    <span>Zoek op naam, onderdelen, minifiguren, lego-nummer...</span>
-                </button>
-            </section>
+            <SearchHighlight />
+
+            <PopularCategories categories={popularCategories} />
+
+            <InstagramFeed />
+
+            <SeoSection />
         </>
     );
 }

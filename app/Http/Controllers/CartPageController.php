@@ -18,7 +18,7 @@ class CartPageController extends Controller
 
         return inertia('cart/index', [
             'items' => $items,
-            'total' => $items->sum(fn (array $i): float => $i['price'] * $i['quantity']),
+            'total' => $items->sum(fn (array $item): float => $item['price'] * $item['quantity']),
             'messages' => $messages,
         ]);
     }

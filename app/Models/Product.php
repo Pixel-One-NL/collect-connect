@@ -55,12 +55,7 @@ class Product extends Model implements Cartable
      */
     public function toSearchableArray(): array
     {
-        $this->loadMissing([
-            'color',
-            'productable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
-                Part::class => ['partCategory'],
-            ]),
-        ]);
+        $this->loadMissing(self::searchEagerLoad());
 
         $productable = $this->productable;
         $type = $productable instanceof Minifig ? 'minifig' : 'part';
@@ -89,11 +84,21 @@ class Product extends Model implements Cartable
      */
     public function makeAllSearchableUsing(Builder $query): Builder
     {
-        return $query->with([
+        return $query->with(self::searchEagerLoad());
+    }
+
+    /**
+     * Eager-load shape used when building the Scout search index payload.
+     *
+     * @return array<string, mixed>
+     */
+    private static function searchEagerLoad(): array
+    {
+        return [
             'color',
             'productable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
                 Part::class => ['partCategory'],
             ]),
-        ]);
+        ];
     }
 }

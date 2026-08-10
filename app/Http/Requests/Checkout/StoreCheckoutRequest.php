@@ -31,6 +31,7 @@ class StoreCheckoutRequest extends FormRequest
                 Rule::when($createAccount, ['unique:users,email']),
             ],
             'phone' => ['nullable', 'string', 'max:50'],
+            'company' => ['nullable', 'string', 'max:255'],
             'line1' => ['required', 'string', 'max:255'],
             'line2' => ['nullable', 'string', 'max:255'],
             'postal_code' => ['required', 'string', 'max:20'],

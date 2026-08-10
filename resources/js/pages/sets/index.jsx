@@ -25,9 +25,10 @@ export default function SetsIndex({ sets, query }) {
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                {items.map((set) => (
-                    <InlineSet key={(set.data ?? set).id} set={set.data ?? set} />
-                ))}
+                {items.map((set) => {
+                    const s = set.data ?? set;
+                    return <InlineSet key={s.id} set={s} />;
+                })}
             </div>
 
             {items.length === 0 && (

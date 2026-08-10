@@ -9,16 +9,12 @@ export default function StockIndicator({ stock }) {
                 `}
             />
 
-            {stock < 1 && (
+            {stock < 1 ? (
                 <span className="text-red-500">Niet op voorraad</span>
-            )}
-
-            {stock >= 1 && stock <= 100 && (
-                <span className="text-yellow-500">Voorraad: {stock}</span>
-            )}
-
-            {stock > 100 && (
-                <span className="text-green-600">Voorraad: 100+</span>
+            ) : (
+                <span className={stock > 100 ? 'text-green-600' : 'text-yellow-500'}>
+                    Voorraad: {stock}
+                </span>
             )}
         </div>
     );

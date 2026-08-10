@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
 
+use App\Domain\Product\Queries\ProductListingQuery;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Minifig\MinifigSearchResource;
 use App\Http\Resources\Product\ProductSearchResource;
@@ -12,7 +13,8 @@ use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\Product;
 use App\Models\Set;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
+use App\Support\MediaUrl;
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
@@ -53,14 +55,11 @@ class SearchController extends Controller
             ->take(100)
             ->get()
             ->filter(fn (Product $product): bool => $product->productable_type === $partMorph && $product->stock > 0)
-            ->unique(fn (Product $product): string => "{$product->productable_type}_{$product->productable_id}")
             ->values()
-            ->load([
-                'color',
-                'productable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
-                    Part::class => ['partColors.media', 'products.color'],
-                ]),
-            ]);
+            ->load(ProductListingQuery::forType('part'))
+            ->groupBy(fn (Product $product): string => "{$product->productable_type}_{$product->productable_id}")
+            ->map(fn (EloquentCollection $variants): Product => $this->representativeVariant($variants))
+            ->values();
 
         $minifigs = Minifig::search($query)
             ->take(40)
@@ -93,5 +92,23 @@ class SearchController extends Controller
                     ->all(),
             ],
         ]);
+    }
+
+    /**
+     * One card per part: prefer a color variant that has its own image, so the
+     * card (and the page it links to) never leads with an imageless color.
+     *
+     * @param  EloquentCollection<int, Product>  $variants
+     */
+    private function representativeVariant(EloquentCollection $variants): Product
+    {
+        $withImage = $variants->first(function (Product $product): bool {
+            $part = $product->productable;
+
+            return $part instanceof Part
+                && MediaUrl::forPart($part, (int) $product->color_id) !== null;
+        });
+
+        return $withImage ?? $variants->firstOrFail();
     }
 }

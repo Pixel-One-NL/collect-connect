@@ -7,9 +7,11 @@ namespace Tests\Feature\Api;
 use App\Models\Color;
 use App\Models\Minifig;
 use App\Models\Part;
+use App\Models\Pivots\PartColor;
 use App\Models\Product;
 use App\Models\Set;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class SearchControllerTest extends TestCase
@@ -250,6 +252,131 @@ class SearchControllerTest extends TestCase
             ->assertOk()
             ->assertJsonCount(1, 'data.products')
             ->assertJsonPath('data.products.0.title', 'Blue Plate 1x2');
+    }
+
+    public function test_part_cards_use_a_color_that_has_an_image_when_the_matched_color_has_none(): void
+    {
+        Storage::fake('public');
+
+        $part = Part::factory()->create([
+            'name' => 'Warm Brick 2x4',
+            'bricklink_id' => '3001',
+        ]);
+
+        $warmPink = Color::factory()->create(['name' => 'Warm Pink']);
+        $red = Color::factory()->create(['name' => 'Red']);
+
+        // Warm Pink has a pivot but no media at all; Red is fully imported.
+        PartColor::factory()->create([
+            'part_id' => $part->id,
+            'color_id' => $warmPink->id,
+        ]);
+        $redMedia = PartColor::factory()
+            ->create([
+                'part_id' => $part->id,
+                'color_id' => $red->id,
+            ])
+            ->addMediaFromString($this->pngBytes())
+            ->usingFileName('red.png')
+            ->toMediaCollection(PartColor::BRICQER_IMAGE_COLLECTION);
+
+        // Created last so the search engine returns the imageless color first
+        // and the controller has to look past it.
+        $redProduct = Product::factory()->create([
+            'productable_type' => $part->getMorphClass(),
+            'productable_id' => $part->id,
+            'color_id' => $red->id,
+            'price' => 13,
+            'stock' => 4,
+        ]);
+        $warmPinkProduct = Product::factory()->create([
+            'productable_type' => $part->getMorphClass(),
+            'productable_id' => $part->id,
+            'color_id' => $warmPink->id,
+            'price' => 100,
+            'stock' => 4,
+        ]);
+
+        $response = $this->getJson('/api/search?q=warm')->assertOk();
+
+        $response->assertJsonCount(1, 'data.products');
+
+        // The card represents the part through the color that has an image.
+        $response->assertJsonPath('data.products.0.id', $redProduct->id);
+        $response->assertJsonPath('data.products.0.url', route('product.show', $redProduct, absolute: false));
+
+        $image = $response->json('data.products.0.image');
+        $this->assertNotNull($image);
+        $this->assertStringContainsString((string) $redMedia->id, (string) $image);
+
+        // The imageless color still appears as a sibling, just without a thumbnail.
+        $siblings = collect($response->json('data.products.0.sibling_colors'));
+        $this->assertNull($siblings->firstWhere('id', $warmPinkProduct->id)['image']);
+    }
+
+    public function test_part_cards_fall_back_to_another_color_image_when_only_one_variant_matches(): void
+    {
+        Storage::fake('public');
+
+        $part = Part::factory()->create([
+            'name' => 'Warm Brick 2x4',
+            'bricklink_id' => '3001',
+        ]);
+
+        $warmPink = Color::factory()->create(['name' => 'Warm Pink']);
+        $red = Color::factory()->create(['name' => 'Red']);
+
+        PartColor::factory()->create([
+            'part_id' => $part->id,
+            'color_id' => $warmPink->id,
+        ]);
+        $redMedia = PartColor::factory()
+            ->create([
+                'part_id' => $part->id,
+                'color_id' => $red->id,
+            ])
+            ->addMediaFromString($this->pngBytes())
+            ->usingFileName('red.png')
+            ->toMediaCollection(PartColor::BRICQER_IMAGE_COLLECTION);
+
+        // Only the imageless color is sellable, so it is the only candidate.
+        $warmPinkProduct = Product::factory()->create([
+            'productable_type' => $part->getMorphClass(),
+            'productable_id' => $part->id,
+            'color_id' => $warmPink->id,
+            'price' => 100,
+            'stock' => 4,
+        ]);
+        Product::factory()->create([
+            'productable_type' => $part->getMorphClass(),
+            'productable_id' => $part->id,
+            'color_id' => $red->id,
+            'price' => 13,
+            'stock' => 0,
+        ]);
+
+        $response = $this->getJson('/api/search?q=warm')->assertOk();
+
+        $response->assertJsonCount(1, 'data.products');
+        $response->assertJsonPath('data.products.0.id', $warmPinkProduct->id);
+
+        $image = $response->json('data.products.0.image');
+        $this->assertNotNull($image);
+        $this->assertStringContainsString((string) $redMedia->id, (string) $image);
+    }
+
+    /**
+     * A valid PNG so Spatie can generate conversions during the test.
+     */
+    private function pngBytes(): string
+    {
+        $image = imagecreatetruecolor(8, 8);
+        ob_start();
+        imagepng($image);
+        $bytes = (string) ob_get_clean();
+        imagedestroy($image);
+
+        return $bytes;
     }
 
     /**

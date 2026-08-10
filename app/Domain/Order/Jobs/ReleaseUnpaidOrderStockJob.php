@@ -32,45 +32,57 @@ class ReleaseUnpaidOrderStockJob implements ShouldQueue
             ->orderBy('id')
             ->chunkById(50, function ($orders) use (&$released): void {
                 foreach ($orders as $order) {
-                    DB::transaction(function () use ($order, &$released): void {
-                        /** @var Order $locked */
-                        $locked = Order::query()->lockForUpdate()->find($order->id);
-
-                        if (
-                            $locked === null
-                            || $locked->status !== 'pending_payment'
-                            || $locked->stock_reserved_at === null
-                        ) {
-                            return;
-                        }
-
-                        $locked->load('items');
-
-                        foreach ($locked->items as $item) {
-                            if ($item->product_id === null) {
-                                continue;
-                            }
-
-                            Product::query()
-                                ->whereKey($item->product_id)
-                                ->increment('stock', (int) $item->quantity);
-                        }
-
-                        $meta = $locked->meta ?? [];
-                        $meta['stock_released_at'] = now()->toIso8601String();
-                        $meta['stock_release_reason'] = 'unpaid_reservation_expired';
-
-                        $locked->forceFill([
-                            'status' => 'cancelled',
-                            'stock_reserved_at' => null,
-                            'meta' => $meta,
-                        ])->save();
-
+                    if ($this->releaseOrder($order)) {
                         $released++;
-                    });
+                    }
                 }
             });
 
         return ['released' => $released];
+    }
+
+    /**
+     * Restock and cancel a single order, if it is still an unpaid reservation.
+     * Locks the row itself so a concurrent payment callback cannot race this
+     * release; returns false without changes if that race is lost.
+     */
+    private function releaseOrder(Order $order): bool
+    {
+        return DB::transaction(function () use ($order): bool {
+            /** @var Order $locked */
+            $locked = Order::query()->lockForUpdate()->find($order->id);
+
+            if (
+                $locked === null
+                || $locked->status !== 'pending_payment'
+                || $locked->stock_reserved_at === null
+            ) {
+                return false;
+            }
+
+            $locked->load('items');
+
+            foreach ($locked->items as $item) {
+                if ($item->product_id === null) {
+                    continue;
+                }
+
+                Product::query()
+                    ->whereKey($item->product_id)
+                    ->increment('stock', (int) $item->quantity);
+            }
+
+            $meta = $locked->meta ?? [];
+            $meta['stock_released_at'] = now()->toIso8601String();
+            $meta['stock_release_reason'] = 'unpaid_reservation_expired';
+
+            $locked->forceFill([
+                'status' => 'cancelled',
+                'stock_reserved_at' => null,
+                'meta' => $meta,
+            ])->save();
+
+            return true;
+        });
     }
 }

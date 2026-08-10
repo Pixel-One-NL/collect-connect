@@ -9,6 +9,7 @@ use App\Models\ShippingMethod;
 use Illuminate\Console\Command;
 use Saloon\Enums\Method;
 use Saloon\Http\Request;
+use Saloon\Http\Response;
 use Throwable;
 
 class SyncShippingMethodsCommand extends Command
@@ -22,15 +23,7 @@ class SyncShippingMethodsCommand extends Command
         $imported = 0;
 
         try {
-            $response = $connector->send(new class extends Request
-            {
-                protected Method $method = Method::GET;
-
-                public function resolveEndpoint(): string
-                {
-                    return '/shipping/method/';
-                }
-            });
+            $response = $this->sendGetRequest($connector, '/shipping/method/');
 
             foreach ($response->json() as $method) {
                 ShippingMethod::query()->updateOrCreate(
@@ -48,15 +41,7 @@ class SyncShippingMethodsCommand extends Command
         } catch (Throwable $e) {
             $this->warn('Primary shipping endpoint unavailable: '.$e->getMessage());
 
-            $response = $connector->send(new class extends Request
-            {
-                protected Method $method = Method::GET;
-
-                public function resolveEndpoint(): string
-                {
-                    return '/shops/bricklink/shippingmethod/';
-                }
-            });
+            $response = $this->sendGetRequest($connector, '/shops/bricklink/shippingmethod/');
 
             foreach ($response->json() as $method) {
                 $name = $method['description'] ?? ('Method '.$method['id']);
@@ -81,5 +66,20 @@ class SyncShippingMethodsCommand extends Command
         $this->info("Imported {$imported} shipping methods.");
 
         return self::SUCCESS;
+    }
+
+    protected function sendGetRequest(BricqerConnector $connector, string $endpoint): Response
+    {
+        return $connector->send(new class($endpoint) extends Request
+        {
+            protected Method $method = Method::GET;
+
+            public function __construct(protected string $endpoint) {}
+
+            public function resolveEndpoint(): string
+            {
+                return $this->endpoint;
+            }
+        });
     }
 }

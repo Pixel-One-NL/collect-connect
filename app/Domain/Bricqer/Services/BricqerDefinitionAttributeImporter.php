@@ -7,7 +7,7 @@ namespace App\Domain\Bricqer\Services;
 use App\Integrations\Bricqer\DataTransferObjects\Definition\Definition;
 use App\Models\Minifig;
 use App\Models\Part;
-use Illuminate\Support\Facades\DB;
+use App\Support\BulkCaseUpdate;
 
 /**
  * Aggregates weight + representative definition id from Bricqer definitions
@@ -96,19 +96,22 @@ class BricqerDefinitionAttributeImporter
             return 0;
         }
 
-        $updated = 0;
         $keys = array_map(strval(...), array_keys($attributes));
         $table = (new $model)->getTable();
 
+        /** @var array<int, true> $updatedIds Set of entity ids touched, so an entity matched by two keys counts once. */
+        $updatedIds = [];
+
         foreach (array_chunk($keys, 500) as $keyChunk) {
+            $placeholders = implode(',', array_fill(0, count($keyChunk), '?'));
+
             $entities = $model::query()
                 ->whereNotNull('bricklink_id')
-                ->where(function ($query) use ($keyChunk): void {
-                    foreach ($keyChunk as $key) {
-                        $query->orWhereRaw('LOWER(bricklink_id) = ?', [(string) $key]);
-                    }
-                })
+                ->whereRaw("LOWER(bricklink_id) IN ({$placeholders})", $keyChunk)
                 ->get(['id', 'bricklink_id', 'weight_grams', 'bricqer_definition_id']);
+
+            $weightUpdates = [];
+            $definitionUpdates = [];
 
             foreach ($entities as $entity) {
                 $data = $attributes[strtolower((string) $entity->bricklink_id)] ?? null;
@@ -117,29 +120,23 @@ class BricqerDefinitionAttributeImporter
                     continue;
                 }
 
-                $payload = [];
+                $currentWeight = $entity->weight_grams;
 
-                if ($data['weight'] !== null) {
-                    $currentWeight = $entity->weight_grams;
-                    if ($currentWeight === null || abs((float) $currentWeight - $data['weight']) >= 0.00001) {
-                        $payload['weight_grams'] = $data['weight'];
-                    }
+                if ($data['weight'] !== null && ($currentWeight === null || abs((float) $currentWeight - $data['weight']) >= 0.00001)) {
+                    $weightUpdates[$entity->id] = $data['weight'];
+                    $updatedIds[$entity->id] = true;
                 }
 
                 if ($entity->bricqer_definition_id !== $data['definition_id']) {
-                    $payload['bricqer_definition_id'] = $data['definition_id'];
+                    $definitionUpdates[$entity->id] = $data['definition_id'];
+                    $updatedIds[$entity->id] = true;
                 }
-
-                if ($payload === []) {
-                    continue;
-                }
-
-                $updated += DB::table($table)
-                    ->where('id', $entity->id)
-                    ->update($payload);
             }
+
+            BulkCaseUpdate::apply($table, 'id', 'weight_grams', $weightUpdates);
+            BulkCaseUpdate::apply($table, 'id', 'bricqer_definition_id', $definitionUpdates);
         }
 
-        return $updated;
+        return count($updatedIds);
     }
 }

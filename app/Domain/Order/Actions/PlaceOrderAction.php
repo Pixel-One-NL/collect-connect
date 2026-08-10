@@ -31,6 +31,7 @@ class PlaceOrderAction
      *     name: string,
      *     email: string,
      *     phone?: ?string,
+     *     company?: ?string,
      *     line1: string,
      *     line2?: ?string,
      *     postal_code: string,
@@ -62,7 +63,7 @@ class PlaceOrderAction
 
         $shipping = $this->shipping->resolve((int) $data['shipping_method_id'], $country);
 
-        $order = DB::transaction(function () use ($data, $cartItems, $shipping): Order {
+        $order = DB::transaction(function () use ($data, $cartItems, $shipping, $country): Order {
             $user = Auth::user();
 
             if (! $user && ($data['create_account'] ?? false) && filled($data['password'] ?? null)) {
@@ -82,13 +83,14 @@ class PlaceOrderAction
                 $user->addresses()->update(['is_default' => false]);
                 $user->addresses()->create([
                     'name' => $data['name'],
+                    'company' => $data['company'] ?? null,
                     'email' => $data['email'],
                     'phone' => $data['phone'] ?? null,
                     'line1' => $data['line1'],
                     'line2' => $data['line2'] ?? null,
                     'postal_code' => $data['postal_code'],
                     'city' => $data['city'],
-                    'country_code' => strtoupper($data['country_code']),
+                    'country_code' => $country,
                     'is_default' => true,
                 ]);
             }
@@ -101,11 +103,12 @@ class PlaceOrderAction
                 'email' => $data['email'],
                 'name' => $data['name'],
                 'phone' => $data['phone'] ?? null,
+                'shipping_company' => $data['company'] ?? null,
                 'shipping_line1' => $data['line1'],
                 'shipping_line2' => $data['line2'] ?? null,
                 'shipping_postal_code' => $data['postal_code'],
                 'shipping_city' => $data['city'],
-                'shipping_country_code' => strtoupper($data['country_code']),
+                'shipping_country_code' => $country,
                 'subtotal_cents' => 0,
                 'shipping_cents' => $shipping['price_cents'],
                 'total_cents' => 0,
@@ -157,7 +160,10 @@ class PlaceOrderAction
                 'meta' => [
                     'note' => $payment->provider === 'bank_transfer'
                         ? 'Awaiting bank transfer. Mark paid after funds clear.'
-                        : 'Awaiting payment provider confirmation. Local demo does not capture payment.',
+                        : 'Awaiting payment provider confirmation.',
+                    // Consumed by CheckoutController::store() to hand the customer
+                    // off to the gateway's own payment page when it has one.
+                    'redirect_url' => $payment->redirectUrl,
                     'noshop_payload_ready' => true,
                 ],
             ])->save();

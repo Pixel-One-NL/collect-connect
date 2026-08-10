@@ -68,6 +68,10 @@ class CartService
         return array_values(array_unique($messages));
     }
 
+    /**
+     * Returns the authenticated user ID or a session-scoped guest UUID.
+     * Always returns a non-null string to avoid the session driver's null-userId TypeError.
+     */
     protected function userId(): string
     {
         if (auth()->check()) {
@@ -240,8 +244,6 @@ class CartService
                     return null;
                 }
 
-                $unitWeight = $this->unitWeightGrams($product);
-
                 return [
                     'id' => $product->id,
                     'name' => $product->productable->name,
@@ -252,7 +254,7 @@ class CartService
                     'stock' => $product->stock,
                     'color' => $product->color?->name,
                     'color_hex' => $product->color?->hex,
-                    'weight_grams' => $unitWeight,
+                    'weight_grams' => $this->unitWeightGrams($product),
                 ];
             })
             ->filter()
@@ -266,7 +268,7 @@ class CartService
     public function getTotalWeightGrams(): float
     {
         return (float) $this->getItems()->sum(
-            fn (array $item): float => (($item['weight_grams'] ?? 0) * $item['quantity']),
+            fn (array $item): float => ($item['weight_grams'] ?? 0) * $item['quantity'],
         );
     }
 

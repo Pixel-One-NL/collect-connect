@@ -450,6 +450,13 @@ livewire(ListUsers::class)
 - Always use Artisan commands to generate SaloonPHP classes: `php artisan saloon:connector`, `php artisan saloon:request`, `php artisan saloon:response`, `php artisan php artisan saloon:plugin`, `php artisan saloon:auth`.- Documentation: `https://docs.saloon.dev`
 - IMPORTANT: Activate saloon-development skill when working with SaloonPHP-related tasks.
 
+=== spatie/laravel-medialibrary rules ===
+
+## Media Library
+
+- `spatie/laravel-medialibrary` associates files with Eloquent models, with support for collections, conversions, and responsive images.
+- Always activate the `medialibrary-development` skill when working with media uploads, conversions, collections, responsive images, or any code that uses the `HasMedia` interface or `InteractsWithMedia` trait.
+
 </laravel-boost-guidelines>
 
 ## graphify

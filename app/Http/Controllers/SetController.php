@@ -4,14 +4,15 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Domain\Product\Queries\ProductListingQuery;
 use App\Http\Resources\Set\SetResource;
 use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\PartCategory;
-use App\Models\Pivots\PartColor;
 use App\Models\Product;
 use App\Models\Set;
 use App\Support\MediaUrl;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Inertia\Response;
@@ -42,10 +43,10 @@ class SetController extends Controller
         $partQuery = Product::query()
             ->where('productable_type', (new Part)->getMorphClass())
             ->whereIn('productable_id', $partQuantities->keys())
-            ->with(\App\Domain\Product\Queries\ProductListingQuery::forType('part'))
-            ->when($colorId, fn ($q) => $q->where('color_id', $colorId))
-            ->when($categoryId, function ($q) use ($categoryId): void {
-                $q->whereHasMorph('productable', [Part::class], fn ($p) => $p->where('part_category_id', $categoryId));
+            ->with(ProductListingQuery::forType('part'))
+            ->when($colorId, fn (Builder $builder) => $builder->where('color_id', $colorId))
+            ->when($categoryId, function (Builder $builder) use ($categoryId): void {
+                $builder->whereHasMorph('productable', [Part::class], fn (Builder $part) => $part->where('part_category_id', $categoryId));
             });
 
         $partProducts = $partQuery->get()
@@ -56,7 +57,7 @@ class SetController extends Controller
         $minifigProducts = Product::query()
             ->where('productable_type', (new Minifig)->getMorphClass())
             ->whereIn('productable_id', $minifigQuantities->keys())
-            ->with(['productable.media', 'color'])
+            ->with(ProductListingQuery::forType('minifig'))
             ->get()
             ->sortByDesc('stock')
             ->values();
@@ -66,7 +67,7 @@ class SetController extends Controller
             'title' => $product->productable->name,
             'lego_number' => $product->productable->bricklink_id,
             'image' => $this->getPartImage($product->productable, (int) $product->color_id),
-            'stock' => $product->stock > 100 ? 101 : $product->stock,
+            'stock' => $product->stock,
             'price' => $product->price,
             'url' => route('product.show', $product->id),
             'color' => $product->color ? ['name' => $product->color->name, 'hex' => $product->color->hex] : null,
@@ -79,7 +80,7 @@ class SetController extends Controller
             'title' => $product->productable->name,
             'lego_number' => $product->productable->bricklink_id,
             'image' => $this->getMinifigImage($product->productable),
-            'stock' => $product->stock > 100 ? 101 : $product->stock,
+            'stock' => $product->stock,
             'price' => $product->price,
             'url' => route('product.show', $product->id),
             'color' => null,
@@ -87,16 +88,16 @@ class SetController extends Controller
             'type' => 'minifig',
         ];
 
-        $inStock = $partProducts->filter(fn (Product $p): bool => $p->stock > 0)->map($mapPart)
-            ->merge($minifigProducts->filter(fn (Product $p): bool => $p->stock > 0)->map($mapMinifig))
-            ->values();
+        $items = $partProducts->map($mapPart)->merge($minifigProducts->map($mapMinifig));
 
-        $outOfStock = $partProducts->filter(fn (Product $p): bool => $p->stock === 0)->map($mapPart)
-            ->merge($minifigProducts->filter(fn (Product $p): bool => $p->stock === 0)->map($mapMinifig))
-            ->values();
+        $isInStock = fn (array $item): bool => $item['stock'] > 0;
+        $inStock = $items->filter($isInStock)->values();
+        $outOfStock = $items->reject($isInStock)->values();
 
         $categories = PartCategory::query()
-            ->whereIn('id', Part::query()->whereIn('id', $partQuantities->keys())->pluck('part_category_id'))
+            ->whereIn('id', Part::query()
+                ->select('part_category_id')
+                ->whereIn('id', $partQuantities->keys()))
             ->orderBy('name')
             ->get(['id', 'name']);
 
@@ -114,24 +115,13 @@ class SetController extends Controller
         ]);
     }
 
-    /**
-     * Set BOM images are media-library only (no Bricqer CDN hotlinking).
-     */
     private function getPartImage(Part $part, int $colorId): ?string
     {
-        $partColor = $part->partColors->firstWhere('color_id', $colorId);
-
-        return MediaUrl::fromMedia(
-            $partColor?->getFirstMedia(PartColor::BRICQER_IMAGE_COLLECTION),
-            [PartColor::LARGE_CONVERSION, PartColor::MEDIUM_CONVERSION, PartColor::THUMB_CONVERSION],
-        );
+        return MediaUrl::forPart($part, $colorId);
     }
 
     private function getMinifigImage(Minifig $minifig): ?string
     {
-        return MediaUrl::fromMedia(
-            $minifig->getFirstMedia(Minifig::BRICQER_IMAGE_COLLECTION),
-            [Minifig::LARGE_CONVERSION, Minifig::MEDIUM_CONVERSION, Minifig::THUMB_CONVERSION],
-        );
+        return MediaUrl::forMinifig($minifig);
     }
 }

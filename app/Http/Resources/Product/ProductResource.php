@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Http\Resources\Product;
 
+use App\Domain\Product\Queries\ProductListingQuery;
 use App\Http\Resources\Color\ColorResource;
 use App\Models\Minifig;
 use App\Models\Part;
-use App\Models\Pivots\PartColor;
 use App\Models\Product;
 use App\Support\MediaUrl;
 use Exception;
@@ -21,21 +21,13 @@ class ProductResource extends JsonResource
 {
     public function toArray(Request $request): array
     {
-        $this->loadMissing(['color', 'productable']);
-
-        if ($this->productable instanceof Part) {
-            $this->productable->loadMissing(['partColors.media', 'partCategory', 'products.color']);
-        }
-
-        if ($this->productable instanceof Minifig) {
-            $this->productable->loadMissing('media');
-        }
+        $this->loadMissing(ProductListingQuery::defaultWith());
 
         $productable = $this->productable;
 
         return [
             'id' => $this->id,
-            'stock' => $this->getSafeStock($this->stock),
+            'stock' => $this->stock,
             'price' => $this->price,
             'title' => $this->getTitle(),
             'image' => $this->getImage(),
@@ -50,16 +42,16 @@ class ProductResource extends JsonResource
                 : null,
             'url' => route('product.show', $this->resource, absolute: false),
             'attributes' => $this->attributesList(),
-            ...$productable instanceof Part
-                ? ['sibling_colors' => $productable->products->map(fn (Product $product): array => [
+            'sibling_colors' => $productable instanceof Part
+                ? $productable->products->map(fn (Product $product): array => [
                     'id' => $product->id,
-                    'stock' => $this->getSafeStock($product->stock),
+                    'stock' => $product->stock,
                     'price' => $product->price,
                     'image' => $this->getPartImage($product->productable, $product->color_id),
                     'color' => ColorResource::make($product->color),
                     'url' => route('product.show', $product, absolute: false),
-                ])]
-                : ['sibling_colors' => []],
+                ])
+                : [],
         ];
     }
 
@@ -72,18 +64,9 @@ class ProductResource extends JsonResource
         throw new Exception('Productable type not found');
     }
 
-    /**
-     * Shop images come only from the Spatie media library. Bricqer CDN URLs are
-     * for import jobs only — never hotlinked to the storefront.
-     */
     protected function getPartImage(Part $part, int $colorId): ?string
     {
-        $partColor = $part->partColors->firstWhere('color_id', $colorId);
-
-        return MediaUrl::fromMedia(
-            $partColor?->getFirstMedia(PartColor::BRICQER_IMAGE_COLLECTION),
-            [PartColor::LARGE_CONVERSION, PartColor::MEDIUM_CONVERSION, PartColor::THUMB_CONVERSION],
-        );
+        return MediaUrl::forPart($part, $colorId);
     }
 
     protected function getImage(): ?string
@@ -101,10 +84,7 @@ class ProductResource extends JsonResource
 
     protected function getMinifigImage(Minifig $minifig): ?string
     {
-        return MediaUrl::fromMedia(
-            $minifig->getFirstMedia(Minifig::BRICQER_IMAGE_COLLECTION),
-            [Minifig::LARGE_CONVERSION, Minifig::MEDIUM_CONVERSION, Minifig::THUMB_CONVERSION],
-        );
+        return MediaUrl::forMinifig($minifig);
     }
 
     protected function shouldShowColor(): bool
@@ -123,17 +103,19 @@ class ProductResource extends JsonResource
      */
     protected function attributesList(): array
     {
+        $part = $this->productable instanceof Part ? $this->productable : null;
+
         $attrs = [
             ['label' => 'Type', 'value' => $this->productable instanceof Minifig ? 'Minifiguur' : 'Onderdeel'],
             ['label' => 'LEGO-nummer', 'value' => (string) ($this->productable->bricklink_id ?? '—')],
         ];
 
-        if ($this->productable instanceof Part && $this->productable->rebrickable_id) {
-            $attrs[] = ['label' => 'Rebrickable', 'value' => (string) $this->productable->rebrickable_id];
+        if ($part?->rebrickable_id) {
+            $attrs[] = ['label' => 'Rebrickable', 'value' => (string) $part->rebrickable_id];
         }
 
-        if ($this->productable instanceof Part && $this->productable->partCategory) {
-            $attrs[] = ['label' => 'Categorie', 'value' => (string) $this->productable->partCategory->name];
+        if ($part?->partCategory) {
+            $attrs[] = ['label' => 'Categorie', 'value' => (string) $part->partCategory->name];
         }
 
         if ($this->shouldShowColor() && $this->color) {
@@ -145,17 +127,8 @@ class ProductResource extends JsonResource
             $attrs[] = ['label' => 'Gewicht', 'value' => rtrim(rtrim(number_format((float) $weight, 4, '.', ''), '0'), '.').' g'];
         }
 
-        $attrs[] = ['label' => 'Voorraad', 'value' => (string) $this->getSafeStock($this->stock)];
+        $attrs[] = ['label' => 'Voorraad', 'value' => (string) $this->stock];
 
         return $attrs;
-    }
-
-    protected function getSafeStock(int $stock): int
-    {
-        if ($stock <= 100) {
-            return $stock;
-        }
-
-        return 101;
     }
 }

@@ -4,12 +4,16 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Order extends Model
 {
+    /** @use HasFactory<\Database\Factories\OrderFactory> */
+    use HasFactory;
+
     /**
      * Customer-facing fields only. Lifecycle fields (status, payment, tracking,
      * stock reservation) are set via forceFill inside domain actions.
@@ -22,6 +26,7 @@ class Order extends Model
         'email',
         'name',
         'phone',
+        'shipping_company',
         'shipping_line1',
         'shipping_line2',
         'shipping_postal_code',

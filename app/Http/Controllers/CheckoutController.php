@@ -12,6 +12,7 @@ use App\Models\Order;
 use App\Services\CartService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\ValidationException;
 use Inertia\Response;
 
@@ -80,6 +81,13 @@ class CheckoutController extends Controller
             $this->cartService->mergeGuestCartIntoUser(Auth::id());
         }
 
+        // Gateways that host their own payment page take over from here.
+        $redirectUrl = data_get($order->meta, 'redirect_url');
+
+        if (filled($redirectUrl)) {
+            return redirect()->away($redirectUrl);
+        }
+
         if (Auth::check()) {
             return redirect()->route('account.orders.show', $order)->with('status', 'Bestelling geplaatst.');
         }
@@ -100,17 +108,7 @@ class CheckoutController extends Controller
 
     protected function authorizeGuestConfirmation(Order $order): void
     {
-        if (Auth::check() && Auth::id() === $order->user_id) {
-            return;
-        }
-
-        $placed = session('checkout.placed_order_ids', []);
-
-        if (in_array($order->id, $placed, true)) {
-            return;
-        }
-
-        abort(403, 'Deze bestelling is niet beschikbaar.');
+        abort_unless(Gate::allows('viewPlaced', $order), 403, 'Deze bestelling is niet beschikbaar.');
     }
 
     /**
@@ -118,21 +116,16 @@ class CheckoutController extends Controller
      */
     protected function paymentMethodsForCountry(string $country): array
     {
-        $methods = [
-            ['id' => 'ideal', 'label' => 'iDEAL'],
+        $common = [
             ['id' => 'card', 'label' => 'Creditcard'],
             ['id' => 'paypal', 'label' => 'PayPal'],
             ['id' => 'bank', 'label' => 'Bankoverschrijving'],
         ];
 
-        if ($country === 'BE') {
-            array_unshift($methods, ['id' => 'bancontact', 'label' => 'Bancontact']);
-        }
-
-        if ($country === 'NL') {
-            return array_values(array_filter($methods, fn (array $m): bool => $m['id'] !== 'bancontact'));
-        }
-
-        return array_values(array_filter($methods, fn (array $m): bool => $m['id'] !== 'ideal'));
+        return match ($country) {
+            'NL' => [['id' => 'ideal', 'label' => 'iDEAL'], ...$common],
+            'BE' => [['id' => 'bancontact', 'label' => 'Bancontact'], ...$common],
+            default => $common,
+        };
     }
 }

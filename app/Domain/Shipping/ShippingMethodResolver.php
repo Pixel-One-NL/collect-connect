@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 class ShippingMethodResolver
 {
     /**
-     * @return list<array{id: int, name: string, price_cents: int, code: string}>
+     * @return list<array{id: int, name: string, price_cents: int, code: string, track_trace: bool}>
      */
     public function availableForCountry(string $country): array
     {
@@ -30,6 +30,7 @@ class ShippingMethodResolver
                 'name' => $method->name,
                 'price_cents' => $method->price_cents,
                 'code' => (string) ($method->code ?? ''),
+                'track_trace' => (bool) $method->track_trace,
             ])
             ->values()
             ->all();
@@ -50,12 +51,14 @@ class ShippingMethodResolver
                 'name' => 'PostNL Brievenbus (NL)',
                 'price_cents' => 395,
                 'code' => 'NL',
+                'track_trace' => false,
             ],
             [
                 'id' => -1,
                 'name' => 'PostNL Pakket (EU)',
                 'price_cents' => 995,
                 'code' => 'EUR2',
+                'track_trace' => true,
             ],
         ];
     }
