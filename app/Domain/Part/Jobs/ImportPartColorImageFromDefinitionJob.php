@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Part\Jobs;
 
+use App\Domain\Image\Jobs\ImportImageJob;
 use App\Integrations\Bricqer\Facades\Bricqer;
 use App\Models\Pivots\PartColor;
 use Illuminate\Bus\Queueable;
@@ -21,7 +22,7 @@ class ImportPartColorImageFromDefinitionJob implements ShouldQueue
     {
         $partColor = PartColor::query()->find($this->partColorId);
 
-        if (! $partColor || $partColor->hasMedia(PartColor::BRICQER_IMAGE_COLLECTION)) {
+        if (! $partColor || $partColor->cloudflare_image_id !== null) {
             return;
         }
 
@@ -31,6 +32,6 @@ class ImportPartColorImageFromDefinitionJob implements ShouldQueue
             return;
         }
 
-        ImportPartColorImageJob::dispatch($partColor->id, $definition->picture);
+        ImportImageJob::dispatch(PartColor::class, $partColor->id, $definition->picture);
     }
 }

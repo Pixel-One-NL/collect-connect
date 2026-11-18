@@ -15,10 +15,11 @@ use Illuminate\Support\LazyCollection;
     {--definition= : Only import for minifigs with this Bricqer definition id}
     {--only-products : Only minifigs that have a shop product}
     {--limit= : Max number of minifigs to queue}
+    {--retry-failed : Include minifigs whose image source failed earlier}
     {--sync : Run imports immediately instead of queueing}')]
 class ImportMinifigImagesCommand extends Command
 {
-    protected $description = 'Queue (or sync) Bricqer image imports for minifigs missing media — uses definition picture when available, otherwise the BrickLink CDN URL';
+    protected $description = 'Queue (or sync) Cloudflare image imports for minifigs without an image — uses definition picture when available, otherwise the BrickLink CDN URL';
 
     public function handle(): int
     {
@@ -34,6 +35,7 @@ class ImportMinifigImagesCommand extends Command
                 : null,
             onlyProducts: (bool) $this->option('only-products'),
             limit: $limit,
+            retryFailed: (bool) $this->option('retry-failed'),
         )->each(function (Minifig $minifig) use (&$queued, $sync): void {
             if ($sync) {
                 ImportMinifigImageFromDefinitionJob::dispatchSync($minifig->id);
@@ -49,8 +51,8 @@ class ImportMinifigImagesCommand extends Command
     }
 
     /**
-     * Minifigs that still need a Bricqer image: have a BrickLink id (CDN fallback)
-     * or a definition id, and no image URL recorded yet.
+     * Minifigs that still need an image: have a BrickLink id (CDN fallback) or a
+     * definition id, and no Cloudflare image yet.
      *
      * @return LazyCollection<int, Minifig>
      */
@@ -58,14 +60,11 @@ class ImportMinifigImagesCommand extends Command
         ?string $definitionId = null,
         bool $onlyProducts = false,
         ?int $limit = null,
+        bool $retryFailed = false,
     ): LazyCollection {
         // Collect ids first so --limit works (lazyById ignores query limit).
-        // Eligibility is based on missing media, not bricqer_image_url, so failed
-        // downloads can be retried.
         $query = Minifig::query()
-            ->whereDoesntHave('media', function ($query): void {
-                $query->where('collection_name', Minifig::BRICQER_IMAGE_COLLECTION);
-            })
+            ->when($retryFailed, fn ($query) => $query->withoutCloudflareImage(), fn ($query) => $query->importable())
             ->where(function ($query) use ($definitionId): void {
                 if ($definitionId !== null) {
                     $query->where('bricqer_definition_id', $definitionId);

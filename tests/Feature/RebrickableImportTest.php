@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature;
 
+use App\Domain\Image\Jobs\ImportImageJob;
 use App\Domain\Rebrickable\Contracts\RebrickableDownloader;
 use App\Domain\Rebrickable\Jobs\ImportRebrickableEntityJob;
 use App\Domain\Rebrickable\Services\Imports\ColorImportService;
@@ -25,6 +26,7 @@ use App\Models\Theme;
 use Generator;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Queue;
 use RuntimeException;
 use Tests\TestCase;
 use ZipArchive;
@@ -134,9 +136,13 @@ class RebrickableImportTest extends TestCase
         $this->assertTrue(Color::sole()->is_transparent);
         $this->data([['fig_num' => 'fig-1', 'name' => 'Minifigure']]);
         app(MinifigImportService::class)->import();
+        Queue::fake([ImportImageJob::class]);
         $this->data([['set_num' => 'set-1', 'name' => 'Set', 'year' => 2020, 'theme_id' => 1, 'num_parts' => 20, 'img_url' => 'https://example.test/set.png']]);
         app(SetImportService::class)->import();
         $set = Set::sole();
+        Queue::assertPushed(ImportImageJob::class, fn (ImportImageJob $job): bool => $job->modelClass === Set::class
+            && $job->modelId === $set->id
+            && $job->imageUrl === 'https://example.test/set.png');
         $inventory = Inventory::factory()->create(['rebrickable_id' => '123', 'set_id' => $set->id]);
         $this->data([['inventory_id' => '123', 'fig_num' => 'fig-1', 'quantity' => 2]]);
         app(InventoryMinifigImportService::class)->import();

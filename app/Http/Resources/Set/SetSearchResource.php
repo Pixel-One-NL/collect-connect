@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Resources\Set;
 
 use App\Models\Set;
-use App\Support\MediaUrl;
+use App\Support\ImageVariant;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -23,10 +23,7 @@ class SetSearchResource extends JsonResource
             'name' => $this->name,
             'year' => $this->year,
             'num_parts' => $this->num_parts,
-            'image' => MediaUrl::fromMedia(
-                $this->getFirstMedia(Set::IMAGE_COLLECTION),
-                [Set::THUMB_CONVERSION],
-            ),
+            'image' => $this->imageUrl(ImageVariant::Thumb),
             'url' => route('sets.show', $this->resource, absolute: false),
         ];
     }

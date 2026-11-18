@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace App\Domain\Part\Jobs;
 
 use App\Domain\Bricqer\Services\BricqerDefinitionAttributeImporter;
-use App\Domain\Minifig\Jobs\ImportMinifigImageJob;
+use App\Domain\Image\Jobs\ImportImageJob;
 use App\Integrations\Bricqer\DataTransferObjects\Definition\Definition;
 use App\Integrations\Bricqer\Facades\Bricqer;
 use App\Models\Minifig;
@@ -26,6 +26,8 @@ use Illuminate\Support\LazyCollection;
 class FullImportPartColorImagesJob implements ShouldBeUnique, ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable;
+
+    public function __construct(public bool $retryFailed = false) {}
 
     /**
      * @return array{parts_updated: int, minifigs_updated: int, skipped: int, images_queued: int}
@@ -61,7 +63,7 @@ class FullImportPartColorImagesJob implements ShouldBeUnique, ShouldQueue
         $queued = 0;
 
         $partColors = PartColor::query()
-            ->whereDoesntHave('media', fn ($query) => $query->where('collection_name', PartColor::BRICQER_IMAGE_COLLECTION))
+            ->when($this->retryFailed, fn ($query) => $query->withoutCloudflareImage(), fn ($query) => $query->importable())
             ->whereIn('bricqer_definition_id', $definitions->pluck('id')->map(fn ($id): string => (string) $id))
             ->get();
 
@@ -74,8 +76,7 @@ class FullImportPartColorImagesJob implements ShouldBeUnique, ShouldQueue
                 return;
             }
 
-            // bricqer_image_url is set only after a successful download in ImportPartColorImageJob.
-            ImportPartColorImageJob::dispatch($partColor->id, $definition->picture);
+            ImportImageJob::dispatch(PartColor::class, $partColor->id, $definition->picture);
             $queued++;
         });
 
@@ -105,7 +106,7 @@ class FullImportPartColorImagesJob implements ShouldBeUnique, ShouldQueue
         $placeholders = implode(',', array_fill(0, count($keys), '?'));
 
         $minifigs = Minifig::query()
-            ->whereDoesntHave('media', fn ($query) => $query->where('collection_name', Minifig::BRICQER_IMAGE_COLLECTION))
+            ->when($this->retryFailed, fn ($query) => $query->withoutCloudflareImage(), fn ($query) => $query->importable())
             ->whereNotNull('bricklink_id')
             ->whereRaw("LOWER(bricklink_id) IN ({$placeholders})", $keys)
             ->get();
@@ -119,8 +120,7 @@ class FullImportPartColorImagesJob implements ShouldBeUnique, ShouldQueue
                 continue;
             }
 
-            // bricqer_image_url is set only after a successful download in ImportMinifigImageJob.
-            ImportMinifigImageJob::dispatch($minifig->id, $definition->picture);
+            ImportImageJob::dispatch(Minifig::class, $minifig->id, $definition->picture);
             $queued++;
         }
 

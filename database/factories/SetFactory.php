@@ -26,4 +26,11 @@ class SetFactory extends Factory
             'img_url' => null,
         ];
     }
+
+    public function withCloudflareImage(): static
+    {
+        return $this->state(fn (): array => [
+            'cloudflare_image_id' => 'testing-set-'.fake()->unique()->numerify('########'),
+        ]);
+    }
 }

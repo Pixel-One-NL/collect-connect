@@ -52,7 +52,7 @@ class ProductController extends Controller
                 ->get();
         }
 
-        $relatedSets = Set::query()->with('media')->whereHas('latestInventory', function ($inventory) use ($product): void {
+        $relatedSets = Set::query()->whereHas('latestInventory', function ($inventory) use ($product): void {
             if ($product->productable instanceof Part) {
                 $inventory->whereHas('parts', fn ($parts) => $parts->where('parts.id', $product->productable_id)->where('inventory_parts.color_id', $product->color_id));
             } else {

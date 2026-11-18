@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Minifig\Jobs;
 
+use App\Domain\Image\Jobs\ImportImageJob;
 use App\Integrations\Bricqer\Facades\Bricqer;
 use App\Models\Minifig;
 use App\Support\BricqerImageUrl;
@@ -23,7 +24,7 @@ class ImportMinifigImageFromDefinitionJob implements ShouldQueue
     {
         $minifig = Minifig::query()->find($this->minifigId);
 
-        if (! $minifig || $minifig->hasMedia(Minifig::BRICQER_IMAGE_COLLECTION)) {
+        if (! $minifig || $minifig->cloudflare_image_id !== null) {
             return;
         }
 
@@ -33,9 +34,7 @@ class ImportMinifigImageFromDefinitionJob implements ShouldQueue
             return;
         }
 
-        // Do not mark bricqer_image_url until download succeeds — otherwise failed
-        // CDN hits permanently skip the minifig on later import runs.
-        ImportMinifigImageJob::dispatch($minifig->id, $imageUrl);
+        ImportImageJob::dispatch(Minifig::class, $minifig->id, $imageUrl);
     }
 
     /**

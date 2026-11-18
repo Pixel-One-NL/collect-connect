@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\Feature\Content;
 
+use App\Filament\Resources\Articles\Pages\CreateArticle;
 use App\Filament\Resources\Orders\Pages\ManageOrders;
 use App\Filament\Resources\Pages\Pages\CreatePage;
 use App\Filament\Resources\StockNotifications\Pages\ListStockNotifications;
 use App\Filament\Resources\SyncRuns\Pages\ListSyncRuns;
 use App\Filament\Resources\Users\Pages\ManageUsers;
 use App\Models\User;
+use Filament\Forms\Components\Builder;
+use Filament\Forms\Components\RichEditor;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Livewire\Livewire;
 use Tests\TestCase;
@@ -31,6 +34,26 @@ class AdminContentTest extends TestCase
         foreach ([ManageOrders::class, ManageUsers::class, ListStockNotifications::class, ListSyncRuns::class] as $page) {
             Livewire::test($page)->assertOk();
         }
+    }
+
+    public function test_rich_editors_do_not_allow_file_attachments(): void
+    {
+        $admin = User::factory()->create();
+        $admin->forceFill(['is_admin' => true])->save();
+        $this->actingAs($admin);
+
+        Livewire::test(CreateArticle::class)->assertFormFieldExists(
+            'content',
+            fn (RichEditor $editor): bool => ! $editor->hasFileAttachments() && ! $editor->hasToolbarButton('attachFiles'),
+        );
+
+        Livewire::test(CreatePage::class)->assertFormFieldExists('blocks', function (Builder $blocks): bool {
+            $editor = collect($blocks->getBlock('html')->getDefaultChildComponents())
+                ->first(fn (object $component): bool => $component instanceof RichEditor)
+                ?->container($blocks->getContainer());
+
+            return $editor instanceof RichEditor && ! $editor->hasFileAttachments() && ! $editor->hasToolbarButton('attachFiles');
+        });
     }
 
     public function test_editing_page_preserves_existing_row_layout(): void

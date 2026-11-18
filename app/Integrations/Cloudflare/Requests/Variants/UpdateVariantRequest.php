@@ -1,0 +1,41 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Integrations\Cloudflare\Requests\Variants;
+
+use Saloon\Contracts\Body\HasBody;
+use Saloon\Enums\Method;
+use Saloon\Http\Request;
+use Saloon\Traits\Body\HasJsonBody;
+
+class UpdateVariantRequest extends Request implements HasBody
+{
+    use HasJsonBody;
+
+    protected Method $method = Method::PATCH;
+
+    /**
+     * @param  array<string, int|string>  $options
+     */
+    public function __construct(
+        protected string $variantId,
+        protected array $options,
+    ) {}
+
+    public function resolveEndpoint(): string
+    {
+        return '/images/v1/variants/'.rawurlencode($this->variantId);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    protected function defaultBody(): array
+    {
+        return [
+            'options' => $this->options,
+            'neverRequireSignedURLs' => true,
+        ];
+    }
+}

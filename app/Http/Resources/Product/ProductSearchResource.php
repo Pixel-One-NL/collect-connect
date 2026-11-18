@@ -8,7 +8,7 @@ use App\Domain\Product\Queries\ProductListingQuery;
 use App\Http\Resources\Color\ColorResource;
 use App\Models\Part;
 use App\Models\Product;
-use App\Support\MediaUrl;
+use App\Support\ImageUrl;
 use Illuminate\Http\Request;
 
 class ProductSearchResource extends ProductResource
@@ -49,12 +49,12 @@ class ProductSearchResource extends ProductResource
 
     /**
      * A search card stands for the whole part, so it falls back to another
-     * color's image when this product's own color has no media yet.
+     * color's image when this product's own color has no image yet.
      */
     protected function getImage(): ?string
     {
         if ($this->productable instanceof Part) {
-            return MediaUrl::forPartAnyColor($this->productable, (int) $this->color_id);
+            return ImageUrl::forPartAnyColor($this->productable, (int) $this->color_id);
         }
 
         return parent::getImage();

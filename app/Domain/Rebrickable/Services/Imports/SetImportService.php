@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Domain\Rebrickable\Services\Imports;
 
+use App\Domain\Image\Jobs\ImportImageJob;
 use App\Domain\Rebrickable\Mappers\Imports\SetImportMapper;
 use App\Domain\Rebrickable\Services\BaseImportService;
-use App\Domain\Set\Jobs\ImportSetImageJob;
 use App\Models\Set;
 
 class SetImportService extends BaseImportService
@@ -32,11 +32,11 @@ class SetImportService extends BaseImportService
 
         Set::query()
             ->whereNotNull('img_url')
-            ->whereDoesntHave('media', fn ($query) => $query->where('collection_name', Set::IMAGE_COLLECTION))
+            ->importable()
             ->lazyById()
             ->each(function (Set $set): void {
                 if ($set->img_url !== null && $set->img_url !== '') {
-                    ImportSetImageJob::dispatch($set->id, $set->img_url);
+                    ImportImageJob::dispatch(Set::class, $set->id, $set->img_url);
                 }
             });
     }

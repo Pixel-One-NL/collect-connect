@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Domain\Image\Jobs\DeleteCloudflareImageJob;
 use App\Models\Pivots\InventoryPart;
 use App\Models\Pivots\PartColor;
 use Database\Factories\PartFactory;
@@ -31,6 +32,20 @@ class Part extends Model
         'weight_grams',
         'bricqer_definition_id',
     ];
+
+    /**
+     * The database cascade removes part colors without Eloquent events, so their
+     * Cloudflare images are queued for deletion here, while the rows still exist.
+     */
+    protected static function booted(): void
+    {
+        static::deleting(function (Part $part): void {
+            $part->partColors()
+                ->whereNotNull('cloudflare_image_id')
+                ->pluck('cloudflare_image_id')
+                ->each(fn (string $imageId) => DeleteCloudflareImageJob::dispatch($imageId));
+        });
+    }
 
     /**
      * @return array<string, string>
@@ -61,8 +76,7 @@ class Part extends Model
     }
 
     /**
-     * Per-color image rows. Each holds the Rebrickable image for one color of
-     * this part via Spatie MediaLibrary.
+     * Per-color rows. Each holds the Cloudflare image for one color of this part.
      *
      * @return HasMany<PartColor, $this>
      */

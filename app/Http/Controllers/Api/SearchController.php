@@ -13,7 +13,7 @@ use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\Product;
 use App\Models\Set;
-use App\Support\MediaUrl;
+use App\Support\ImageUrl;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -64,7 +64,7 @@ class SearchController extends Controller
         $minifigs = Minifig::search($query)
             ->take(40)
             ->get()
-            ->load(['media', 'products'])
+            ->load('products')
             // Shop search only returns minifigs that link to a sellable product page.
             ->filter(fn (Minifig $minifig): bool => $minifig->products->contains(
                 fn (Product $product): bool => $product->stock > 0,
@@ -73,8 +73,7 @@ class SearchController extends Controller
 
         $sets = Set::search($query)
             ->take(20)
-            ->get()
-            ->load('media');
+            ->get();
 
         return response()->json([
             'data' => [
@@ -106,7 +105,7 @@ class SearchController extends Controller
             $part = $product->productable;
 
             return $part instanceof Part
-                && MediaUrl::forPart($part, (int) $product->color_id) !== null;
+                && ImageUrl::forPart($part, (int) $product->color_id) !== null;
         });
 
         return $withImage ?? $variants->firstOrFail();

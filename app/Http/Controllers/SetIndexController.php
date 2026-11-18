@@ -16,7 +16,6 @@ class SetIndexController extends Controller
         $q = trim((string) $request->query('q', ''));
 
         $sets = Set::query()
-            ->with('media')
             ->when($q !== '', function ($query) use ($q): void {
                 $query->where(function ($inner) use ($q): void {
                     $inner->where('name', 'like', "%{$q}%")

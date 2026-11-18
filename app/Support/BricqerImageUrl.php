@@ -8,7 +8,7 @@ namespace App\Support;
  * Builds Bricqer CDN source URLs for **backend image import jobs only**.
  *
  * Never use these URLs in storefront responses (product pages, search, cart,
- * set BOM). Shop images must come from the Spatie media library after import.
+ * set BOM). Shop images must come from Cloudflare Images after import.
  *
  * Pattern is observed from Bricqer payloads; not fully documented in OpenAPI.
  */

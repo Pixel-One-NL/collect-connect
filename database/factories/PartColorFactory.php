@@ -27,4 +27,11 @@ class PartColorFactory extends Factory
             'bricqer_definition_id' => (string) fake()->unique()->numerify('########'),
         ];
     }
+
+    public function withCloudflareImage(): static
+    {
+        return $this->state(fn (): array => [
+            'cloudflare_image_id' => 'testing-part-color-'.fake()->unique()->numerify('########'),
+        ]);
+    }
 }

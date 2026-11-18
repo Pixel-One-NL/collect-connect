@@ -8,7 +8,7 @@ use App\Filament\Resources\TrendingProducts\Support\ProductLabel;
 use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\TrendingProduct;
-use App\Support\MediaUrl;
+use App\Support\ImageUrl;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
@@ -65,15 +65,13 @@ class TrendingProductsTable
         $productable = $product->productable;
 
         if ($productable instanceof Part) {
-            $productable->loadMissing('partColors.media');
+            $productable->loadMissing('partColors');
 
-            return MediaUrl::forPartAnyColor($productable, (int) $product->color_id);
+            return ImageUrl::forPartAnyColor($productable, (int) $product->color_id);
         }
 
         if ($productable instanceof Minifig) {
-            $productable->loadMissing('media');
-
-            return MediaUrl::forMinifig($productable);
+            return ImageUrl::forMinifig($productable);
         }
 
         return null;

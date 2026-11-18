@@ -22,7 +22,7 @@ class ArticleForm
             DateTimePicker::make('published_at')->helperText('Leave empty to publish immediately when enabled.'),
             TextInput::make('meta_title')->maxLength(255),
             Textarea::make('meta_description')->maxLength(500),
-            RichEditor::make('content')->required()->columnSpanFull(),
+            RichEditor::make('content')->fileAttachments(false)->required()->columnSpanFull(),
         ]);
     }
 }

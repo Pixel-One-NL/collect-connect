@@ -33,7 +33,7 @@ class PageForm
                 ]),
                 Block::make('heading')->schema([TextInput::make('text')->required()]),
                 Block::make('text')->schema([Textarea::make('text')->required()]),
-                Block::make('html')->label('Rich text')->schema([RichEditor::make('html')->required()]),
+                Block::make('html')->label('Rich text')->schema([RichEditor::make('html')->fileAttachments(false)->required()]),
                 Block::make('image')->schema([
                     TextInput::make('src')->url()->required()->helperText('Public HTTPS image URL'),
                     TextInput::make('alt')->required(),

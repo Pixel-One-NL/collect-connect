@@ -6,7 +6,8 @@ namespace App\Http\Resources\Minifig;
 
 use App\Models\Minifig;
 use App\Models\Product;
-use App\Support\MediaUrl;
+use App\Support\ImageUrl;
+use App\Support\ImageVariant;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -18,7 +19,7 @@ class MinifigSearchResource extends JsonResource
     /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
-        $this->loadMissing(['media', 'products']);
+        $this->loadMissing('products');
 
         /** @var Product|null $product */
         $product = $this->products
@@ -47,6 +48,6 @@ class MinifigSearchResource extends JsonResource
 
     protected function imageUrl(): ?string
     {
-        return MediaUrl::forMinifig($this->resource, [Minifig::THUMB_CONVERSION]);
+        return ImageUrl::forMinifig($this->resource, ImageVariant::Thumb);
     }
 }

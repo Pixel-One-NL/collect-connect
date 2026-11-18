@@ -11,30 +11,20 @@ use App\Models\Pivots\PartColor;
 use App\Models\Product;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 use Tests\TestCase;
 
 class ProductColorImageTest extends TestCase
 {
     use RefreshDatabase;
 
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        Storage::fake('public');
-        config(['media-library.queue_conversions_by_default' => false]);
-    }
-
-    public function test_product_resource_returns_the_bricqer_image_for_its_own_color(): void
+    public function test_product_resource_returns_the_cloudflare_image_for_its_own_color(): void
     {
         $part = Part::factory()->create();
         $red = Color::factory()->create(['name' => 'Red']);
         $blue = Color::factory()->create(['name' => 'Blue']);
 
-        $redImage = $this->attachImage($part, $red, 'red.png');
-        $blueImage = $this->attachImage($part, $blue, 'blue.png');
+        $this->attachImage($part, $red, 'testing-part-color-1');
+        $this->attachImage($part, $blue, 'testing-part-color-2');
 
         $redProduct = Product::factory()->create([
             'productable_type' => $part->getMorphClass(),
@@ -47,25 +37,16 @@ class ProductColorImageTest extends TestCase
             'color_id' => $blue->id,
         ]);
 
-        $redProduct->load(['productable.partColors.media', 'color']);
-        $blueProduct->load(['productable.partColors.media', 'color']);
+        $redProduct->load(['productable.partColors', 'color']);
+        $blueProduct->load(['productable.partColors', 'color']);
 
         $request = Request::create('/');
 
         $redData = (new ProductResource($redProduct))->toArray($request);
         $blueData = (new ProductResource($blueProduct))->toArray($request);
 
-        $this->assertNotEmpty($redData['image']);
-        $this->assertNotEmpty($blueData['image']);
-        $this->assertNotSame($redData['image'], $blueData['image']);
-        $this->assertStringContainsString((string) $redImage->id, $redData['image']);
-        $this->assertStringContainsString((string) $blueImage->id, $blueData['image']);
-
-        // The single product page serves the large conversion (generated
-        // synchronously in tests), not the original.
-        $this->assertStringContainsString(PartColor::LARGE_CONVERSION, $redData['image']);
-        $this->assertStringStartsWith('/', $redData['image']);
-        $this->assertStringNotContainsString('cdn.bricqer.com', $redData['image']);
+        $this->assertSame('https://imagedelivery.net/test-hash/testing-part-color-1/large', $redData['image']);
+        $this->assertSame('https://imagedelivery.net/test-hash/testing-part-color-2/large', $blueData['image']);
     }
 
     public function test_product_resource_does_not_fall_back_to_bricqer_cdn_for_parts(): void
@@ -82,37 +63,19 @@ class ProductColorImageTest extends TestCase
             'color_id' => $color->id,
         ]);
 
-        $product->load(['productable.partColors.media', 'color']);
+        $product->load(['productable.partColors', 'color']);
 
         $data = (new ProductResource($product))->toArray(Request::create('/'));
 
         $this->assertNull($data['image']);
     }
 
-    private function attachImage(Part $part, Color $color, string $fileName): Media
+    private function attachImage(Part $part, Color $color, string $imageId): void
     {
-        $pivot = PartColor::factory()->create([
+        PartColor::factory()->create([
             'part_id' => $part->id,
             'color_id' => $color->id,
+            'cloudflare_image_id' => $imageId,
         ]);
-
-        return $pivot
-            ->addMediaFromString($this->pngBytes())
-            ->usingFileName($fileName)
-            ->toMediaCollection(PartColor::BRICQER_IMAGE_COLLECTION);
-    }
-
-    /**
-     * A valid PNG so Spatie can generate conversions during the test.
-     */
-    private function pngBytes(): string
-    {
-        $image = imagecreatetruecolor(8, 8);
-        ob_start();
-        imagepng($image);
-        $bytes = (string) ob_get_clean();
-        imagedestroy($image);
-
-        return $bytes;
     }
 }

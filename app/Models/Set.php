@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\HasCloudflareImage;
+use App\Models\Contracts\CloudflareImageable;
 use App\Models\Pivots\InventorySet;
 use Database\Factories\SetFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,23 +13,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Scout\Searchable;
-use Spatie\Image\Enums\Fit;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Set extends Model implements HasMedia
+class Set extends Model implements CloudflareImageable
 {
     /** @use HasFactory<SetFactory> */
-    use HasFactory, InteractsWithMedia, Searchable;
-
-    public const string IMAGE_COLLECTION = 'image';
-
-    public const string THUMB_CONVERSION = 'thumb';
-
-    public const string MEDIUM_CONVERSION = 'medium';
-
-    public const string LARGE_CONVERSION = 'large';
+    use HasCloudflareImage, HasFactory, Searchable;
 
     protected $fillable = [
         'set_num',
@@ -38,28 +28,9 @@ class Set extends Model implements HasMedia
         'img_url',
     ];
 
-    public function registerMediaCollections(): void
+    protected function cloudflareImageType(): string
     {
-        $this->addMediaCollection(self::IMAGE_COLLECTION)
-            ->singleFile();
-    }
-
-    public function registerMediaConversions(?Media $media = null): void
-    {
-        $this->addMediaConversion(self::THUMB_CONVERSION)
-            ->performOnCollections(self::IMAGE_COLLECTION)
-            ->fit(Fit::Contain, 200, 200)
-            ->format('webp');
-
-        $this->addMediaConversion(self::MEDIUM_CONVERSION)
-            ->performOnCollections(self::IMAGE_COLLECTION)
-            ->fit(Fit::Contain, 400, 400)
-            ->format('webp');
-
-        $this->addMediaConversion(self::LARGE_CONVERSION)
-            ->performOnCollections(self::IMAGE_COLLECTION)
-            ->fit(Fit::Contain, 800, 800)
-            ->format('webp');
+        return 'set';
     }
 
     /** @return \Illuminate\Database\Eloquent\Relations\BelongsTo<Theme, $this> */

@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Domain\Rebrickable\Providers\RebrickableServiceProvider;
 use App\Http\Middleware\HandleInertiaRequests;
 use App\Integrations\Bricqer\BricqerServiceProvider;
+use App\Integrations\Cloudflare\CloudflareServiceProvider;
 use App\Integrations\Rebrickable\RebrickableServiceProvider as RebrickableIntegrationServiceProvider;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
@@ -30,9 +31,11 @@ return Application::configure(basePath: dirname(__DIR__))
         RebrickableServiceProvider::class,
         RebrickableIntegrationServiceProvider::class,
         BricqerServiceProvider::class,
+        CloudflareServiceProvider::class,
     ])
     ->withCommands([
         app_path('Domain/Bricqer/Commands'),
+        app_path('Domain/Image/Commands'),
         app_path('Domain/Rebrickable/Commands'),
         app_path('Domain/Minifig/Commands'),
         app_path('Domain/Part/Commands'),

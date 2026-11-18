@@ -9,8 +9,7 @@
     "nightwatch": false,
     "packages": [
         "filament/filament",
-        "saloonphp/laravel-plugin",
-        "spatie/laravel-medialibrary"
+        "saloonphp/laravel-plugin"
     ],
     "sail": false,
     "skills": [
@@ -19,7 +18,6 @@
         "inertia-react-development",
         "tailwindcss-development",
         "saloon-development",
-        "medialibrary-development",
         "laravel-patterns",
         "laravel-security",
         "laravel-specialist"

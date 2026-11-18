@@ -11,7 +11,6 @@ use App\Models\Pivots\PartColor;
 use App\Models\Product;
 use App\Models\Set;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class SearchControllerTest extends TestCase
@@ -141,16 +140,13 @@ class SearchControllerTest extends TestCase
             ->assertJsonCount(0, 'data.minifigs');
     }
 
-    public function test_minifig_search_images_use_media_library_not_bricqer_cdn(): void
+    public function test_minifig_search_images_use_cloudflare_thumb_not_bricqer_cdn(): void
     {
         $minifig = Minifig::factory()->create([
             'name' => 'Media Fig',
             'bricklink_id' => 'sw0100',
+            'cloudflare_image_id' => 'testing-minifig-1',
         ]);
-        $media = $minifig
-            ->addMediaFromString(base64_decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==') ?: 'x')
-            ->usingFileName('fig.png')
-            ->toMediaCollection(Minifig::BRICQER_IMAGE_COLLECTION);
 
         Product::factory()->create([
             'productable_type' => $minifig->getMorphClass(),
@@ -163,11 +159,7 @@ class SearchControllerTest extends TestCase
         $response = $this->getJson('/api/search?q=media');
         $response->assertOk()->assertJsonCount(1, 'data.minifigs');
 
-        $image = $response->json('data.minifigs.0.image');
-        $this->assertNotNull($image);
-        $this->assertStringStartsWith('/', $image);
-        $this->assertStringContainsString((string) $media->id, $image);
-        $this->assertStringNotContainsString('cdn.bricqer.com', (string) $image);
+        $response->assertJsonPath('data.minifigs.0.image', 'https://imagedelivery.net/test-hash/testing-minifig-1/thumb');
     }
 
     public function test_it_keeps_part_products_and_minifigs_in_separate_buckets(): void
@@ -256,8 +248,6 @@ class SearchControllerTest extends TestCase
 
     public function test_part_cards_use_a_color_that_has_an_image_when_the_matched_color_has_none(): void
     {
-        Storage::fake('public');
-
         $part = Part::factory()->create([
             'name' => 'Warm Brick 2x4',
             'bricklink_id' => '3001',
@@ -266,19 +256,16 @@ class SearchControllerTest extends TestCase
         $warmPink = Color::factory()->create(['name' => 'Warm Pink']);
         $red = Color::factory()->create(['name' => 'Red']);
 
-        // Warm Pink has a pivot but no media at all; Red is fully imported.
+        // Warm Pink has a pivot but no image at all; Red is fully imported.
         PartColor::factory()->create([
             'part_id' => $part->id,
             'color_id' => $warmPink->id,
         ]);
-        $redMedia = PartColor::factory()
-            ->create([
-                'part_id' => $part->id,
-                'color_id' => $red->id,
-            ])
-            ->addMediaFromString($this->pngBytes())
-            ->usingFileName('red.png')
-            ->toMediaCollection(PartColor::BRICQER_IMAGE_COLLECTION);
+        PartColor::factory()->create([
+            'part_id' => $part->id,
+            'color_id' => $red->id,
+            'cloudflare_image_id' => 'testing-part-color-red',
+        ]);
 
         // Created last so the search engine returns the imageless color first
         // and the controller has to look past it.
@@ -305,9 +292,7 @@ class SearchControllerTest extends TestCase
         $response->assertJsonPath('data.products.0.id', $redProduct->id);
         $response->assertJsonPath('data.products.0.url', route('product.show', $redProduct, absolute: false));
 
-        $image = $response->json('data.products.0.image');
-        $this->assertNotNull($image);
-        $this->assertStringContainsString((string) $redMedia->id, (string) $image);
+        $response->assertJsonPath('data.products.0.image', 'https://imagedelivery.net/test-hash/testing-part-color-red/large');
 
         // The imageless color still appears as a sibling, just without a thumbnail.
         $siblings = collect($response->json('data.products.0.sibling_colors'));
@@ -316,8 +301,6 @@ class SearchControllerTest extends TestCase
 
     public function test_part_cards_fall_back_to_another_color_image_when_only_one_variant_matches(): void
     {
-        Storage::fake('public');
-
         $part = Part::factory()->create([
             'name' => 'Warm Brick 2x4',
             'bricklink_id' => '3001',
@@ -330,14 +313,11 @@ class SearchControllerTest extends TestCase
             'part_id' => $part->id,
             'color_id' => $warmPink->id,
         ]);
-        $redMedia = PartColor::factory()
-            ->create([
-                'part_id' => $part->id,
-                'color_id' => $red->id,
-            ])
-            ->addMediaFromString($this->pngBytes())
-            ->usingFileName('red.png')
-            ->toMediaCollection(PartColor::BRICQER_IMAGE_COLLECTION);
+        PartColor::factory()->create([
+            'part_id' => $part->id,
+            'color_id' => $red->id,
+            'cloudflare_image_id' => 'testing-part-color-red',
+        ]);
 
         // Only the imageless color is sellable, so it is the only candidate.
         $warmPinkProduct = Product::factory()->create([
@@ -360,23 +340,7 @@ class SearchControllerTest extends TestCase
         $response->assertJsonCount(1, 'data.products');
         $response->assertJsonPath('data.products.0.id', $warmPinkProduct->id);
 
-        $image = $response->json('data.products.0.image');
-        $this->assertNotNull($image);
-        $this->assertStringContainsString((string) $redMedia->id, (string) $image);
-    }
-
-    /**
-     * A valid PNG so Spatie can generate conversions during the test.
-     */
-    private function pngBytes(): string
-    {
-        $image = imagecreatetruecolor(8, 8);
-        ob_start();
-        imagepng($image);
-        $bytes = (string) ob_get_clean();
-        imagedestroy($image);
-
-        return $bytes;
+        $response->assertJsonPath('data.products.0.image', 'https://imagedelivery.net/test-hash/testing-part-color-red/large');
     }
 
     /**

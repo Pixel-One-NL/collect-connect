@@ -9,7 +9,7 @@ use App\Http\Resources\Color\ColorResource;
 use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\Product;
-use App\Support\MediaUrl;
+use App\Support\ImageUrl;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -68,7 +68,7 @@ class ProductResource extends JsonResource
 
     protected function getPartImage(Part $part, int $colorId): ?string
     {
-        return MediaUrl::forPart($part, $colorId);
+        return ImageUrl::forPart($part, $colorId);
     }
 
     protected function getImage(): ?string
@@ -86,7 +86,7 @@ class ProductResource extends JsonResource
 
     protected function getMinifigImage(Minifig $minifig): ?string
     {
-        return MediaUrl::forMinifig($minifig);
+        return ImageUrl::forMinifig($minifig);
     }
 
     protected function shouldShowColor(): bool

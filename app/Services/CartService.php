@@ -6,10 +6,9 @@ namespace App\Services;
 
 use App\Models\Minifig;
 use App\Models\Part;
-use App\Models\Pivots\PartColor;
 use App\Models\Product;
 use App\Models\User;
-use App\Support\MediaUrl;
+use App\Support\ImageVariant;
 use Binafy\LaravelCart\Models\Cart;
 use Closure;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -240,7 +239,7 @@ class CartService
                 'color',
                 'productable' => function ($relation): void {
                     if ($relation instanceof MorphTo) {
-                        $relation->morphWith([Part::class => ['partColors.media'], Minifig::class => ['media']]);
+                        $relation->morphWith([Part::class => ['partColors']]);
                     }
                 },
             ])
@@ -314,24 +313,18 @@ class CartService
     }
 
     /**
-     * Cart thumbnails are media-library only (no Bricqer CDN hotlinking).
+     * Cart thumbnails come from Cloudflare only (no Bricqer CDN hotlinking).
      */
     protected function imageFor(Product $product): ?string
     {
         if ($product->productable instanceof Part) {
-            $partColor = $product->productable->partColors->firstWhere('color_id', $product->color_id);
-
-            return MediaUrl::fromMedia(
-                $partColor?->getFirstMedia(PartColor::BRICQER_IMAGE_COLLECTION),
-                [PartColor::THUMB_CONVERSION, PartColor::MEDIUM_CONVERSION, PartColor::LARGE_CONVERSION],
-            );
+            return $product->productable->partColors
+                ->firstWhere('color_id', $product->color_id)
+                ?->imageUrl(ImageVariant::Thumb);
         }
 
         if ($product->productable instanceof Minifig) {
-            return MediaUrl::fromMedia(
-                $product->productable->getFirstMedia(Minifig::BRICQER_IMAGE_COLLECTION),
-                [Minifig::THUMB_CONVERSION, Minifig::MEDIUM_CONVERSION, Minifig::LARGE_CONVERSION],
-            );
+            return $product->productable->imageUrl(ImageVariant::Thumb);
         }
 
         return null;

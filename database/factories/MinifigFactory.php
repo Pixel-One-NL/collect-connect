@@ -26,4 +26,11 @@ class MinifigFactory extends Factory
             'weight_grams' => fake()->optional(0.8)->randomFloat(4, 1, 20),
         ];
     }
+
+    public function withCloudflareImage(): static
+    {
+        return $this->state(fn (): array => [
+            'cloudflare_image_id' => 'testing-minifig-'.fake()->unique()->numerify('########'),
+        ]);
+    }
 }

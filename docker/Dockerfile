@@ -5,7 +5,7 @@ WORKDIR /var/www/html
 USER root
 
 # Install PHP extensions
-RUN install-php-extensions intl pcntl pdo_mysql redis sodium zip bcmath exif gd
+RUN install-php-extensions intl pcntl pdo_mysql redis sodium zip bcmath
 
 FROM base AS development
 

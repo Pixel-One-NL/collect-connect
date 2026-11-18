@@ -35,3 +35,9 @@
 .kilo/node_modules
 .kilo/plans/*upstream-merge-report-*.md
 data.csv
+
+# tokenade — per-project cache / scaffold flag / dedup refs
+.tokenade/
+
+# tokenade — legacy per-project embedding model cache (now global)
+.fastembed_cache/

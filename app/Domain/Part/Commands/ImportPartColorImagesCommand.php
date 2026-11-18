@@ -11,13 +11,13 @@ use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
 use Illuminate\Support\LazyCollection;
 
-#[Signature('part:import-color-images {--full : Walk all Bricqer definitions (also imports weights + definition ids)} {--definition=}')]
+#[Signature('part:import-color-images {--full : Walk all Bricqer definitions (also imports weights + definition ids)} {--definition=} {--retry-failed : Include images whose source failed earlier}')]
 class ImportPartColorImagesCommand extends Command
 {
     public function handle(): int
     {
         if ($this->option('full')) {
-            $stats = (new FullImportPartColorImagesJob)->handle();
+            $stats = (new FullImportPartColorImagesJob((bool) $this->option('retry-failed')))->handle();
 
             $this->info(sprintf(
                 'Definitions import done: %d parts, %d minifigs updated; %d part/minifig images queued; %d non-P/M skipped.',
@@ -30,7 +30,7 @@ class ImportPartColorImagesCommand extends Command
             return self::SUCCESS;
         }
 
-        $this->retrieveEligiblePartColors($this->option('definition'))
+        $this->retrieveEligiblePartColors($this->option('definition'), (bool) $this->option('retry-failed'))
             ->each(fn (PartColor $partColor) => ImportPartColorImageFromDefinitionJob::dispatch($partColor->id));
 
         return self::SUCCESS;
@@ -42,11 +42,11 @@ class ImportPartColorImagesCommand extends Command
      *
      * @return LazyCollection<int, PartColor>
      */
-    protected function retrieveEligiblePartColors(?string $definitionId = null): LazyCollection
+    protected function retrieveEligiblePartColors(?string $definitionId = null, bool $retryFailed = false): LazyCollection
     {
         return PartColor::query()
             ->whereNotNull('bricqer_definition_id')
-            ->whereNull('bricqer_image_url')
+            ->when($retryFailed, fn ($query) => $query->withoutCloudflareImage(), fn ($query) => $query->importable())
             ->when($definitionId, fn ($query) => $query->where('bricqer_definition_id', $definitionId))
             ->lazyById();
     }

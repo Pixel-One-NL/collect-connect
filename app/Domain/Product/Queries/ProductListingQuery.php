@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Product\Queries;
 
-use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\Product;
 use Closure;
@@ -33,8 +32,7 @@ final class ProductListingQuery
         return [
             'color',
             'productable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
-                Part::class => ['partColors.media', 'partCategory', 'products.color'],
-                Minifig::class => ['media'],
+                Part::class => ['partColors', 'partCategory', 'products.color'],
             ]),
         ];
     }
@@ -47,16 +45,14 @@ final class ProductListingQuery
         if ($type === 'minifig') {
             return [
                 'color',
-                'productable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
-                    Minifig::class => ['media'],
-                ]),
+                'productable',
             ];
         }
 
         return [
             'color',
             'productable' => fn (MorphTo $morphTo) => $morphTo->morphWith([
-                Part::class => ['partColors.media', 'partCategory', 'products.color'],
+                Part::class => ['partColors', 'partCategory', 'products.color'],
             ]),
         ];
     }

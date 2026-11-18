@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Models\Concerns\HasCloudflareImage;
+use App\Models\Contracts\CloudflareImageable;
 use App\Models\Pivots\InventoryMinifig;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,23 +13,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Laravel\Scout\Searchable;
-use Spatie\Image\Enums\Fit;
-use Spatie\MediaLibrary\HasMedia;
-use Spatie\MediaLibrary\InteractsWithMedia;
-use Spatie\MediaLibrary\MediaCollections\Models\Media;
 
-class Minifig extends Model implements HasMedia
+class Minifig extends Model implements CloudflareImageable
 {
     /** @use HasFactory<\Database\Factories\MinifigFactory> */
-    use HasFactory, InteractsWithMedia, Searchable;
-
-    public const string BRICQER_IMAGE_COLLECTION = 'bricqer';
-
-    public const string THUMB_CONVERSION = 'thumb';
-
-    public const string MEDIUM_CONVERSION = 'medium';
-
-    public const string LARGE_CONVERSION = 'large';
+    use HasCloudflareImage, HasFactory, Searchable;
 
     public $timestamps = false;
 
@@ -37,7 +27,6 @@ class Minifig extends Model implements HasMedia
         'name',
         'weight_grams',
         'bricqer_definition_id',
-        'bricqer_image_url',
     ];
 
     /**
@@ -50,32 +39,9 @@ class Minifig extends Model implements HasMedia
         ];
     }
 
-    public function registerMediaCollections(): void
+    protected function cloudflareImageType(): string
     {
-        $this->addMediaCollection(self::BRICQER_IMAGE_COLLECTION)
-            ->singleFile();
-    }
-
-    /**
-     * Bricqer minifig images are stored once on the model (minifigs have no
-     * color variants) and served in three sizes, matching part-color images.
-     */
-    public function registerMediaConversions(?Media $media = null): void
-    {
-        $this->addMediaConversion(self::THUMB_CONVERSION)
-            ->performOnCollections(self::BRICQER_IMAGE_COLLECTION)
-            ->fit(Fit::Contain, 200, 200)
-            ->format('webp');
-
-        $this->addMediaConversion(self::MEDIUM_CONVERSION)
-            ->performOnCollections(self::BRICQER_IMAGE_COLLECTION)
-            ->fit(Fit::Contain, 400, 400)
-            ->format('webp');
-
-        $this->addMediaConversion(self::LARGE_CONVERSION)
-            ->performOnCollections(self::BRICQER_IMAGE_COLLECTION)
-            ->fit(Fit::Contain, 800, 800)
-            ->format('webp');
+        return 'minifig';
     }
 
     /**
