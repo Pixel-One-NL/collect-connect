@@ -11,10 +11,22 @@ const LISTING_PATHS = {
     part: '/onderdelen',
 };
 
+function groupThemes(themes = []) {
+    const ids = new Set(themes.map((t) => t.id));
+    const childrenOf = (id) => themes.filter((t) => t.parent_id === id);
+    const descendants = (id, depth = 1) =>
+        childrenOf(id).flatMap((t) => [{ ...t, depth }, ...descendants(t.id, depth + 1)]);
+
+    return themes
+        .filter((t) => t.parent_id == null || !ids.has(t.parent_id))
+        .map((root) => ({ root, options: descendants(root.id) }));
+}
+
 export default function CatalogPage({ title, type, query, products, filters, active }) {
     const [loading, setLoading] = useState(false);
     const items = products?.data ?? products ?? [];
     const meta = products?.meta ?? null;
+    const themeGroups = groupThemes(filters?.themes);
 
     function updateFilter(key, value) {
         const params = { ...active, [key]: value || undefined };
@@ -51,7 +63,7 @@ export default function CatalogPage({ title, type, query, products, filters, act
 
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 <aside className="space-y-6">
-                    {(active?.category_id || active?.color_id) && <button className="min-h-11 text-primary underline" onClick={() => router.get(LISTING_PATHS[type] ?? '/onderdelen', active?.q ? {q: active.q} : {})}>Filters wissen</button>}
+                    {(active?.category_id || active?.color_id || active?.theme_id) && <button className="min-h-11 text-primary underline" onClick={() => router.get(LISTING_PATHS[type] ?? '/onderdelen', active?.q ? {q: active.q} : {})}>Filters wissen</button>}
                     {filters?.categories?.length > 0 && (
                         <div>
                             <h2 className="text-sm font-semibold text-gray-700 mb-2">Categorie</h2>
@@ -63,6 +75,26 @@ export default function CatalogPage({ title, type, query, products, filters, act
                                 <option value="">Alle categorieën</option>
                                 {filters.categories.map((c) => (
                                     <option key={c.id} value={c.id}>{c.name}</option>
+                                ))}
+                            </select>
+                        </div>
+                    )}
+                    {themeGroups.length > 0 && (
+                        <div>
+                            <h2 className="text-sm font-semibold text-gray-700 mb-2">Thema</h2>
+                            <select
+                                aria-label="Thema" className="w-full border border-gray-200 rounded-md px-3 py-2"
+                                value={active?.theme_id ?? ''}
+                                onChange={(e) => updateFilter('theme_id', e.target.value)}
+                            >
+                                <option value="">Alle thema's</option>
+                                {themeGroups.map(({ root, options }) => (
+                                    <optgroup key={root.id} label={root.name}>
+                                        <option value={root.id}>Alle {root.name}</option>
+                                        {options.map((t) => (
+                                            <option key={t.id} value={t.id}>{'\u00A0\u00A0'.repeat(t.depth - 1)}{t.name}</option>
+                                        ))}
+                                    </optgroup>
                                 ))}
                             </select>
                         </div>

@@ -1,6 +1,14 @@
 import { CaretRightIcon } from "@phosphor-icons/react/dist/csr/CaretRight";
 
 /**
+ * Label for the "view everything" link at the top of a sub menu.
+ *
+ * @param {string} label - Label of the parent item (e.g. "Onderdelen").
+ * @returns {string} e.g. "Alle onderdelen"
+ */
+export const allLabel = (label) => `Alle ${label.toLowerCase()}`;
+
+/**
  * A single navigation row: label plus a caret when it has children. Shared by
  * the desktop and mobile menus.
  *

@@ -1,6 +1,7 @@
 import { MinusIcon } from '@phosphor-icons/react/dist/csr/Minus';
 import { PlusIcon } from '@phosphor-icons/react/dist/csr/Plus';
 import { ShoppingCartIcon } from '@phosphor-icons/react/dist/csr/ShoppingCart';
+import { CaretLeftIcon } from '@phosphor-icons/react/dist/csr/CaretLeft';
 import { Link, router } from '@inertiajs/react';
 import { useState } from 'react';
 import Button from '../../components/UI/Button';
@@ -8,14 +9,15 @@ import Container from '../../components/Container';
 import { useCart } from '../../hooks/useCart';
 import Price from "../../components/Shop/Price.jsx";
 import StockIndicator from "../../components/Shop/Products/StockIndicator.jsx";
-import ProductSiblingsOverview from "../../components/Shop/Products/ProductSiblingsOverview.jsx";
+import ColorVariantsTable from "../../components/Shop/Products/ColorVariantsTable.jsx";
+import Pagination from "../../components/UI/Pagination.jsx";
 import InlineProduct from "../../components/Shop/Products/InlineProduct.jsx";
 
 /**
  * @param {Object} props
  */
 export default function ProductPage({ product: { data: product }, suggestions: { data: suggestions }, status, related_sets }) {
-    const { items, addItem, open, processing } = useCart();
+    const { items, addItem, processing } = useCart();
 
     const currentCartQty = items.find((i) => i.id === product.id)?.quantity ?? 0;
     const available = product.stock - currentCartQty;
@@ -36,10 +38,7 @@ export default function ProductPage({ product: { data: product }, suggestions: {
 
     function handleAddToCart() {
         addItem(product.id, quantity, {
-            onSuccess: () => {
-                setQuantity(1);
-                open();
-            },
+            onSuccess: () => setQuantity(1),
         });
     }
 
@@ -62,6 +61,15 @@ export default function ProductPage({ product: { data: product }, suggestions: {
 
                 <div className="flex flex-col gap-6 md:col-span-3">
                     <div>
+                        {product.category_link && (
+                            <Link
+                                href={product.category_link.url}
+                                className="mb-2 inline-flex items-center gap-1 text-sm font-medium text-secondary hover:underline"
+                            >
+                                <CaretLeftIcon size={14} aria-hidden="true" />
+                                {product.category_link.label}
+                            </Link>
+                        )}
                         <h1 className="text-2xl font-bold text-gray-900">{product.title}</h1>
 
                         <div className="flex items-center gap-4 mt-2">
@@ -172,12 +180,12 @@ export default function ProductPage({ product: { data: product }, suggestions: {
                             ))}
                         </dl>
                     )}
-
-                    {product.sibling_colors?.length > 0 && (
-                        <ProductSiblingsOverview productSiblings={product.sibling_colors} />
-                    )}
                 </div>
             </div>
+
+            {product.sibling_colors?.length > 1 && (
+                <ColorVariantsTable variants={product.sibling_colors} currentId={product.id} />
+            )}
 
             {suggestions.length > 0 && (
                 <div className="mt-8">
@@ -198,10 +206,7 @@ export default function ProductPage({ product: { data: product }, suggestions: {
                         <p>{set.set_num} · {set.name}</p>
                     </Link>)}
                 </div>
-                <nav className="mt-4 flex gap-4" aria-label="Sets pagina's">
-                    {related_sets.links?.prev && <Link href={related_sets.links.prev}>Vorige</Link>}
-                    {related_sets.links?.next && <Link href={related_sets.links.next}>Volgende</Link>}
-                </nav>
+                <Pagination pagination={related_sets} label="Sets paginering" preserveScroll />
             </section>}
         </Container>
     );

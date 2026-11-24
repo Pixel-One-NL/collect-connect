@@ -94,3 +94,28 @@
 .border-brick-y-accent::after {
     background-image: url('data:image/svg+xml;utf8,<svg width="50" height="20" viewBox="0 0 38 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M38 16C38 18.2091 36.2091 20 34 20L4 20C1.7909 20 1.56562e-07 18.2091 3.49691e-07 16L1.74846e-06 -3.32207e-06L38 0L38 16Z" fill="%23E3F8FF"/></svg>');
 }
+
+/* Toast notifications (components/UI/FlashMessages.jsx) */
+@keyframes toast-in {
+    from { opacity: 0; transform: translateY(0.75rem) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes toast-out {
+    from { opacity: 1; transform: translateY(0) scale(1); }
+    to { opacity: 0; transform: translateY(0.5rem) scale(0.98); }
+}
+
+@keyframes toast-progress {
+    from { transform: scaleX(1); }
+    to { transform: scaleX(0); }
+}
+
+.toast-enter { animation: toast-in 220ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+.toast-leave { animation: toast-out 200ms ease-in both; }
+.toast-progress { animation-name: toast-progress; animation-timing-function: linear; animation-fill-mode: forwards; }
+
+@media (prefers-reduced-motion: reduce) {
+    .toast-enter, .toast-leave { animation-duration: 1ms; }
+    .toast-progress { animation: none; }
+}

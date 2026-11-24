@@ -10,6 +10,7 @@ use App\Integrations\Cloudflare\Exceptions\ImageSourceUnreachableException;
 use App\Integrations\Cloudflare\Requests\Images\DeleteImageRequest;
 use App\Integrations\Cloudflare\Requests\Images\GetImageRequest;
 use App\Integrations\Cloudflare\Requests\Images\UploadImageFromUrlRequest;
+use App\Integrations\Cloudflare\Requests\Images\UploadImageRequest;
 use Saloon\Exceptions\Request\RequestException;
 
 class ImageResource extends BaseResource
@@ -43,6 +44,18 @@ class ImageResource extends BaseResource
 
             throw $exception;
         }
+    }
+
+    /**
+     * Upload a local file under the given custom id.
+     *
+     * @param  array<string, string>  $metadata
+     */
+    public function upload(string $imageId, string $path, array $metadata = []): CloudflareImage
+    {
+        return $this->connector
+            ->send(new UploadImageRequest($imageId, $path, $metadata))
+            ->dtoOrFail();
     }
 
     public function get(string $imageId): CloudflareImage

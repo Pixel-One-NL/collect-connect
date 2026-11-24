@@ -29,8 +29,32 @@ class ContentPublicationTest extends TestCase
     public function test_rich_content_is_sanitized_without_changing_stored_content(): void
     {
         $article = Article::query()->create(['title' => 'Article', 'slug' => 'article', 'content' => '<p>Hello</p><script>alert(1)</script>', 'is_published' => true]);
-        $this->get(route('blog.show', $article))->assertInertia(fn ($page) => $page->where('article.content', fn ($value) => str_contains($value, 'Hello') && ! str_contains($value, '<script>')));
+        $this->get(route('blog.show', $article))->assertInertia(fn ($page) => $page->where('article.data.content', fn ($value) => str_contains($value, 'Hello') && ! str_contains($value, '<script>')));
         $this->assertStringContainsString('<script>', $article->fresh()->content);
+    }
+
+    public function test_blog_exposes_cover_image_date_and_excerpt(): void
+    {
+        config(['cloudflare.delivery_url' => 'https://imagedelivery.net', 'cloudflare.account_hash' => 'hash']);
+        $withImage = Article::factory()->create(['slug' => 'with-image', 'is_published' => true, 'published_at' => now()->subDay(), 'content' => '<p>Een <strong>lang</strong> verhaal</p>', 'cloudflare_image_id' => 'testing-article-1-abc']);
+        Article::factory()->create(['slug' => 'without-image', 'is_published' => true, 'published_at' => now()->subDays(2), 'meta_description' => 'Korte samenvatting']);
+
+        $this->get(route('blog.index'))->assertInertia(fn ($page) => $page
+            ->has('articles.data', 2)
+            ->has('articles.meta.links')
+            ->where('articles.data.0.slug', 'with-image')
+            ->where('articles.data.0.image', 'https://imagedelivery.net/hash/testing-article-1-abc/medium')
+            ->where('articles.data.0.excerpt', 'Een lang verhaal')
+            ->where('articles.data.0.published_at', $withImage->published_at->toIso8601String())
+            ->where('articles.data.0.url', route('blog.show', $withImage))
+            ->missing('articles.data.0.content')
+            ->where('articles.data.1.image', null)
+            ->where('articles.data.1.excerpt', 'Korte samenvatting'));
+
+        $this->get(route('blog.show', $withImage))->assertInertia(fn ($page) => $page
+            ->where('article.data.image', 'https://imagedelivery.net/hash/testing-article-1-abc/large')
+            ->where('article.data.published_at', $withImage->published_at->toIso8601String())
+            ->where('article.data.content', fn ($value) => str_contains($value, '<strong>lang</strong>')));
     }
 
     public function test_sitemap_index_and_children_are_public_and_validate_types(): void

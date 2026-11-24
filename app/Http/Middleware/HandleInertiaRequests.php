@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Middleware;
 
 use App\Services\CartService;
+use App\Services\NavigationMenu;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -43,7 +44,7 @@ class HandleInertiaRequests extends Middleware
         return [
             ...parent::share($request),
 
-            'navigation' => config('navigation.menu'),
+            'navigation' => fn (): array => app(NavigationMenu::class)->items(),
 
             'auth' => [
                 'user' => $user

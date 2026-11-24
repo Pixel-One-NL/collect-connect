@@ -1,7 +1,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { CaretLeftIcon } from "@phosphor-icons/react/dist/csr/CaretLeft";
 import Button from "../UI/Button.jsx";
-import MenuItem from "./MenuItem.jsx";
+import MenuItem, { allLabel } from "./MenuItem.jsx";
 
 const COLUMN_WIDTH = 288; // w-72 (18rem)
 
@@ -39,7 +39,7 @@ export default function MegaMenu({ menu, onNavigate }) {
     }, []);
 
     // Derive the visible columns from the current path.
-    const columns = [{ items: menu, parentLabel: null }];
+    const columns = [{ items: menu, parentLabel: null, parentHref: null }];
     let level = menu;
     for (let i = 0; i < path.length; i++) {
         const selected = level.find((item) => item.id === path[i]);
@@ -47,7 +47,7 @@ export default function MegaMenu({ menu, onNavigate }) {
             break;
         }
         level = selected.children;
-        columns.push({ items: level, parentLabel: selected.label });
+        columns.push({ items: level, parentLabel: selected.label, parentHref: selected.href ?? null });
     }
 
     // Pin the deepest column to the right edge once the columns overflow; the
@@ -114,6 +114,17 @@ export default function MegaMenu({ menu, onNavigate }) {
                             )}
 
                             <ul className="flex flex-col gap-1">
+                                {column.parentHref && (
+                                    <MenuItem
+                                        item={{ label: allLabel(column.parentLabel) }}
+                                        className="py-2 font-semibold"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            onNavigate(column.parentHref);
+                                        }}
+                                    />
+                                )}
+
                                 {column.items.map((item) => (
                                     <MenuItem
                                         key={item.id}

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Header from './Header';
 import Footer from './Footer';
 import CartDrawer from '../Cart/CartDrawer';
+import FlashMessages from '../UI/FlashMessages';
 
 export default function AppLayout({ children }) {
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -23,6 +24,8 @@ export default function AppLayout({ children }) {
             <Footer />
 
             <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
+
+            <FlashMessages />
         </div>
     );
 }

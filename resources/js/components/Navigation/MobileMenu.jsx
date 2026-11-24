@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CaretLeftIcon } from "@phosphor-icons/react/dist/csr/CaretLeft";
-import MenuItem from "./MenuItem.jsx";
+import MenuItem, { allLabel } from "./MenuItem.jsx";
 
 /**
  * Mobile menu: a single column where opening an item with children slides a new
@@ -17,7 +17,7 @@ export default function MobileMenu({ menu, onNavigate }) {
     const open = (item) => {
         if (item.children?.length) {
             const next = levels.slice(0, depth + 1);
-            next.push({ items: item.children, label: item.label });
+            next.push({ items: item.children, label: item.label, href: item.href ?? null });
             setLevels(next);
             setDepth(depth + 1);
             return;
@@ -53,6 +53,14 @@ export default function MobileMenu({ menu, onNavigate }) {
                         )}
 
                         <ul className="flex flex-col gap-1">
+                            {level.href && (
+                                <MenuItem
+                                    item={{ label: allLabel(level.label) }}
+                                    className="py-3 font-semibold"
+                                    onClick={() => onNavigate(level.href)}
+                                />
+                            )}
+
                             {level.items.map((item) => (
                                 <MenuItem
                                     key={item.id}

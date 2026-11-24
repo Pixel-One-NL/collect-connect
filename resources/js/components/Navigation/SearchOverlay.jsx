@@ -21,10 +21,13 @@ function insetFromOrigin(origin) {
         return "inset(50% 50% 50% 50% round 8px)";
     }
 
-    const top = origin.top;
-    const right = window.innerWidth - origin.right;
-    const bottom = window.innerHeight - origin.bottom;
-    const left = origin.left;
+    // visualViewport tracks mobile browser toolbars (e.g. Samsung Internet) that innerHeight misses.
+    const viewportWidth = window.visualViewport?.width ?? window.innerWidth;
+    const viewportHeight = window.visualViewport?.height ?? window.innerHeight;
+    const top = Math.max(0, origin.top);
+    const right = Math.max(0, viewportWidth - origin.right);
+    const bottom = Math.max(0, viewportHeight - origin.bottom);
+    const left = Math.max(0, origin.left);
 
     return `inset(${top}px ${right}px ${bottom}px ${left}px round 8px)`;
 }
@@ -36,6 +39,10 @@ function insetFromOrigin(origin) {
  * @param {() => void} props.onClose
  * @param {Array<Object>} [props.menu] - Navigation tree shared from Inertia.
  */
+// Upper bound for the close animation; the overlay unmounts after this even
+// if GSAP's onReverseComplete never fires (seen on Samsung Internet).
+const CLOSE_FALLBACK_MS = 700;
+
 export default function SearchOverlay({ isOpen, origin, onClose, menu = [] }) {
     const [mounted, setMounted] = useState(false);
     const [query, setQuery] = useState("");
@@ -98,14 +105,26 @@ export default function SearchOverlay({ isOpen, origin, onClose, menu = [] }) {
         };
 
         window.addEventListener("keydown", handleKeyDown);
-        document.body.style.overflow = "hidden";
 
         return () => {
             window.removeEventListener("keydown", handleKeyDown);
-            document.body.style.overflow = "";
-            returnFocusRef.current?.focus();
+            returnFocusRef.current?.focus({ preventScroll: true });
         };
     }, [mounted, onClose]);
+
+    // Lock body scroll only while open, so a slow or stuck close animation
+    // never leaves the page unscrollable.
+    useEffect(() => {
+        if (!isOpen) {
+            return;
+        }
+
+        document.body.style.overflow = "hidden";
+
+        return () => {
+            document.body.style.overflow = "";
+        };
+    }, [isOpen]);
 
     // Drive the open/close animation with GSAP.
     useEffect(() => {
@@ -139,29 +158,47 @@ export default function SearchOverlay({ isOpen, origin, onClose, menu = [] }) {
             tl.play();
         }, rootRef);
 
-        return () => ctx.revert();
+        return () => {
+            timelineRef.current = null;
+            ctx.revert();
+        };
         // origin is captured once on mount; re-running on its change would restart the animation.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [mounted]);
 
     // Play forward on open, reverse on close (then unmount).
     useEffect(() => {
-        const tl = timelineRef.current;
-        if (!tl) {
+        if (!mounted) {
             return;
         }
 
+        const tl = timelineRef.current;
+
         if (isOpen) {
-            tl.play();
+            tl?.eventCallback("onReverseComplete", null);
+            tl?.play();
             // Focus the input once the panel has expanded.
-            const focusTimer = setTimeout(() => inputRef.current?.focus(), 350);
+            const focusTimer = setTimeout(() => inputRef.current?.focus({ preventScroll: true }), 350);
             return () => clearTimeout(focusTimer);
         }
 
+        // Dismiss the on-screen keyboard right away.
+        inputRef.current?.blur();
         setQuery("");
         setMode("menu");
-        tl.eventCallback("onReverseComplete", () => setMounted(false));
+
+        const unmount = () => setMounted(false);
+
+        if (!tl || tl.progress() === 0) {
+            unmount();
+            return;
+        }
+
+        tl.eventCallback("onReverseComplete", unmount);
         tl.reverse();
+        const fallbackTimer = setTimeout(unmount, CLOSE_FALLBACK_MS);
+
+        return () => clearTimeout(fallbackTimer);
     }, [isOpen, mounted]);
 
     const navigate = (href) => {
@@ -188,7 +225,14 @@ export default function SearchOverlay({ isOpen, origin, onClose, menu = [] }) {
     }
 
     return (
-        <div ref={rootRef} className="fixed inset-0 z-50" role="dialog" aria-modal="true" aria-label="Zoeken en navigatie">
+        <div
+            ref={rootRef}
+            className={`fixed inset-0 z-50 ${isOpen ? "" : "pointer-events-none"}`}
+            role="dialog"
+            aria-modal="true"
+            aria-hidden={!isOpen}
+            aria-label="Zoeken en navigatie"
+        >
             <div
                 ref={backdropRef}
                 className="absolute inset-0 bg-black/50 backdrop-blur-sm"

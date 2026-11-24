@@ -39,6 +39,7 @@ class ProductResource extends JsonResource
             'category' => $productable instanceof Part
                 ? $productable->partCategory?->name
                 : null,
+            'category_link' => $this->categoryLink(),
             'color' => $this->shouldShowColor()
                 ? ColorResource::make($this->color)
                 : null,
@@ -47,7 +48,8 @@ class ProductResource extends JsonResource
             'sibling_colors' => $productable instanceof Part
                 ? $productable->products->map(fn (Product $product): array => [
                     'id' => $product->id,
-                    'stock' => $product->stock,
+                    'stock' => $product->is_active ? $product->stock : 0,
+                    'purchasable' => $product->is_active && $product->stock > 0,
                     'price' => $product->price,
                     'image' => $this->getPartImage($productable, $product->color_id),
                     'color' => ColorResource::make($product->color),
@@ -55,6 +57,30 @@ class ProductResource extends JsonResource
                 ])
                 : [],
         ];
+    }
+
+    /**
+     * Collection page this product belongs to, shown above the product title.
+     *
+     * @return array{label: string, url: string}|null
+     */
+    protected function categoryLink(): ?array
+    {
+        $productable = $this->productable;
+
+        if ($productable instanceof Minifig) {
+            return ['label' => 'Minifiguren', 'url' => route('catalog.minifigs', absolute: false)];
+        }
+
+        if ($productable instanceof Part) {
+            $category = $productable->partCategory;
+
+            return $category === null
+                ? ['label' => 'Onderdelen', 'url' => route('catalog.parts', absolute: false)]
+                : ['label' => $category->name, 'url' => route('catalog.parts', ['category_id' => $category->id], absolute: false)];
+        }
+
+        return null;
     }
 
     protected function getTitle(): string

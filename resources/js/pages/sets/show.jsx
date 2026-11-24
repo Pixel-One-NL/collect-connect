@@ -64,7 +64,7 @@ export default function SetPage({ set: { data: set }, in_stock_parts, out_of_sto
                 <div className="mt-4 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                     {(listing?.data ?? []).map((product, index) => <SingleInlineProduct key={`${product.id}-${product.lego_number}-${product.color?.name}-${product.is_spare}-${index}`} product={product} quantityInSet={product.quantity_in_set} />)}
                 </div>
-                <Pagination pagination={listing} label={`${label} paginering`} />
+                <Pagination pagination={listing} label={`${label} paginering`} preserveScroll />
             </section>)}
         </Container>
     );

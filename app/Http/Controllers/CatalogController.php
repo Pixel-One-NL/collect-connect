@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Domain\Minifig\Queries\MinifigThemeQuery;
 use App\Domain\Product\Queries\ProductListingQuery;
 use App\Http\Resources\Product\ProductResource;
 use App\Models\Color;
@@ -11,6 +12,7 @@ use App\Models\Minifig;
 use App\Models\Part;
 use App\Models\PartCategory;
 use App\Models\Product;
+use App\Models\Theme;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Inertia\Response;
@@ -86,6 +88,8 @@ class CatalogController extends Controller
         $morph = $type === 'minifig' ? Minifig::class : Part::class;
         $categoryId = $request->integer('category_id') ?: null;
         $colorId = $request->integer('color_id') ?: null;
+        $themeId = $type === 'minifig' ? ($request->integer('theme_id') ?: null) : null;
+        $themeName = $themeId ? Theme::query()->where('rebrickable_id', $themeId)->value('name') : null;
 
         $query = Product::query()
             ->with(ProductListingQuery::forType($type))
@@ -95,10 +99,16 @@ class CatalogController extends Controller
             ->when($categoryId && $type === 'part', function (Builder $builder) use ($categoryId): void {
                 $builder->whereHasMorph('productable', [Part::class], fn (Builder $part) => $part->where('part_category_id', $categoryId));
             })
+            ->when($themeId, function (Builder $builder) use ($themeId): void {
+                $themeIds = MinifigThemeQuery::withDescendants($themeId);
+
+                $builder->whereHasMorph('productable', [Minifig::class], fn (Builder $minifig) => $minifig
+                    ->whereHas('inventories.set', fn (Builder $set) => $set->whereIn('theme_id', $themeIds)));
+            })
             ->orderByDesc('stock');
 
         return $this->respondWithListing($query, [
-            'title' => $type === 'minifig' ? 'Minifiguren' : ($categoryId ? (PartCategory::query()->whereKey($categoryId)->value('name') ?? 'Onderdelen') : 'Onderdelen'),
+            'title' => $type === 'minifig' ? ($themeName ?? 'Minifiguren') : ($categoryId ? (PartCategory::query()->whereKey($categoryId)->value('name') ?? 'Onderdelen') : 'Onderdelen'),
             'type' => $type,
             'query' => null,
             'filters' => [
@@ -113,10 +123,12 @@ class CatalogController extends Controller
 
                         ->get(['id', 'name', 'hex'])
                     : [],
+                'themes' => $type === 'minifig' ? MinifigThemeQuery::available() : [],
             ],
             'active' => [
                 'category_id' => $categoryId,
                 'color_id' => $colorId,
+                'theme_id' => $themeId,
                 'q' => null,
             ],
         ]);

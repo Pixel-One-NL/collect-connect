@@ -1,5 +1,6 @@
 import { router, usePage } from '@inertiajs/react';
 import { useCallback, useState } from 'react';
+import { toast } from '../lib/toast';
 
 /**
  * Provides cart state and actions for the current session cart.
@@ -37,7 +38,17 @@ export function useCart() {
             {
                 preserveScroll: true,
                 onSuccess: () => onSuccess?.(),
-                onError: errors => setError(Object.values(errors).join(' ')),
+                onError: (errors) => {
+                    const message = Object.values(errors).join(' ');
+                    setError(message);
+                    toast({ type: 'error', title: 'Niet toegevoegd', message });
+                },
+                onHttpException: (response) => {
+                    if (response.status === 429) {
+                        toast({ type: 'error', title: 'Even geduld', message: 'Je voegt te snel producten toe. Probeer het zo opnieuw.' });
+                        return false;
+                    }
+                },
                 onFinish: () => setProcessing(null),
             },
         );

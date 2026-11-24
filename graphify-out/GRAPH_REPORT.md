@@ -1,30 +1,30 @@
-# Graph Report - collect-connect  (2026-11-17)
+# Graph Report - collect-connect  (2026-11-24)
 
 ## Corpus Check
-- 512 files · ~115,403 words
+- 529 files · ~120,514 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 15 file(s) not represented in the graph (top: (none) 9, .toml 1, .example 1)
 
 ## Summary
-- 3006 nodes · 6274 edges · 236 communities (113 shown, 123 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 79 edges (avg confidence: 0.84)
+- 3161 nodes · 6603 edges · 241 communities (122 shown, 119 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 86 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1935c6c0`
+- Built from commit: `1c92e0ca`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - Illuminate\Database\Eloquent\Builder
-- Part
+- CartController
 - Filament\Schemas\Schema
 - Illuminate\Bus\Queueable
 - Illuminate\Http\Request
-- Saloon\Enums\Method
+- DefinitionResource.php
 - Filament\Tables\Table
 - Illuminate\Foundation\Http\FormRequest
-- Product
+- ProductResource
 - env
 - Illuminate\Database\Eloquent\Factories\Factory
 - CartService
@@ -33,78 +33,76 @@
 - Input
 - SyncBricqerInventoryJob.php
 - Filament\Resources\Pages\EditRecord
-- PartColor
-- ImportImageJob
-- AddressController.php
+- Part
+- UploadImageFromUrlRequest
+- Illuminate\Http\RedirectResponse
 - Button
 - Filament\Resources\Pages\ListRecords
 - ImportMinifigBricklinkNumbersJob
 - SyncBricqerInventoryJobTest
-- AdminContentTest.php
+- Article
 - InventoryResource
-- DefinitionResource.php
-- HomeTest.php
+- Saloon\Enums\Method
+- ProductPageTest.php
 - pages/index.jsx
-- catalog.jsx
-- OrderFlowTest.php
-- RebrickableImportTest.php
-- Saloon\Http\Response
-- CartService.php
+- @inertiajs/react
+- BricqerOrderService
+- ImportRebrickableEntityCommand.php
+- CloudflareConnector
+- App\Services\CartService
 - SyncBricqerOrdersJob.php
 - ImportMinifigImageFromDefinitionJob
-- TrendingProductForm.php
+- PartResource
 - react
-- Illuminate\Support\LazyCollection
+- Spatie\LaravelData\Data
 - DashboardPanelProvider.php
-- PaymentResult
 - FullImportPartColorImagesJob.php
 - Illuminate\Support\Facades\Schema
 - Illuminate\Console\Command
 - Illuminate\Database\Migrations\Migration
 - SearchControllerTest
 - OrderPaidMail
-- PaymentGateway
+- FullImportPartColorImagesJob
 - BaseImportMapper
 - Filament\Resources\Pages\CreateRecord
 - services
-- CloudflareImageable
-- .configure
+- Illuminate\Support\ServiceProvider
+- Tests\TestCase
 - CommerceLifecycleTest
 - GraphQL Memory: ImportInventoryJob Command Handler Query
 - DeleteCloudflareImageJob
-- ImportPartBricklinkNumbersJob
-- ListVariantsRequest
+- ListPartsRequest
+- MySqlStockCurrentReadTest.php
 - Laravel Best Practices Skill
 - ListPartsResource
 - typesense
 - DemoReadinessTest.php
-- PaymentGatewayManagerTest
+- PlaceOrderAction.php
 - TestCase
-- ProductResource
-- PaginatedRequest
+- ImageVariant
+- PaginatedCollection
 - User
 - AccountManagementTest
 - CatalogPagesTest.php
 - PaymentSimulationTest
-- StockNotification
-- RespectCloudflareRateLimit
-- Part
+- ArticleCoverUploadTest.php
+- SetController.php
+- Illuminate\Database\Eloquent\Model
 - Generator
 - Inertia/React Frontend Stack
 - BaseImportService
-- CloudflareImagesApiTest.php
-- Illuminate\Database\Eloquent\Model
-- PaginatedCollection
+- Illuminate\Database\Eloquent\Relations\BelongsTo
+- ImportImageJob
 - OrderResource
 - images
-- product.jsx
+- Minifig
 - RebrickableImportTest
 - CheckoutTest
 - Part Colors Pivot Table Schema
-- BricqerDefinitionAttributeImporter
-- PaginatedResource
+- TrendingProductsTable.php
+- App\Models\PartCategory
 - AGENTS.md
-- ImportMinifigImagesCommand.php
+- Product
 - 2026_06_14_110813_add_bricqer_image_url_column_to_part_colors_table.php
 - mysql
 - BricqerConnector
@@ -113,18 +111,18 @@
 - OrderFlowTest
 - laravel
 - queue
-- StockNotificationResource
+- App\Filament\Resources\Articles\ArticleResource
 - mysql
 - laravel
 - typesense
-- StockReconciliationTest
-- ImportPartColorImagesCommand.php
+- Price
+- @phosphor-icons/react
 - Composer Dependencies
 - Spatie\LaravelData\Data
 - SyncRunResource
-- SetImportService
-- StockNotificationController.php
-- GetColorsRequest
+- DispatchStockNotificationsJob
+- CartQuantityTest
+- App\Models\Product
 - Cloudflare
 - ReleaseUnpaidOrderStockJobTest
 - DatabaseSeeder.php
@@ -132,66 +130,66 @@
 - context
 - Project rules for AI coding agents
 - Project rules for AI coding agents
-- SyncCloudflareVariantsCommandTest.php
-- Illuminate\Console\Attributes\Signature
-- RebrickableFieldTransformer
+- RebrickableConnector
+- ImportImageJobTest.php
+- RuntimeException
 - InventoryMinifigImportService
 - InventoryPartImportService
-- MinifigImportService
-- PartCategoryImportService
-- PartImportService
-- ThemeImportService
+- TrendingProductResource.php
+- Illuminate\Support\Collection
+- RespectCloudflareRateLimit
+- Illuminate\Support\ServiceProvider
 - RelationshipImportStaging
-- ListPartsRequest
-- ListPartColorsResource
-- MySqlStockCurrentReadTest.php
+- MinifigThemeQuery.php
+- 2026_09_07_210632_add_commerce_lifecycle_to_products_and_orders.php
+- HasCloudflareImage
+- OrderFactory.php
 - ProductColor typedef
 - require-dev
-- 2026_07_26_162103_add_weight_grams_to_parts_and_minifigs_tables.php
+- Inventory
 - 2026_07_26_162857_add_bricqer_definition_id_to_parts_and_minifigs_tables.php
-- 2026_08_05_215557_add_company_to_addresses_and_orders_tables.php
+- PersistentCartTest.php
 - docker-compose.yaml
 - images
-- ImportsRebrickableEntity
-- OrderFactory.php
-- 0001_01_01_000000_create_users_table.php
+- CartFlashMessageTest.php
+- MinifigImportService
+- 2026_11_07_163315_move_images_to_cloudflare.php
 - 0001_01_01_000002_create_jobs_table.php
-- 2026_09_07_220502_stage_rebrickable_relationship_imports.php
+- OrderAuthorizationTest
 - healthcheck
 - psr-4
 - imports
 - queue
 - scheduler
 - scheduler
-- OrderAuthorizationTest
-- ListPartColorsRequest
+- StockReconciliationTest
 - 0001_01_01_000001_create_cache_table.php
-- 2026_02_01_144413_add_bricklink_id_columns_to_parts_table.php
+- 2026_07_31_191252_add_bricqer_image_url_to_minifigs_table.php
 - 2026_05_30_214925_add_unique_productable_index_to_products_table.php
 - 2026_05_31_090246_add_color_id_to_products_table.php
 - Order
 - 2026_06_17_105228_add_set_id_to_inventories_table.php
-- CheckoutController.php
+- 2026_09_07_210633_add_rate_bands_to_shipping_methods.php
 - 2026_07_24_202800_extend_articles_table.php
 - composer.json
 - Collect2Connect Webshop
 - 2026_08_01_221535_add_stock_reserved_at_to_orders_table.php
 - 2026_09_07_210643_add_admin_access_to_users_table.php
-- OrderSummaryCard.jsx
+- Set
 - config
 - scripts
-- PrepareDemoContent.php
-- RetryFailedSetImagesCommand.php
+- 2026_09_07_210644_add_house_fields_to_addresses_table.php
+- 2026_11_24_203243_add_cloudflare_image_to_articles_table.php
 - 2026_01_03_133521_create_part_categories_table.php
-- 2026_01_03_133812_create_parts_table.php
+- SyncCloudflareVariantsCommandTest
 - 2026_01_03_134842_create_colors_table.php
 - 2026_01_03_134856_create_inventory_parts_table.php
 - 2026_01_03_140041_create_minifigs_table.php
 - 2026_05_31_093351_create_carts_table.php
 - 2026_05_31_093352_create_cart_items_table.php
-- 2026_05_31_100000_create_part_colors_table.php
+- PartCategory
 - services
-- RuntimeException
+- PaginatedResource
 - ssu.sh
 - 2026_06_15_203836_create_sets_table.php
 - 2026_06_17_085752_create_inventory_sets_table.php
@@ -206,14 +204,20 @@
 - 2026_09_07_211710_create_cart_guest_merges_table.php
 - mailpit
 - ExampleTest
-- .handle
-- ImportRebrickableEntityCommand
+- ColorImportService
+- PartImportService
 - CLAUDE.md Project Configuration
 - create-testing-database.sh
 - Laravel Cart Config
+- ThemeImportService
+- SearchController.php
+- 2026_01_03_140904_create_products_table.php
+- 2026_05_27_215217_create_articles_table.php
+- PartCategoryImportService
+- App\Models\Set
 - Bricklink Number Database URL
 - Database Queue Driver
-- Illuminate\Support\Str
+- UserFactory.php
 - Storefront Navigation Menu
 - Typesense Search Integration
 - Coco Logo Full (SVG brand mark)
@@ -227,247 +231,223 @@
 - Public Index PHP
 - robots.txt (no crawl restrictions)
 - Inertia\Response
-- TestingPaymentGateway
-- CloudflareConnector
+- PaymentGateway
+- ListPartColorsResource
 - laravel-boost
 
 ## God Nodes (most connected - your core abstractions)
-1. `Product` - 101 edges
-2. `TestCase` - 84 edges
+1. `Product` - 93 edges
+2. `TestCase` - 78 edges
 3. `Order` - 74 edges
-4. `Part` - 70 edges
-5. `Minifig` - 60 edges
+4. `Part` - 64 edges
+5. `Minifig` - 56 edges
 6. `ImportImageJob` - 53 edges
-7. `Container()` - 51 edges
-8. `@inertiajs/react` - 43 edges
-9. `CartService` - 41 edges
-10. `Button()` - 35 edges
+7. `Container()` - 46 edges
+8. `@inertiajs/react` - 45 edges
+9. `CartService` - 37 edges
+10. `User` - 33 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Common Mistakes` --references--> `Page`  [INFERRED]
   AGENTS.md → app/Models/Page.php
 - `Correct Namespaces` --references--> `Select()`  [INFERRED]
   AGENTS.md → resources/js/components/UI/Select.jsx
-- `{closure#3}()` --references--> `ImportImageJob`  [EXTRACTED]
-  tests/Feature/RebrickableImportTest.php → app/Domain/Image/Jobs/ImportImageJob.php
-- `{closure#1}()` --references--> `UploadImageFromUrlRequest`  [EXTRACTED]
-  tests/Feature/Integrations/Cloudflare/CloudflareImagesApiTest.php → app/Integrations/Cloudflare/Requests/Images/UploadImageFromUrlRequest.php
-- `{closure#1}()` --references--> `DeleteCloudflareImageJob`  [EXTRACTED]
-  tests/Feature/Domain/Image/DeleteCloudflareImageJobTest.php → app/Domain/Image/Jobs/DeleteCloudflareImageJob.php
+- `{closure#1}()` --references--> `PartColor`  [EXTRACTED]
+  tests/Unit/Support/ImageUrlTest.php → app/Models/Pivots/PartColor.php
+- `{closure#2}()` --references--> `ListPartsRequest`  [EXTRACTED]
+  tests/Feature/Domain/Part/ImportPartBricklinkNumbersJobTest.php → app/Integrations/Rebrickable/Requests/Parts/ListPartsRequest.php
+- `{closure#9}()` --references--> `ImportImageJob`  [EXTRACTED]
+  tests/Feature/Domain/Image/ImportImageJobTest.php → app/Domain/Image/Jobs/ImportImageJob.php
 
 ## Import Cycles
 - None detected.
 
 ## Hyperedges (group relationships)
-- **External API Configuration Group** — config_rebrickable, config_minifig, config_services [INFERRED 0.85]
 - **Docker Development Tooling** — docker_ssu, docker_create_testing_database [EXTRACTED 1.00]
 - **Docker Service Stack (Laravel + MySQL + Redis + Typesense + Mailpit)** — docker_compose_services, concept_docker_infrastructure, readme_project_overview [EXTRACTED 1.00]
+- **External API Configuration Group** — config_rebrickable, config_minifig, config_services [INFERRED 0.85]
 
-## Communities (236 total, 123 thin omitted)
+## Communities (241 total, 119 thin omitted)
 
 ### Community 0 - "Illuminate\Database\Eloquent\Builder"
-Cohesion: 0.05
-Nodes (25): {closure#1}(), {closure#2}(), {closure#3}(), {closure#1}(), {closure#10}(), {closure#2}(), {closure#3}(), {closure#4}() (+17 more)
-
-### Community 1 - "Part"
-Cohesion: 0.06
-Nodes (17): {closure#10}(), {closure#4}(), {closure#10}(), {closure#5}(), {closure#6}(), {closure#7}(), {closure#8}(), {closure#9}() (+9 more)
+Cohesion: 0.11
+Nodes (18): MinifigThemeQuery, {closure#1}(), {closure#10}(), {closure#11}(), {closure#12}(), {closure#13}(), {closure#2}(), {closure#3}() (+10 more)
 
 ### Community 2 - "Filament\Schemas\Schema"
-Cohesion: 0.08
-Nodes (12): ArticleResource, ArticleForm, InventoryForm, MinifigResource, MinifigForm, PageResource, PageForm, StockNotificationForm (+4 more)
+Cohesion: 0.07
+Nodes (11): ArticleResource, ArticleForm, InventoryForm, MinifigForm, PageResource, CreatePage, PageForm, PagesTable (+3 more)
 
 ### Community 3 - "Illuminate\Bus\Queueable"
-Cohesion: 0.11
-Nodes (11): DispatchStockNotificationsJob, ImportBricqerWeightsJob, ImportBricqerColorsJob, {closure#1}(), ReleaseUnpaidOrderStockJob, FullImportPartColorImagesJob, ImportPartColorImageFromDefinitionJob, {closure#1}() (+3 more)
+Cohesion: 0.14
+Nodes (7): ImportBricqerWeightsJob, ImportBricqerColorsJob, {closure#1}(), ReleaseUnpaidOrderStockJob, ImportPartBricklinkNumbersJob, ImportPartColorImageFromDefinitionJob, Bricqer
 
 ### Community 4 - "Illuminate\Http\Request"
-Cohesion: 0.07
-Nodes (16): {closure#8}(), HandleInertiaRequests, ArticleResource, ColorResource, OrderItemResource, OrderResource, SetResource, SetSearchResource (+8 more)
+Cohesion: 0.06
+Nodes (17): {closure#8}(), HandleInertiaRequests, ArticleResource, ColorResource, OrderItemResource, OrderResource, SetResource, SetSearchResource (+9 more)
 
-### Community 5 - "Saloon\Enums\Method"
-Cohesion: 0.09
-Nodes (9): SyncShippingMethodsCommand, CreateContactRequest, CreateOrderRequest, GetCountriesRequest, GetDocumentRequest, GetShippingMethodsRequest, DeleteImageRequest, CreateVariantRequest (+1 more)
+### Community 5 - "DefinitionResource.php"
+Cohesion: 0.12
+Nodes (4): GetDefinitionPictureRequest, ListDefinitionsRequest, {closure#1}(), Database Session Driver
 
 ### Community 6 - "Filament\Tables\Table"
-Cohesion: 0.08
-Nodes (11): ArticlesTable, InventoryRebrickableIdTextColumn, InventoriesTable, MinifigBricklinkIdTextColumn, MinifigNameTextColumn, MinifigsTable, PagesTable, StockNotificationsTable (+3 more)
+Cohesion: 0.09
+Nodes (9): InventoryRebrickableIdTextColumn, MinifigResource, MinifigBricklinkIdTextColumn, MinifigNameTextColumn, MinifigsTable, PartCategoryNameTextColumn, PartNameTextColumn, PartCategorySelectFilter (+1 more)
 
 ### Community 7 - "Illuminate\Foundation\Http\FormRequest"
 Cohesion: 0.06
-Nodes (10): ProfileController, {closure#1}(), PasswordResetController, UpdatePasswordRequest, UpdateProfileRequest, ForgotPasswordRequest, LoginRequest, RegisterRequest (+2 more)
-
-### Community 8 - "Product"
-Cohesion: 0.08
-Nodes (19): {closure#1}(), {closure#2}(), ProductListingQuery, {closure#1}(), {closure#2}(), {closure#5}(), {closure#6}(), {closure#7}() (+11 more)
+Nodes (10): ProfileController, StockNotificationController, UpdatePasswordRequest, UpdateProfileRequest, ForgotPasswordRequest, LoginRequest, RegisterRequest, ResetPasswordRequest (+2 more)
 
 ### Community 9 - "env"
 Cohesion: 0.05
 Nodes (38): APP_ENV, CACHE_STORE, DB_CONNECTION, DB_DATABASE, DB_HOST, DB_PASSWORD, DB_USERNAME, MAIL_MAILER (+30 more)
 
 ### Community 10 - "Illuminate\Database\Eloquent\Factories\Factory"
-Cohesion: 0.07
-Nodes (10): ArticleFactory, ColorFactory, InventoryFactory, MinifigFactory, PartCategoryFactory, PartFactory, ProductFactory, SetFactory (+2 more)
+Cohesion: 0.08
+Nodes (9): ArticleFactory, ColorFactory, InventoryFactory, MinifigFactory, PartCategoryFactory, PartFactory, ProductFactory, ThemeFactory (+1 more)
 
 ### Community 11 - "CartService"
-Cohesion: 0.13
-Nodes (4): SessionController, CartController, CartPageController, CartService
+Cohesion: 0.15
+Nodes (3): SessionController, CartPageController, CartService
 
 ### Community 12 - "Container"
-Cohesion: 0.16
-Nodes (16): @inertiajs/react, Container(), Price(), AccountNavigation(), OrdersIndex(), OrderShow(), statusLabel(), Profile() (+8 more)
+Cohesion: 0.13
+Nodes (23): @inertiajs/react, Container(), InstagramFeed(), CountrySelect(), Input(), AccountNavigation(), Addresses(), empty (+15 more)
 
 ### Community 13 - "Illuminate\Database\Schema\Blueprint"
-Cohesion: 0.10
-Nodes (18): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#6}(), {closure#1}(), {closure#2}() (+10 more)
+Cohesion: 0.09
+Nodes (20): {closure#1}(), {closure#2}(), {closure#3}(), {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#1}() (+12 more)
 
 ### Community 14 - "Input"
-Cohesion: 0.16
-Nodes (17): CheckoutSection(), ContactSection(), PaymentMethodTabs(), ShippingAddressSection(), ShippingMethodCards(), CountrySelect(), names, Input() (+9 more)
+Cohesion: 0.25
+Nodes (10): CheckoutSection(), ContactSection(), PaymentMethodTabs(), ShippingAddressSection(), ShippingMethodCards(), names, RadioCard(), Select() (+2 more)
 
 ### Community 15 - "SyncBricqerInventoryJob.php"
-Cohesion: 0.11
-Nodes (8): {closure#1}(), {closure#4}(), {closure#5}(), {closure#7}(), {closure#9}(), SyncBricqerInventoryJob, SyncRun, {closure#2}()
+Cohesion: 0.14
+Nodes (4): {closure#1}(), {closure#4}(), {closure#7}(), SyncBricqerInventoryJob
 
 ### Community 16 - "Filament\Resources\Pages\EditRecord"
-Cohesion: 0.10
-Nodes (8): EditArticle, EditInventory, EditMinifig, EditPage, EditPart, EditStockNotification, EditSyncRun, EditTrendingProduct
-
-### Community 17 - "PartColor"
-Cohesion: 0.08
-Nodes (6): {closure#1}(), HasCloudflareImage, PartColor, {closure#1}(), PartColorFactory, {closure#1}()
-
-### Community 18 - "ImportImageJob"
 Cohesion: 0.12
-Nodes (8): ImportImageJob, UploadImageFromUrlRequest, {closure#1}(), {closure#9}(), ImportImageJobTest, {closure#1}(), {closure#2}(), {closure#4}()
+Nodes (6): EditMinifig, EditPage, EditPart, EditStockNotification, EditSyncRun, EditTrendingProduct
 
-### Community 19 - "AddressController.php"
-Cohesion: 0.10
-Nodes (9): AddressController, {closure#1}(), {closure#2}(), {closure#3}(), {closure#3}(), SaveAddressRequest, Address, ShippingMethod (+1 more)
+### Community 17 - "Part"
+Cohesion: 0.08
+Nodes (9): {closure#9}(), {closure#6}(), Color, {closure#1}(), Part, PartColor, {closure#1}(), PartColorFactory (+1 more)
+
+### Community 19 - "Illuminate\Http\RedirectResponse"
+Cohesion: 0.09
+Nodes (10): AddressController, {closure#1}(), {closure#2}(), {closure#3}(), CheckoutController, {closure#3}(), {closure#5}(), SaveAddressRequest (+2 more)
 
 ### Community 20 - "Button"
-Cohesion: 0.20
-Nodes (15): @phosphor-icons/react, Header(), HeaderTopBar(), CartIcon(), MegaMenu(), MenuItem(), MobileMenu(), ModeToggle() (+7 more)
+Cohesion: 0.23
+Nodes (12): Header(), HeaderTopBar(), CartIcon(), MegaMenu(), allLabel(), MenuItem(), MobileMenu(), ModeToggle() (+4 more)
 
 ### Community 21 - "Filament\Resources\Pages\ListRecords"
-Cohesion: 0.12
-Nodes (8): ListArticles, ListInventories, ListMinifigs, ListPages, ListParts, ListStockNotifications, ListSyncRuns, ListTrendingProducts
+Cohesion: 0.13
+Nodes (7): ListArticles, ListInventories, ListMinifigs, ListPages, ListParts, ListStockNotifications, ListSyncRuns
 
 ### Community 22 - "ImportMinifigBricklinkNumbersJob"
-Cohesion: 0.13
+Cohesion: 0.12
 Nodes (3): ImportMinifigBricklinkNumbersCommand, ImportMinifigBricklinkNumbersJob, ImportMinifigBricklinkNumbersJobTest
 
-### Community 24 - "AdminContentTest.php"
-Cohesion: 0.12
-Nodes (4): PartNameTextInput, AdminContentTest, {closure#1}(), {closure#2}()
+### Community 24 - "Article"
+Cohesion: 0.06
+Nodes (12): UploadArticleCoverImageAction, {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), ManageOrders, ManageUsers, Article (+4 more)
 
 ### Community 25 - "InventoryResource"
-Cohesion: 0.13
-Nodes (7): InventoryResource, MinifigsRelationManager, PartsRelationManager, InventoryMinifigsQuantityTextColumn, InventoriesRelationManager, InventoryPartsQuantityTextColumn, InventoriesRelationManager
+Cohesion: 0.09
+Nodes (11): InventoryResource, EditInventory, MinifigsRelationManager, PartsRelationManager, InventoriesTable, InventoryMinifigsQuantityTextColumn, InventoriesRelationManager, InventoryPartsQuantityTextColumn (+3 more)
 
-### Community 26 - "DefinitionResource.php"
-Cohesion: 0.10
-Nodes (5): GetDefinitionPictureRequest, GetDefinitionRequest, ListDefinitionsRequest, {closure#1}(), DefinitionResource
+### Community 26 - "Saloon\Enums\Method"
+Cohesion: 0.06
+Nodes (13): SyncShippingMethodsCommand, CreateContactRequest, CreateOrderRequest, GetCountriesRequest, GetDocumentRequest, GetOrderRequest, GetShippingMethodsRequest, ListOrdersRequest (+5 more)
 
-### Community 27 - "HomeTest.php"
-Cohesion: 0.13
-Nodes (9): CartQuantityTest, {closure#1}(), {closure#1}(), {closure#2}(), {closure#3}(), HomeTest, {closure#1}(), {closure#2}() (+1 more)
+### Community 27 - "ProductPageTest.php"
+Cohesion: 0.17
+Nodes (10): {closure#1}(), {closure#2}(), {closure#3}(), {closure#1}(), {closure#2}(), {closure#3}(), {closure#1}(), {closure#2}() (+2 more)
 
 ### Community 28 - "pages/index.jsx"
-Cohesion: 0.17
-Nodes (13): CategoryCard(), HeroBanners(), InstagramFeed(), PopularCategories(), PromoBanner(), SearchHighlight(), DEFAULT_BLOCKS, SeoSection() (+5 more)
-
-### Community 29 - "catalog.jsx"
 Cohesion: 0.19
-Nodes (11): SearchResults(), AddToCartButton(), InlineProduct(), SingleInlineProduct(), InlineSet(), Pagination(), SetsIndex(), SetPage() (+3 more)
+Nodes (12): CategoryCard(), HeroBanners(), PopularCategories(), PromoBanner(), SearchHighlight(), DEFAULT_BLOCKS, SeoSection(), TrendingProducts() (+4 more)
 
-### Community 30 - "OrderFlowTest.php"
-Cohesion: 0.13
-Nodes (6): {closure#1}(), {closure#4}(), BricqerOrderService, GetOrderRequest, ListOrdersRequest, {closure#1}()
+### Community 29 - "@inertiajs/react"
+Cohesion: 0.17
+Nodes (12): SearchResults(), InlineProduct(), InlineSet(), Pagination(), toPath(), useMediaQuery(), SetsIndex(), SetPage() (+4 more)
 
-### Community 31 - "RebrickableImportTest.php"
-Cohesion: 0.10
-Nodes (4): ColorImportService, InventoryImportService, InventorySetImportService, {closure#3}()
+### Community 30 - "BricqerOrderService"
+Cohesion: 0.33
+Nodes (3): {closure#1}(), {closure#4}(), BricqerOrderService
 
-### Community 32 - "Saloon\Http\Response"
-Cohesion: 0.13
-Nodes (4): CloudflareImage, GetImageRequest, ImageResource, RebrickableResponse
+### Community 31 - "ImportRebrickableEntityCommand.php"
+Cohesion: 0.12
+Nodes (6): {closure#1}(), ImportRebrickableEntityCommand, ImportRebrickableEntityJob, InventoryImportService, InventorySetImportService, {closure#1}()
 
-### Community 33 - "CartService.php"
-Cohesion: 0.10
-Nodes (6): {closure#1}(), {closure#12}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#8}()
+### Community 32 - "CloudflareConnector"
+Cohesion: 0.18
+Nodes (6): CloudflareApi, CloudflareConnector, {closure#1}(), {closure#2}(), CloudflareServiceProvider, BaseResource
+
+### Community 33 - "App\Services\CartService"
+Cohesion: 0.14
+Nodes (5): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#8}()
 
 ### Community 35 - "ImportMinifigImageFromDefinitionJob"
 Cohesion: 0.12
 Nodes (4): ImportMinifigImageFromDefinitionJob, BricqerImageUrl, {closure#3}(), ImportMinifigImageJobTest
 
-### Community 36 - "TrendingProductForm.php"
-Cohesion: 0.12
-Nodes (8): PartResource, PartCategorySelect, PartForm, {closure#2}(), {closure#3}(), {closure#4}(), ProductLabel, {closure#3}()
+### Community 36 - "PartResource"
+Cohesion: 0.17
+Nodes (4): PartResource, PartCategorySelect, PartNameTextInput, PartForm
 
 ### Community 37 - "react"
-Cohesion: 0.25
-Nodes (9): react, CartDrawer(), CartItem(), EmptyCart(), AppLayout(), Footer(), FooterLinks(), useCart() (+1 more)
+Cohesion: 0.22
+Nodes (8): AppLayout(), Footer(), FooterLinks(), FlashMessages(), keyOf(), STYLES, ToastItem(), TOAST_EVENT
 
-### Community 38 - "Illuminate\Support\LazyCollection"
-Cohesion: 0.16
-Nodes (4): {closure#1}(), InventoryItem, {closure#1}(), GetUnconsolidatedInventoryRequest
-
-### Community 40 - "PaymentResult"
-Cohesion: 0.15
-Nodes (7): {closure#1}(), PaymentInitiation, PaymentResult, PaymentStatus, Failed, Paid, Pending
+### Community 38 - "Spatie\LaravelData\Data"
+Cohesion: 0.09
+Nodes (9): {closure#2}(), DefinitionColor, LegoVisualItem, InventoryItem, {closure#1}(), GetUnconsolidatedInventoryRequest, BaseDataTransferObject, Part (+1 more)
 
 ### Community 41 - "FullImportPartColorImagesJob.php"
-Cohesion: 0.15
-Nodes (7): {closure#5}(), {closure#6}(), {closure#7}(), {closure#8}(), {closure#9}(), Definition, DefinitionColor
+Cohesion: 0.14
+Nodes (7): BricqerDefinitionAttributeImporter, {closure#5}(), {closure#7}(), {closure#8}(), {closure#9}(), Definition, BulkCaseUpdate
 
 ### Community 42 - "Illuminate\Support\Facades\Schema"
 Cohesion: 0.12
-Nodes (5): {closure#1}(), {closure#1}(), {closure#1}(), {closure#1}(), {closure#2}()
+Nodes (4): {closure#1}(), {closure#1}(), {closure#1}(), {closure#1}()
 
 ### Community 43 - "Illuminate\Console\Command"
-Cohesion: 0.17
-Nodes (5): GrantAdministrator, SyncBricqerCommand, SyncBricqerOrdersCommand, ImportBricqerColorsCommand, ImportPartBricklinkNumbersCommand
+Cohesion: 0.06
+Nodes (12): GrantAdministrator, PrepareDemoContent, ImportBricqerWeightsCommand, SyncBricqerCommand, SyncBricqerOrdersCommand, ImportBricqerColorsCommand, SyncCloudflareVariantsCommand, {closure#1}() (+4 more)
 
 ### Community 44 - "Illuminate\Database\Migrations\Migration"
 Cohesion: 0.12
-Nodes (3): {closure#1}(), {closure#1}(), {closure#1}()
+Nodes (4): {closure#1}(), {closure#1}(), {closure#1}(), {closure#2}()
 
 ### Community 46 - "OrderPaidMail"
 Cohesion: 0.24
 Nodes (3): {closure#2}(), OrderPaidMail, StockBackInStockMail
 
+### Community 47 - "FullImportPartColorImagesJob"
+Cohesion: 0.22
+Nodes (4): {closure#1}(), ImportPartColorImagesCommand, {closure#1}(), FullImportPartColorImagesJob
+
 ### Community 48 - "BaseImportMapper"
-Cohesion: 0.17
-Nodes (5): BaseImportMapper, ColorImportMapper, InventoryImportMapper, InventorySetImportMapper, SetImportMapper
+Cohesion: 0.11
+Nodes (8): BaseImportMapper, InventoryImportMapper, InventoryMinifigImportMapper, InventoryPartImportMapper, InventorySetImportMapper, PartImportMapper, SetImportMapper, ThemeImportMapper
 
 ### Community 49 - "Filament\Resources\Pages\CreateRecord"
-Cohesion: 0.20
-Nodes (7): CreateArticle, CreateInventory, CreateMinifig, CreatePage, CreatePart, CreateStockNotification, CreateSyncRun
+Cohesion: 0.14
+Nodes (7): CreateInventory, CreateMinifig, CreatePart, CreateStockNotification, StockNotificationResource, CreateSyncRun, CreateTrendingProduct
 
 ### Community 50 - "services"
 Cohesion: 0.13
 Nodes (14): driver, networks, laravel, image, networks, restart, volumes, services (+6 more)
 
-### Community 51 - "CloudflareImageable"
-Cohesion: 0.21
-Nodes (5): CloudflareImageable, {closure#5}(), {closure#6}(), {closure#7}(), {closure#8}()
-
-### Community 52 - ".configure"
-Cohesion: 0.19
-Nodes (4): PartCategoryNameTextColumn, PartNameTextColumn, PartCategorySelectFilter, PartsTable
+### Community 52 - "Tests\TestCase"
+Cohesion: 0.08
+Nodes (4): CatalogPaginationTest, ContentPublicationTest, ProductPageTest, TrustedProxyTest
 
 ### Community 55 - "DeleteCloudflareImageJob"
-Cohesion: 0.21
-Nodes (5): DeleteCloudflareImageJob, {closure#1}(), {closure#2}(), {closure#3}(), DeleteCloudflareImageJobTest
-
-### Community 56 - "ImportPartBricklinkNumbersJob"
-Cohesion: 0.24
-Nodes (3): ImportPartBricklinkNumbersJob, {closure#3}(), ImportPartBricklinkNumbersJobTest
-
-### Community 57 - "ListVariantsRequest"
-Cohesion: 0.19
-Nodes (4): CloudflareVariant, {closure#1}(), ListVariantsRequest, VariantResource
+Cohesion: 0.15
+Nodes (6): DeleteCloudflareImageJob, ArticleCoverUploadTest, {closure#1}(), {closure#2}(), {closure#3}(), DeleteCloudflareImageJobTest
 
 ### Community 58 - "Laravel Best Practices Skill"
 Cohesion: 0.06
@@ -477,73 +457,93 @@ Nodes (38): APIs & Eloquent Resources, Application Structure & Architecture, Art
 Cohesion: 0.15
 Nodes (13): TYPESENSE_API_KEY, TYPESENSE_DATA_DIR, TYPESENSE_ENABLE_CORS, retries, test, timeout, typesense, environment (+5 more)
 
+### Community 62 - "PlaceOrderAction.php"
+Cohesion: 0.14
+Nodes (7): {closure#1}(), PlaceOrderAction, {closure#1}(), {closure#2}(), {closure#3}(), StockService, ShippingMethodResolver
+
 ### Community 63 - "TestCase"
-Cohesion: 0.04
-Nodes (15): Color, SessionControllerTest, DemoShippingMethodSeederTest, ImportBricqerWeightsJobTest, SyncBricqerCommandTest, {closure#1}(), ImportBrickerColorsJobTest, ExampleTest (+7 more)
+Cohesion: 0.07
+Nodes (11): AdminContentTest, DemoShippingMethodSeederTest, ImportBricqerWeightsJobTest, SyncBricqerCommandTest, ImportBrickerColorsJobTest, ExampleTest, GetDefinitionRequestTest, MinifigSearchableTest (+3 more)
 
-### Community 71 - "StockNotification"
-Cohesion: 0.20
-Nodes (4): {closure#3}(), NotifyRestockedProducts, {closure#1}(), StockNotification
+### Community 64 - "ImageVariant"
+Cohesion: 0.16
+Nodes (8): {closure#9}(), ImageUrl, ImageVariant, Large, Medium, Thumb, {closure#1}(), ImageUrlTest
 
-### Community 73 - "Part"
-Cohesion: 0.25
-Nodes (4): {closure#2}(), BaseDataTransferObject, Part, PartColor
+### Community 65 - "PaginatedCollection"
+Cohesion: 0.08
+Nodes (4): PaginatedCollection, PaginatedRequest, ListPartColorsRequest, ListPartsRequest
+
+### Community 66 - "User"
+Cohesion: 0.18
+Nodes (4): Address, User, AddressPolicy, OrderPolicy
+
+### Community 71 - "ArticleCoverUploadTest.php"
+Cohesion: 0.09
+Nodes (10): RebrickableApi, {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#1}(), {closure#1}(), {closure#2}() (+2 more)
+
+### Community 72 - "SetController.php"
+Cohesion: 0.17
+Nodes (5): {closure#10}(), {closure#5}(), {closure#7}(), {closure#8}(), {closure#9}()
+
+### Community 73 - "Illuminate\Database\Eloquent\Model"
+Cohesion: 0.15
+Nodes (5): {closure#1}(), {closure#1}(), OrderItem, StockNotification, SyncRun
 
 ### Community 74 - "Generator"
-Cohesion: 0.27
-Nodes (3): RebrickableDownloader, RebrickableDownloadService, retrieveRebrickableDataFromUrl()
+Cohesion: 0.15
+Nodes (4): RebrickableDownloader, RebrickableDownloadService, {closure#3}(), retrieveRebrickableDataFromUrl()
 
 ### Community 75 - "Inertia/React Frontend Stack"
 Cohesion: 0.08
 Nodes (34): Inertia.js React Frontend Stack, dependencies, gsap@^3.15.0, @inertiajs/react@^3.2.0, @inertiajs/vite@^3.3.0, @phosphor-icons/react@^2.1.10, react@^19.2.6, react-dom@^19.2.6 (+26 more)
 
 ### Community 76 - "BaseImportService"
-Cohesion: 0.29
-Nodes (3): RebrickableMapper, BaseImportService, {closure#1}()
+Cohesion: 0.12
+Nodes (5): ImportsRebrickableEntity, RebrickableMapper, BaseImportService, {closure#1}(), SetImportService
 
-### Community 77 - "CloudflareImagesApiTest.php"
-Cohesion: 0.18
-Nodes (4): {closure#3}(), {closure#1}(), {closure#2}(), CloudflareImagesApiTest
+### Community 78 - "Illuminate\Database\Eloquent\Relations\BelongsTo"
+Cohesion: 0.19
+Nodes (3): InventoryMinifig, InventoryPart, InventorySet
 
-### Community 78 - "Illuminate\Database\Eloquent\Model"
-Cohesion: 0.06
-Nodes (10): {closure#2}(), Inventory, OrderItem, PartCategory, InventoryMinifig, InventoryPart, InventorySet, Set (+2 more)
-
-### Community 80 - "OrderResource"
-Cohesion: 0.10
-Nodes (4): OrderResource, ManageOrders, ManageUsers, UserResource
+### Community 79 - "ImportImageJob"
+Cohesion: 0.20
+Nodes (6): CloudflareImageable, {closure#5}(), {closure#6}(), {closure#7}(), {closure#8}(), {closure#9}()
 
 ### Community 81 - "images"
 Cohesion: 0.18
 Nodes (11): disable, command, env_file, healthcheck, networks, restart, volumes, healthcheck (+3 more)
 
-### Community 82 - "product.jsx"
-Cohesion: 0.35
-Nodes (4): ColorPreview(), ProductSiblingsOverview(), StockIndicator(), ProductPage()
+### Community 82 - "Minifig"
+Cohesion: 0.18
+Nodes (6): {closure#10}(), {closure#7}(), {closure#6}(), {closure#1}(), MinifigSearchResource, Minifig
 
 ### Community 85 - "Part Colors Pivot Table Schema"
 Cohesion: 0.40
 Nodes (5): Colors Table Schema, Part Colors Pivot Table Schema, Add Bricqer Image URL to Part Colors Migration, Create Colors Table Migration, Create Part Colors Table Migration
 
+### Community 86 - "TrendingProductsTable.php"
+Cohesion: 0.12
+Nodes (9): ArticlesTable, {closure#2}(), {closure#3}(), {closure#4}(), ProductLabel, {closure#2}(), {closure#3}(), {closure#2}() (+1 more)
+
+### Community 87 - "App\Models\PartCategory"
+Cohesion: 0.14
+Nodes (5): {closure#2}(), {closure#3}(), {closure#4}(), NavigationMenu, NavigationMenuTest
+
 ### Community 88 - "AGENTS.md"
 Cohesion: 0.05
 Nodes (37): APIs & Eloquent Resources, Application Structure & Architecture, Artisan, Artisan, Common Mistakes, Conventions, Correct Namespaces, Deployment (+29 more)
 
-### Community 89 - "ImportMinifigImagesCommand.php"
-Cohesion: 0.22
-Nodes (3): {closure#1}(), {closure#5}(), ImportMinifigImagesCommand
-
-### Community 90 - "2026_06_14_110813_add_bricqer_image_url_column_to_part_colors_table.php"
-Cohesion: 0.18
-Nodes (4): {closure#1}(), {closure#2}(), {closure#1}(), {closure#2}()
+### Community 89 - "Product"
+Cohesion: 0.23
+Nodes (5): {closure#5}(), {closure#1}(), {closure#2}(), Product, {closure#12}()
 
 ### Community 91 - "mysql"
 Cohesion: 0.20
 Nodes (10): MYSQL_DATABASE, MYSQL_PASSWORD, MYSQL_ROOT_PASSWORD, MYSQL_USER, environment, image, networks, ports (+2 more)
 
 ### Community 92 - "BricqerConnector"
-Cohesion: 0.09
-Nodes (11): BricqerApi, BricqerConnector, BricqerServiceProvider, {closure#1}(), {closure#2}(), BaseResource, UnconsolidatedInventoryResource, ReportResource (+3 more)
+Cohesion: 0.10
+Nodes (8): BricqerApi, BricqerConnector, BaseResource, DefinitionResource, UnconsolidatedInventoryResource, ReportResource, LegoResource, LegoVisualResource
 
 ### Community 93 - "mysql"
 Cohesion: 0.20
@@ -561,6 +561,10 @@ Nodes (9): PHP_MEMORY_LIMIT, PHP_OPCACHE_ENABLE, PHP_UPLOAD_MAX_FILE_SIZE, XDEBU
 Cohesion: 0.22
 Nodes (9): disable, command, depends_on, healthcheck, networks, restart, volumes, healthcheck (+1 more)
 
+### Community 99 - "App\Filament\Resources\Articles\ArticleResource"
+Cohesion: 0.22
+Nodes (3): HandlesCoverUpload, CreateArticle, EditArticle
+
 ### Community 100 - "mysql"
 Cohesion: 0.33
 Nodes (9): mysql, redis, depends_on, depends_on, depends_on, condition, depends_on, condition (+1 more)
@@ -573,17 +577,33 @@ Nodes (9): AUTORUN_ENABLED, PHP_OPCACHE_ENABLE, PHP_UPLOAD_MAX_FILE_SIZE, env_fi
 Cohesion: 0.22
 Nodes (9): TYPESENSE_API_KEY, TYPESENSE_DATA_DIR, TYPESENSE_ENABLE_CORS, typesense, environment, image, networks, restart (+1 more)
 
+### Community 103 - "Price"
+Cohesion: 0.17
+Nodes (17): react, CartDrawer(), CartItem(), EmptyCart(), OrderSummaryCard(), toCents(), Price(), AddToCartButton() (+9 more)
+
+### Community 104 - "@phosphor-icons/react"
+Cohesion: 0.33
+Nodes (8): @phosphor-icons/react, ArticleCard(), ArticleCover(), studPattern, ArticleDate(), formatter, Article(), BlogIndex()
+
 ### Community 105 - "Composer Dependencies"
 Cohesion: 0.13
 Nodes (15): require, binafy/laravel-cart, ext-intl, ext-zip, filament/filament, inertiajs/inertia-laravel, laravel/framework, laravel/scout (+7 more)
 
 ### Community 106 - "Spatie\LaravelData\Data"
-Cohesion: 0.12
-Nodes (6): LegoVisualItem, LegoVisualPage, ListItemsRequest, {closure#1}(), {closure#2}(), {closure#3}()
+Cohesion: 0.10
+Nodes (7): LegoVisualPage, ListItemsRequest, {closure#1}(), {closure#2}(), {closure#3}(), LegoVisualItemsResource, RebrickableResponse
 
-### Community 110 - "GetColorsRequest"
-Cohesion: 0.22
-Nodes (3): Color, GetColorsRequest, InventoryResource
+### Community 108 - "DispatchStockNotificationsJob"
+Cohesion: 0.20
+Nodes (3): {closure#3}(), NotifyRestockedProducts, DispatchStockNotificationsJob
+
+### Community 109 - "CartQuantityTest"
+Cohesion: 0.36
+Nodes (3): CartQuantityTest, {closure#1}(), {closure#2}()
+
+### Community 110 - "App\Models\Product"
+Cohesion: 0.27
+Nodes (4): {closure#1}(), {closure#2}(), {closure#1}(), {closure#1}()
 
 ### Community 114 - "args"
 Cohesion: 0.39
@@ -601,19 +621,39 @@ Nodes (7): Commands, Compute over data with `tokenade exec`, Explore code with t
 Cohesion: 0.25
 Nodes (7): Commands, Compute over data with `tokenade exec`, Explore code with the `tokenade` CLI (cheaper than reading whole files), Fetching or searching several things, Keep output lean, Project rules for AI coding agents, Reading documents & media
 
+### Community 119 - "ImportImageJobTest.php"
+Cohesion: 0.16
+Nodes (6): UploadImageFromUrlRequest, {closure#1}(), {closure#3}(), {closure#1}(), {closure#2}(), CloudflareImagesApiTest
+
+### Community 120 - "RuntimeException"
+Cohesion: 0.10
+Nodes (6): CloudflareImage, ImageAlreadyExistsException, ImageSourceUnreachableException, GetImageRequest, UploadImageRequest, ImageResource
+
+### Community 123 - "TrendingProductResource.php"
+Cohesion: 0.22
+Nodes (4): ListTrendingProducts, TrendingProductForm, TrendingProductsTable, TrendingProductResource
+
+### Community 124 - "Illuminate\Support\Collection"
+Cohesion: 0.10
+Nodes (7): Color, GetColorsRequest, InventoryResource, CloudflareVariant, {closure#1}(), ListVariantsRequest, VariantResource
+
+### Community 126 - "Illuminate\Support\ServiceProvider"
+Cohesion: 0.14
+Nodes (8): RebrickableServiceProvider, BricqerServiceProvider, {closure#1}(), {closure#2}(), {closure#1}(), {closure#2}(), RebrickableServiceProvider, AppServiceProvider
+
+### Community 128 - "MinifigThemeQuery.php"
+Cohesion: 0.22
+Nodes (3): {closure#1}(), {closure#3}(), Theme
+
+### Community 129 - "2026_09_07_210632_add_commerce_lifecycle_to_products_and_orders.php"
+Cohesion: 0.22
+Nodes (6): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#6}()
+
 ### Community 133 - "require-dev"
 Cohesion: 0.20
 Nodes (10): require-dev, fakerphp/faker, larastan/larastan, laravel/boost, laravel/pail, laravel/pint, mockery/mockery, nunomaduro/collision (+2 more)
 
-### Community 134 - "2026_07_26_162103_add_weight_grams_to_parts_and_minifigs_tables.php"
-Cohesion: 0.29
-Nodes (4): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}()
-
 ### Community 135 - "2026_07_26_162857_add_bricqer_definition_id_to_parts_and_minifigs_tables.php"
-Cohesion: 0.29
-Nodes (4): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}()
-
-### Community 136 - "2026_08_05_215557_add_company_to_addresses_and_orders_tables.php"
 Cohesion: 0.29
 Nodes (4): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}()
 
@@ -625,15 +665,11 @@ Nodes (6): driver, networks, laravel, volumes, mysql-data, typesense-data
 Cohesion: 0.29
 Nodes (7): service, command, extends, command, extends, images, imports
 
-### Community 141 - "0001_01_01_000000_create_users_table.php"
-Cohesion: 0.33
-Nodes (3): {closure#1}(), {closure#2}(), {closure#3}()
+### Community 141 - "2026_11_07_163315_move_images_to_cloudflare.php"
+Cohesion: 0.29
+Nodes (4): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}()
 
 ### Community 142 - "0001_01_01_000002_create_jobs_table.php"
-Cohesion: 0.33
-Nodes (3): {closure#1}(), {closure#2}(), {closure#3}()
-
-### Community 143 - "2026_09_07_220502_stage_rebrickable_relationship_imports.php"
 Cohesion: 0.33
 Nodes (3): {closure#1}(), {closure#2}(), {closure#3}()
 
@@ -662,12 +698,8 @@ Cohesion: 0.33
 Nodes (6): command, depends_on, networks, restart, volumes, scheduler
 
 ### Community 156 - "Order"
-Cohesion: 0.17
-Nodes (7): MarkOrderPaidAction, {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), PaymentSimulationController, Order
-
-### Community 158 - "CheckoutController.php"
-Cohesion: 0.09
-Nodes (7): {closure#1}(), PlaceOrderAction, StockService, ShippingMethodResolver, CheckoutController, {closure#5}(), StoreCheckoutRequest
+Cohesion: 0.13
+Nodes (8): {closure#1}(), MarkOrderPaidAction, {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), PaymentSimulationController, Order
 
 ### Community 160 - "composer.json"
 Cohesion: 0.22
@@ -677,9 +709,9 @@ Nodes (7): autoload-dev, psr-4, minimum-stability, name, prefer-stable, Tests\\,
 Cohesion: 0.22
 Nodes (8): Collect2Connect Webshop, Create a alias for the ssu command (optional), Installation, Introduction, Simple Setup Utility (SSU command), Staging & production, Tests, Usage
 
-### Community 166 - "OrderSummaryCard.jsx"
-Cohesion: 0.70
-Nodes (3): OrderSummaryCard(), toCents(), Card()
+### Community 166 - "Set"
+Cohesion: 0.16
+Nodes (4): {closure#1}(), RetryFailedSetImagesCommand, {closure#1}(), Set
 
 ### Community 167 - "config"
 Cohesion: 0.33
@@ -688,6 +720,10 @@ Nodes (6): php-http/discovery, config, allow-plugins, optimize-autoloader, prefe
 ### Community 168 - "scripts"
 Cohesion: 0.33
 Nodes (6): scripts, post-autoload-dump, post-create-project-cmd, post-root-package-install, post-update-cmd, pre-package-uninstall
+
+### Community 178 - "PartCategory"
+Cohesion: 0.22
+Nodes (6): {closure#1}(), {closure#3}(), {closure#4}(), {closure#5}(), PartCategory, HomeTest
 
 ### Community 179 - "services"
 Cohesion: 0.20
@@ -705,37 +741,41 @@ Nodes (3): Answer, Q: Why does ImportInventoryJob connect Inventory Import Jobs 
 Cohesion: 0.50
 Nodes (4): image, networks, ports, mailpit
 
-### Community 266 - "Inertia\Response"
-Cohesion: 0.08
-Nodes (10): {closure#1}(), OrderController, SearchController, BlogController, CatalogController, Controller, HomeController, PageController (+2 more)
-
-### Community 305 - "TestingPaymentGateway"
+### Community 195 - "ColorImportService"
 Cohesion: 0.15
-Nodes (3): ManualPaymentGateway, TestingPaymentGateway, PaymentDriverTest
+Nodes (4): RebrickableFieldTransformer, ColorImportMapper, BooleanTransformer, ColorImportService
 
-### Community 312 - "CloudflareConnector"
-Cohesion: 0.05
-Nodes (16): RebrickableServiceProvider, CloudflareApi, CloudflareConnector, {closure#1}(), {closure#2}(), CloudflareServiceProvider, BaseResource, RebrickableApi (+8 more)
+### Community 206 - "SearchController.php"
+Cohesion: 0.13
+Nodes (8): {closure#1}(), {closure#2}(), {closure#3}(), {closure#4}(), {closure#5}(), {closure#6}(), SearchController, ProductSearchResource
+
+### Community 266 - "Inertia\Response"
+Cohesion: 0.06
+Nodes (14): ProductListingQuery, OrderController, {closure#1}(), PasswordResetController, BlogController, CatalogController, Controller, HomeController (+6 more)
+
+### Community 305 - "PaymentGateway"
+Cohesion: 0.06
+Nodes (13): PaymentGateway, ManualPaymentGateway, TestingPaymentGateway, PaymentGatewayManager, PaymentInitiation, PaymentResult, PaymentStatus, Failed (+5 more)
 
 ## Knowledge Gaps
-- **33 isolated node(s):** `docker-compose`, `Pending`, `Paid`, `Failed`, `Thumb` (+28 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 983 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **123 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **33 isolated node(s):** `docker-compose`, `Large`, `Medium`, `Thumb`, `Failed` (+28 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1037 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **119 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `Product` connect `Product` to `Illuminate\Database\Eloquent\Builder`, `Part`, `MySqlStockCurrentReadTest.php`, `Inertia\Response`, `CartService`, `Illuminate\Database\Eloquent\Factories\Factory`, `SyncBricqerInventoryJob.php`, `HomeTest.php`, `CheckoutController.php`, `CartService.php`, `TrendingProductForm.php`, `OrderPaidMail`, `CommerceLifecycleTest`, `ImportPartBricklinkNumbersJob`, `TestCase`, `2026_08_10_200454_create_trending_products_table.php`, `CatalogPagesTest.php`, `PaymentSimulationTest`, `Illuminate\Database\Eloquent\Model`, `ImportMinifigImagesCommand.php`, `StockReconciliationTest`, `StockNotificationController.php`, `ReleaseUnpaidOrderStockJobTest`?**
-  _High betweenness centrality (0.131) - this node is a cross-community bridge._
-- **What connects `docker-compose`, `Pending`, `Paid` to the rest of the system?**
+- **Why does `Page` connect `Illuminate\Database\Eloquent\Builder` to `Filament\Schemas\Schema`, `Illuminate\Database\Eloquent\Model`, `Inertia\Response`, `Illuminate\Console\Command`, `AGENTS.md`, `DemoReadinessTest.php`?**
+  _High betweenness centrality (0.120) - this node is a cross-community bridge._
+- **What connects `docker-compose`, `Large`, `Medium` to the rest of the system?**
   _33 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Illuminate\Database\Eloquent\Builder` be split into smaller, more focused modules?**
-  _Cohesion score 0.05454545454545454 - nodes in this community are weakly interconnected._
-- **Why does `Page` connect `Illuminate\Database\Eloquent\Builder` to `Filament\Schemas\Schema`, `PrepareDemoContent.php`, `Inertia\Response`, `Illuminate\Database\Eloquent\Model`, `AGENTS.md`, `DemoReadinessTest.php`?**
-  _High betweenness centrality (0.111) - this node is a cross-community bridge._
-- **Should `Part` be split into smaller, more focused modules?**
-  _Cohesion score 0.0611764705882353 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1103448275862069 - nodes in this community are weakly interconnected._
+- **Why does `Common Mistakes` connect `AGENTS.md` to `Illuminate\Database\Eloquent\Builder`?**
+  _High betweenness centrality (0.114) - this node is a cross-community bridge._
 - **Should `Filament\Schemas\Schema` be split into smaller, more focused modules?**
-  _Cohesion score 0.08244897959183674 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06823529411764706 - nodes in this community are weakly interconnected._
 - **Should `Illuminate\Bus\Queueable` be split into smaller, more focused modules?**
-  _Cohesion score 0.10531400966183575 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.14114114114114115 - nodes in this community are weakly interconnected._
+- **Should `Illuminate\Http\Request` be split into smaller, more focused modules?**
+  _Cohesion score 0.0593990216631726 - nodes in this community are weakly interconnected._
