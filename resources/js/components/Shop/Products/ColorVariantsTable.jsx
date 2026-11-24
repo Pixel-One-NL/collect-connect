@@ -1,8 +1,9 @@
+import { ShoppingCartIcon } from '@phosphor-icons/react/dist/csr/ShoppingCart';
 import { Link } from '@inertiajs/react';
 import { useState } from 'react';
 import Price from '../Price.jsx';
 import StockIndicator from './StockIndicator.jsx';
-import AddToCartButton from './AddToCartButton.jsx';
+import { useCart } from '../../../hooks/useCart';
 
 /**
  * Image of a color variant, or a swatch of the same size when there is no
@@ -18,7 +19,7 @@ function VariantImage({ variant }) {
     if (!variant.image || failed) {
         return (
             <span
-                className="block h-14 w-14 shrink-0 rounded-md border border-gray-200"
+                className="block h-9 w-9 shrink-0 rounded border border-gray-200"
                 style={{ backgroundColor: `#${variant.color?.hex ?? 'e5e7eb'}` }}
                 role="img"
                 aria-label={name}
@@ -32,8 +33,62 @@ function VariantImage({ variant }) {
             alt={name}
             loading="lazy"
             onError={() => setFailed(true)}
-            className="h-14 w-14 shrink-0 rounded-md object-contain"
+            className="h-9 w-9 shrink-0 rounded object-contain"
         />
+    );
+}
+
+/**
+ * Quantity input plus icon-only add-to-cart button for one variant.
+ *
+ * @param {Object} props
+ * @param {Object} props.variant
+ */
+function VariantAddToCart({ variant }) {
+    const { items, addItem, processing } = useCart();
+    const [quantity, setQuantity] = useState(1);
+
+    const inCart = items.find((item) => item.id === variant.id)?.quantity ?? 0;
+    const available = Math.max(0, variant.stock - inCart);
+    const isProcessing = processing === variant.id;
+    const name = variant.color?.name ?? '';
+
+    if (available === 0) {
+        return (
+            <span className="block text-right text-xs text-gray-400">
+                {variant.stock > 0 ? `${inCart} in winkelwagen` : 'Uitverkocht'}
+            </span>
+        );
+    }
+
+    return (
+        <form
+            className="flex items-center justify-end gap-1.5"
+            onSubmit={(event) => {
+                event.preventDefault();
+                addItem(variant.id, Math.min(quantity, available), { onSuccess: () => setQuantity(1) });
+            }}
+        >
+            <input
+                type="number"
+                inputMode="numeric"
+                min={1}
+                max={available}
+                value={quantity}
+                onChange={(event) => setQuantity(Math.max(1, Math.min(available, parseInt(event.target.value, 10) || 1)))}
+                aria-label={`Aantal ${name}`}
+                className="h-9 w-14 rounded-md border border-gray-200 px-2 text-center text-sm tabular-nums [appearance:textfield] focus:border-primary focus:outline-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            />
+            <button
+                type="submit"
+                disabled={isProcessing}
+                aria-label={`${name} in winkelmandje`}
+                title="In winkelmandje"
+                className="inline-flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-md bg-primary text-white transition hover:bg-primary/90 disabled:cursor-wait disabled:opacity-50"
+            >
+                <ShoppingCartIcon size={18} />
+            </button>
+        </form>
     );
 }
 
@@ -53,20 +108,20 @@ export default function ColorVariantsTable({ variants, currentId }) {
     });
 
     return (
-        <section className="mt-10" aria-labelledby="color-variants-heading">
-            <div className="mb-4 flex items-baseline justify-between gap-4">
-                <h2 id="color-variants-heading" className="text-2xl font-semibold">Beschikbare kleuren</h2>
+        <section className="mt-8" aria-labelledby="color-variants-heading">
+            <div className="mb-3 flex items-baseline justify-between gap-4">
+                <h2 id="color-variants-heading" className="text-xl font-semibold">Beschikbare kleuren</h2>
                 <span className="text-sm text-gray-500">{variants.length} kleuren</span>
             </div>
 
-            <div className="overflow-hidden rounded-xl border border-gray-200">
+            <div className="overflow-hidden rounded-lg border border-gray-200">
                 <table className="w-full text-left text-sm">
-                    <thead className="hidden bg-gray-50 text-xs uppercase tracking-wide text-gray-500 sm:table-header-group">
+                    <thead className="bg-gray-50 text-xs text-gray-500">
                         <tr>
-                            <th scope="col" className="px-4 py-3 font-medium">Kleur</th>
-                            <th scope="col" className="px-4 py-3 font-medium">Voorraad</th>
-                            <th scope="col" className="px-4 py-3 font-medium">Prijs</th>
-                            <th scope="col" className="w-48 px-4 py-3 font-medium"><span className="sr-only">Actie</span></th>
+                            <th scope="col" className="px-3 py-2 font-medium">Kleur</th>
+                            <th scope="col" className="hidden px-3 py-2 font-medium sm:table-cell">Voorraad</th>
+                            <th scope="col" className="px-3 py-2 text-right font-medium">Prijs</th>
+                            <th scope="col" className="px-3 py-2"><span className="sr-only">In winkelmandje</span></th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
@@ -76,33 +131,29 @@ export default function ColorVariantsTable({ variants, currentId }) {
                             return (
                                 <tr
                                     key={variant.id}
-                                    className={`grid grid-cols-[auto_1fr] items-center gap-x-3 gap-y-2 p-3 sm:table-row sm:p-0 ${isCurrent ? 'bg-accent/60' : 'hover:bg-gray-50'}`}
+                                    className={isCurrent ? 'bg-accent/60' : 'hover:bg-gray-50'}
                                     aria-current={isCurrent ? 'true' : undefined}
                                 >
-                                    <td className="row-span-3 sm:px-4 sm:py-3">
-                                        <Link href={variant.url} className="flex items-center gap-3">
+                                    <td className="px-3 py-1.5">
+                                        <Link href={variant.url} className="flex min-w-0 items-center gap-2.5">
                                             <VariantImage variant={variant} />
-                                            <span className="hidden font-medium text-gray-900 sm:inline">
-                                                {variant.color?.name}
-                                                {isCurrent && <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-white">Huidig</span>}
+                                            <span className="min-w-0">
+                                                <span className="block truncate font-medium text-gray-900 hover:underline">
+                                                    {variant.color?.name}
+                                                    {isCurrent && <span className="sr-only"> (huidige kleur)</span>}
+                                                </span>
+                                                <span className="sm:hidden"><StockIndicator stock={variant.stock} /></span>
                                             </span>
                                         </Link>
                                     </td>
-                                    <td className="sm:hidden">
-                                        <Link href={variant.url} className="font-medium text-gray-900">
-                                            {variant.color?.name}
-                                        </Link>
-                                        {isCurrent && <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-xs font-medium text-white">Huidig</span>}
-                                    </td>
-                                    <td className="flex items-center gap-3 sm:table-cell sm:px-4 sm:py-3">
+                                    <td className="hidden whitespace-nowrap px-3 py-1.5 sm:table-cell">
                                         <StockIndicator stock={variant.stock} />
-                                        <span className="font-semibold text-gray-900 sm:hidden"><Price price={variant.price} /></span>
                                     </td>
-                                    <td className="hidden font-semibold text-gray-900 sm:table-cell sm:px-4 sm:py-3">
+                                    <td className="whitespace-nowrap px-3 py-1.5 text-right font-semibold text-gray-900">
                                         <Price price={variant.price} />
                                     </td>
-                                    <td className="col-start-2 sm:px-4 sm:py-3">
-                                        <AddToCartButton product={variant} />
+                                    <td className="w-px px-3 py-1.5">
+                                        <VariantAddToCart variant={variant} />
                                     </td>
                                 </tr>
                             );
